@@ -1,9 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'teacher_list_page.dart';
 import 'schedule_page.dart';
 import 'courses_page.dart';
+import 'theme/color_schemes.g.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,6 +19,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Home page",
+      theme: ThemeData(
+          colorSchemeSeed: Colors.blue[800],
+          useMaterial3: true,
+          brightness: Brightness.light),
+      darkTheme: ThemeData(
+          colorSchemeSeed: Colors.blue[800],
+          useMaterial3: true,
+          brightness: Brightness.dark),
       home: Scaffold(
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (value) {
@@ -28,6 +36,7 @@ class _HomePageState extends State<HomePage> {
           },
           selectedIndex: pageIndex,
           // indicatorColor: Colors.amber,
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           destinations: [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),

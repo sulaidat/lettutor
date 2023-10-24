@@ -1,7 +1,4 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
 import 'package:flutter/material.dart';
-
 import 'login_page.dart';
 
 void main() {
@@ -15,7 +12,14 @@ class Lettutor extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        colorSchemeSeed: Colors.blue[800],
         useMaterial3: true,
+        brightness: Brightness.light
+      ),
+      darkTheme: ThemeData(
+        colorSchemeSeed: Colors.blue[800],
+        useMaterial3: true,
+        brightness: Brightness.dark
       ),
       title: "Lettutor",
       home: LoginPage(),

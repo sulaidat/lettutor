@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
 import 'home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +11,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -22,11 +22,10 @@ class _LoginPageState extends State<LoginPage> {
               width: 100,
               height: 100,
             ),
-            const Text(
+            Text(
               "Lettutor",
-              style: TextStyle(
-                  fontSize: 40,
-                  color: Color(0xff0f75f1),
+              style: theme.textTheme.displayMedium?.copyWith(
+                  color: theme.colorScheme.primary,
                   fontWeight: FontWeight.bold),
             ),
             Padding(
@@ -51,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           "Forgot password?",
                           style: TextStyle(
-                            color: Colors.grey,
+                            color: theme.colorScheme.tertiary,
                             fontStyle: FontStyle.italic,
                           ),
                         ),
@@ -107,7 +106,12 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     print("LoginPage::TextButton pressed");
                   },
-                  child: Text("Register"),
+                  child: Text(
+                    "Register",
+                    style: TextStyle(
+                      color: theme.colorScheme.tertiary,
+                    ),
+                  ),
                 )
               ],
             ),
