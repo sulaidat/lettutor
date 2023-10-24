@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'teacher_list_page.dart';
 import 'schedule_page.dart';
 import 'courses_page.dart';
-import 'theme/color_schemes.g.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
