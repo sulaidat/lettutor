@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'teacher_list_page.dart';
+import 'teacher_list/teacher_list_page.dart';
 import 'schedule_page.dart';
 import 'courses_page.dart';
 
