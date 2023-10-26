@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/models/tutor.dart';
-import '../helpers/padding.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../helpers/padding.dart';
 import 'profile_button.dart';
 import 'tutor_specialties.dart';
 import 'upcoming_banner.dart';
+import '../tutor_details_page/tutor_details_page.dart';
 
 class TeacherListPage extends StatefulWidget {
   const TeacherListPage({super.key});
@@ -72,14 +73,14 @@ class _TeacherListPageState extends State<TeacherListPage> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    UpcomingBanner(theme: theme),
+                    UpcomingBanner(),
                     vpad(10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Pick a tutor",
                             style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.primary,
+                              color: theme.colorScheme.onBackground,
                             )),
                         TextButton(
                           onPressed: () {},
@@ -100,10 +101,6 @@ class _TeacherListPageState extends State<TeacherListPage> {
                       ],
                     ),
                     vpad(10),
-                    // TeacherCard(
-                    //   theme: theme,
-                    //   isFavorite: true,
-                    // ),
                     ListView.separated(
                       itemBuilder: (context, index) {
                         return _buildTutorCard(context, index);
@@ -113,14 +110,6 @@ class _TeacherListPageState extends State<TeacherListPage> {
                       physics: NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) => vpad(10),
                     ),
-                    // ListView.builder(
-                    //   physics: NeverScrollableScrollPhysics(),
-                    //   itemBuilder: (context, index) {
-                    //     // return _buildTutorCard(context, index);
-                    //     return _buildTutorWidget(context, _tutors[index]);
-                    //   },
-                    //   itemCount: _tutors.length,
-                    // ),
                   ],
                 ),
               ),
@@ -137,95 +126,100 @@ class _TeacherListPageState extends State<TeacherListPage> {
     bool isFavorite = false;
     if (_favoriteIdx.contains(index)) isFavorite = true;
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.background,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 4,
-            color: Colors.grey,
-            offset: Offset(0, 2),
-          ),
-        ],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(999),
-                child: Image.asset(
-                  "${tutor.avatarPath}",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              hpad(10),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${tutor.name}",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.flag),
-                        Text("Vietnam"),
-                      ],
-                    ),
-                    RatingBarIndicator(
-                      itemBuilder: (context, index) => Icon(
-                        Icons.star_rounded,
-                        color: Colors.amber,
-                      ),
-                      rating: 3,
-                      unratedColor: Colors.grey,
-                      itemCount: 5,
-                      itemSize: 20.0,
-                    ),
-                  ],
-                ),
-              ),
-              ToggleIcon(
-                onPressed: () {
-                  setState(() {
-                    if (isFavorite) {
-                      _favoriteIdx.remove(index);
-                    } else {
-                      _favoriteIdx.add(index);
-                    }
-                    isFavorite = !isFavorite;
-                  });
-                },
-                value: isFavorite,
-              )
-            ],
-          ),
-          vpad(5),
-          TutorSpecialties(
-            specialtiesString:
-                "dep trai, day hay, biet hat, aaa, bbb, c, dd, ee",
-          ),
-          vpad(5),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "${tutor.bio}",
-              maxLines: 4,
-              overflow: TextOverflow.fade,
-              style: theme.textTheme.bodyMedium,
+    return GestureDetector(
+      onTap: () {
+        to(context, TutorDetailsPage(tutor: tutor));
+      },
+      child: Container(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.background,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 4,
+              color: Colors.grey,
+              offset: Offset(0, 2),
             ),
-          )
-        ],
+          ],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: Image.asset(
+                    "${tutor.avatarPath}",
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                hpad(10),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${tutor.name}",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onBackground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.flag),
+                          Text("Vietnam"),
+                        ],
+                      ),
+                      RatingBarIndicator(
+                        itemBuilder: (context, index) => Icon(
+                          Icons.star_rounded,
+                          color: Colors.amber,
+                        ),
+                        rating: 3,
+                        unratedColor: Colors.grey,
+                        itemCount: 5,
+                        itemSize: 20.0,
+                      ),
+                    ],
+                  ),
+                ),
+                ToggleIcon(
+                  onPressed: () {
+                    setState(() {
+                      if (isFavorite) {
+                        _favoriteIdx.remove(index);
+                      } else {
+                        _favoriteIdx.add(index);
+                      }
+                      isFavorite = !isFavorite;
+                    });
+                  },
+                  value: isFavorite,
+                )
+              ],
+            ),
+            vpad(5),
+            ProChipsFromString(
+              string:
+                  "a, aa, aaa, aaaa, aa aa, aaaaaaa, , aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
+            vpad(5),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "${tutor.bio}",
+                maxLines: 4,
+                overflow: TextOverflow.fade,
+                style: theme.textTheme.bodyMedium,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

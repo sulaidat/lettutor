@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'teacher_list/teacher_list_page.dart';
+
+import 'teacher_list_page/teacher_list_page.dart';
 import 'schedule_page.dart';
 import 'courses_page.dart';
 
@@ -17,14 +18,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Home page",
-      theme: ThemeData(
-          colorSchemeSeed: Colors.blue[800],
-          useMaterial3: true,
-          brightness: Brightness.light),
-      darkTheme: ThemeData(
-          colorSchemeSeed: Colors.blue[800],
-          useMaterial3: true,
-          brightness: Brightness.dark),
+      theme: Theme.of(context),
       home: Scaffold(
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (value) {

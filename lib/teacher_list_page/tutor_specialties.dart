@@ -2,22 +2,20 @@
 
 import 'package:flutter/material.dart';
 
-class TutorSpecialties extends StatelessWidget {
-  const TutorSpecialties({
+class ProChipsFromString extends StatelessWidget {
+  const ProChipsFromString({
     super.key,
-    required this.specialtiesString,
+    required this.string,
   });
 
-  final String specialtiesString;
+  final String string;
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Wrap(
-          spacing: 0,
-          runSpacing: 0,
-          children: _genSpecialtiesChips(specialtiesString)),
+          spacing: 0, runSpacing: 0, children: _genSpecialtiesChips(string)),
     );
   }
 }
@@ -43,6 +41,7 @@ class ProChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
       // padding: const EdgeInsets.all(8.0),
@@ -55,12 +54,14 @@ class ProChip extends StatelessWidget {
         // padding: EdgeInsets.all(0),
         side: BorderSide(color: Colors.transparent),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(200)),
-        backgroundColor: Colors.blue[100],
+        // backgroundColor: Colors.blue[100],
+        backgroundColor: theme.colorScheme.secondaryContainer,
         label: Text(
           label,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.blue[800],
+            // color: Colors.blue[800],
+            color: theme.colorScheme.onSecondaryContainer,
             // fontSize: 15,
           ),
         ),

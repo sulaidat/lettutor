@@ -11,3 +11,7 @@ Widget hpad(double width) {
     width: width,
   );
 }
+
+void to(BuildContext context, Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+}

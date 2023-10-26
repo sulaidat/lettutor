@@ -4,13 +4,11 @@ import 'package:lettutor/helpers/padding.dart';
 class UpcomingBanner extends StatelessWidget {
   const UpcomingBanner({
     super.key,
-    required this.theme,
   });
-
-  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
       decoration: BoxDecoration(
@@ -22,15 +20,16 @@ class UpcomingBanner extends StatelessWidget {
           ),
         ],
         borderRadius: BorderRadius.circular(10),
-        gradient: LinearGradient(
-          stops: [0, 1],
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-          colors: <Color>[
-            Colors.blue.shade600,
-            Colors.blue.shade900,
-          ],
-        ),
+        color: theme.colorScheme.primary,
+        // gradient: LinearGradient(
+        //   stops: [0, 1],
+        //   begin: Alignment.bottomLeft,
+        //   end: Alignment.topRight,
+        //   colors: <Color>[
+        //     Colors.blue.shade600,
+        //     Colors.blue.shade900,
+        //   ],
+        // ),
       ),
       child: Column(
         children: [
@@ -64,9 +63,18 @@ class UpcomingBanner extends StatelessWidget {
                 ],
               ),
               hpad(10),
-              ElevatedButton(
+              FilledButton(
+                style: FilledButton.styleFrom(
+                    // padding: ,
+                    backgroundColor: theme.colorScheme.onPrimary,
+                    foregroundColor: theme.colorScheme.primary,
+                    textStyle: theme.textTheme.titleMedium),
                 onPressed: () {},
-                child: Text("Join now"),
+                child: Row(
+                  children: [
+                    Text("Join now"),
+                  ],
+                ),
               ),
             ],
           ),
