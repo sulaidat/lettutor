@@ -12,7 +12,7 @@ class ReviewsPage extends StatelessWidget {
         child: Column(
           children: [
             ProHeader(
-              title: "Tutor Details",
+              title: "Reviews",
               start: IconButton(
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(

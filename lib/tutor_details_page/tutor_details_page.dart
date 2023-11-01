@@ -29,156 +29,163 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Column(
-              children: [
-                ProHeader(
-                  title: 'Tutor Detail',
-                  start: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.chevron_left,
-                        size: 30,
-                        color: theme.colorScheme.primary,
-                      )),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.background,
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 4,
-                        color: Colors.grey,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      TutorCardMinimal(tutor: widget.tutor),
-                      vpad(5),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "${widget.tutor.bio}",
-                          maxLines: 4,
-                          overflow: TextOverflow.fade,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ),
-                      vpad(5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: ProButton(
-                              onPressed: () {
-                                setState(() {
-                                  isFavorite = !isFavorite;
-                                });
-                              },
-                              selectedIcon: Icons.favorite,
-                              unselectedIcon: Icons.favorite_border,
-                              isSelected: isFavorite,
-                              label: "Favorite",
-                            ),
-                          ),
-                          SizedBox(
-                            height: 40,
-                            child: VerticalDivider(),
-                          ),
-                          Expanded(
-                            child: ProButton(
-                              onPressed: () {
-                                to(context, ReviewsPage());
-                              },
-                              selectedIcon: Icons.star,
-                              unselectedIcon: Icons.star_border,
-                              isSelected: false,
-                              label: "Reviews",
-                            ),
-                          ),
-                          SizedBox(
-                            height: 40,
-                            child: VerticalDivider(),
-                          ),
-                          Expanded(
-                            child: ProButton(
-                              onPressed: () {},
-                              selectedIcon: Icons.report,
-                              unselectedIcon: Icons.report_gmailerrorred,
-                              isSelected: false,
-                              label: "Report",
-                              color: theme.colorScheme.error,
-                            ),
+          child: Column(
+            children: [
+              ProHeader(
+                title: 'Tutor Detail',
+                start: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.chevron_left,
+                      size: 30,
+                      color: theme.colorScheme.primary,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.background,
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 4,
+                            color: Colors.grey,
+                            offset: Offset(0, 2),
                           ),
                         ],
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      vpad(5),
-                      FilledButton(
-                          onPressed: () {},
-                          style: FilledButton.styleFrom(),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
+                        children: [
+                          TutorCardMinimal(tutor: widget.tutor),
+                          vpad(5),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "${widget.tutor.bio}",
+                              maxLines: 4,
+                              overflow: TextOverflow.fade,
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                          ),
+                          vpad(5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Icon(Icons.edit_calendar),
-                              hpad(5),
-                              Text("Book now"),
+                              Expanded(
+                                child: ProToggleButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isFavorite = !isFavorite;
+                                    });
+                                  },
+                                  selectedIcon: Icons.favorite,
+                                  unselectedIcon: Icons.favorite_border,
+                                  isSelected: isFavorite,
+                                  label: "Favorite",
+                                ),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                child: VerticalDivider(),
+                              ),
+                              Expanded(
+                                child: ProToggleButton(
+                                  onPressed: () {
+                                    to(context, ReviewsPage());
+                                  },
+                                  selectedIcon: Icons.star,
+                                  unselectedIcon: Icons.star_border,
+                                  isSelected: false,
+                                  label: "Reviews",
+                                ),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                child: VerticalDivider(),
+                              ),
+                              Expanded(
+                                child: ProToggleButton(
+                                  onPressed: () {},
+                                  selectedIcon: Icons.report,
+                                  unselectedIcon: Icons.report_gmailerrorred,
+                                  isSelected: false,
+                                  label: "Report",
+                                  color: theme.colorScheme.error,
+                                ),
+                              ),
                             ],
-                          ))
-                    ],
-                  ),
+                          ),
+                          vpad(5),
+                          FilledButton(
+                            onPressed: () {},
+                            style: FilledButton.styleFrom(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.edit_calendar),
+                                hpad(5),
+                                Text("Book now"),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Heading1(text: "Education"),
+                          Text(""
+                              "Reiciendis blanditiis sunt non. Porro rem voluptatem eum. Perspiciatis blanditiis enim at at suscipit doloremque a."),
+                          Heading1(text: "Languages"),
+                          ProChipsFromString(string: "English, Vietnamese"),
+                          Heading1(text: "Specialities"),
+                          ProChipsFromString(
+                              string: "Pwn, Re, Crypto, Web, Forensics"),
+                          Heading1(text: "Introduction"),
+                          // VideoApp(),
+                          Heading1(text: "Suggested Courses"),
+                          Row(
+                            children: [
+                              Text(
+                                "Course 1",
+                                style: theme.textTheme.titleSmall,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {}, child: Text("Go")),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "Course 2",
+                                style: theme.textTheme.titleSmall,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {}, child: Text("Go")),
+                            ],
+                          ),
+                          Heading1(text: "Interests"),
+                          Text(
+                              "Cumque atque sapiente quibusdam laboriosam provident blanditiis suscipit modi quia. In odit rerum nemo inventore pariatur autem. Odio hic eveniet velit deleniti aut. Quod harum unde illum. Neque reiciendis et sit.Repudiandae dolorum voluptatum ut ab sit ab placeat doloremque. Molestias nemo commodi aut vitae dolorem. Labore tempora facilis voluptas enim ducimus voluptatum. Et nam delectus modi ut ad. Nostrum exercitationem et assumenda.Est ad eum recusandae repellat enim sunt iusto ea. Nulla repudiandae iusto impedit iste velit nesciunt accusamus nemo. Sint magnam voluptatem atque qui ad pariatur id fugiat. Voluptatum nam architecto ratione qui aut. Optio est molestiae eos nam ad ut eum quia. Ea et hic fugiat aut ut id esse fuga iure."),
+                          Heading1(text: "Teaching Experience"),
+                          Text(
+                              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-                vpad(10),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Heading1(text: "Education"),
-                      Text(""
-                          "Reiciendis blanditiis sunt non. Porro rem voluptatem eum. Perspiciatis blanditiis enim at at suscipit doloremque a."),
-                      Heading1(text: "Languages"),
-                      ProChipsFromString(string: "English, Vietnamese"),
-                      Heading1(text: "Specialities"),
-                      ProChipsFromString(
-                          string: "Pwn, Re, Crypto, Web, Forensics"),
-                      Heading1(text: "Introduction"),
-                      // VideoApp(),
-                      Heading1(text: "Suggested Courses"),
-                      Row(
-                        children: [
-                          Text(
-                            "Course 1",
-                            style: theme.textTheme.titleSmall,
-                          ),
-                          ElevatedButton(onPressed: () {}, child: Text("Go")),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "Course 2",
-                            style: theme.textTheme.titleSmall,
-                          ),
-                          ElevatedButton(onPressed: () {}, child: Text("Go")),
-                        ],
-                      ),
-                      Heading1(text: "Interests"),
-                      Text(
-                          "Cumque atque sapiente quibusdam laboriosam provident blanditiis suscipit modi quia. In odit rerum nemo inventore pariatur autem. Odio hic eveniet velit deleniti aut. Quod harum unde illum. Neque reiciendis et sit.Repudiandae dolorum voluptatum ut ab sit ab placeat doloremque. Molestias nemo commodi aut vitae dolorem. Labore tempora facilis voluptas enim ducimus voluptatum. Et nam delectus modi ut ad. Nostrum exercitationem et assumenda.Est ad eum recusandae repellat enim sunt iusto ea. Nulla repudiandae iusto impedit iste velit nesciunt accusamus nemo. Sint magnam voluptatem atque qui ad pariatur id fugiat. Voluptatum nam architecto ratione qui aut. Optio est molestiae eos nam ad ut eum quia. Ea et hic fugiat aut ut id esse fuga iure."),
-                      Heading1(text: "Teaching Experience"),
-                      Text(
-                          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
-                    ],
-                  ),
-                )
-              ],
-            ),
+              ),
+              vpad(10),
+            ],
           ),
         ),
       ),
@@ -212,8 +219,8 @@ class Heading1 extends StatelessWidget {
   }
 }
 
-class ProButton extends StatelessWidget {
-  const ProButton(
+class ProToggleButton extends StatelessWidget {
+  const ProToggleButton(
       {Key? key,
       required this.onPressed,
       required this.selectedIcon,
@@ -269,11 +276,21 @@ class ProHeader extends StatelessWidget {
     return Row(
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        start ?? SizedBox.shrink(),
-        Text(
-          title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.primary,
+        start ??
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(
+                Icons.chevron_left,
+                size: 30,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+        Expanded(
+          child: Text(
+            title,
+            style: theme.textTheme.titleLarge?.copyWith(
+                // color: theme.colorScheme.primary,
+                ),
           ),
         ),
         end ?? SizedBox.shrink(),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lettutor/models/lesson_info.dart';
 
 import 'teacher_list_page/teacher_list_page.dart';
-import 'schedule_page.dart';
-import 'courses_page.dart';
+import 'schedule_page/schedule_page.dart';
+import 'courses_page/courses_page.dart';
+import 'models/tutor.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +15,38 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int pageIndex = 0;
+  List<LessonInfo> lessonInfos = [
+    LessonInfo(
+        tutor:
+            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+        date: "Tue, 24 Oct, 23",
+        start: "00:00",
+        end: "00:30"),
+    LessonInfo(
+        tutor:
+            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+        date: "Tue, 24 Oct, 23",
+        start: "00:00",
+        end: "00:30"),
+    LessonInfo(
+        tutor:
+            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+        date: "Tue, 24 Oct, 23",
+        start: "00:00",
+        end: "00:30"),
+    LessonInfo(
+        tutor:
+            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+        date: "Tue, 24 Oct, 23",
+        start: "00:00",
+        end: "00:30"),
+    LessonInfo(
+        tutor:
+            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+        date: "Tue, 24 Oct, 23",
+        start: "00:00",
+        end: "00:30"),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +83,9 @@ class _HomePageState extends State<HomePage> {
         ),
         body: [
           TeacherListPage(),
-          SchedulePage(),
+          SchedulePage(
+            lessonInfos: lessonInfos,
+          ),
           CoursesPage(),
         ][pageIndex],
       ),
