@@ -6,7 +6,7 @@ import '../helpers/padding.dart';
 import 'profile_button.dart';
 import 'tutor_specialties.dart';
 import 'upcoming_banner.dart';
-import '../tutor_details_page/tutor_details_page.dart';
+import 'tutor_details_page/tutor_details_page.dart';
 
 class TeacherListPage extends StatefulWidget {
   const TeacherListPage({super.key});

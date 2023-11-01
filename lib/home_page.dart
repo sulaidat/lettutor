@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/models/lesson_info.dart';
+import 'package:lettutor/models/course.dart';
+import 'package:lettutor/models/lesson.dart';
 
 import 'teacher_list_page/teacher_list_page.dart';
 import 'schedule_page/schedule_page.dart';
@@ -15,37 +16,71 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int pageIndex = 0;
-  List<LessonInfo> lessonInfos = [
-    LessonInfo(
+  List<Lesson> lessons = [
+    Lesson(
         tutor:
             Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
-    LessonInfo(
+    Lesson(
         tutor:
             Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
-    LessonInfo(
+    Lesson(
         tutor:
             Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
-    LessonInfo(
+    Lesson(
         tutor:
             Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
-    LessonInfo(
+    Lesson(
         tutor:
             Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
+  ];
+  List<Course> courses = [
+    Course(
+        name: "Legacy Metrics Orchestrator",
+        brief:
+            "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
+        bannerUrl:
+            "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
+        level: "Intermediate",
+        n_lesson: 9),
+    Course(
+        name: "Legacy Metrics Orchestrator",
+        brief:
+            "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
+        bannerUrl:
+            "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
+        level: "Intermediate",
+        n_lesson: 9),
+    Course(
+        name: "Legacy Metrics Orchestrator",
+        brief:
+            "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
+        bannerUrl:
+            "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
+        level: "Intermediate",
+        n_lesson: 9),
+    Course(
+        name: "Legacy Metrics Orchestrator",
+        brief:
+            "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
+        bannerUrl:
+            "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
+        level: "Intermediate",
+        n_lesson: 9),
   ];
 
   @override
@@ -84,9 +119,11 @@ class _HomePageState extends State<HomePage> {
         body: [
           TeacherListPage(),
           SchedulePage(
-            lessonInfos: lessonInfos,
+            lessonInfos: lessons,
           ),
-          CoursesPage(),
+          CoursesPage(
+            courses: courses,
+          ),
         ][pageIndex],
       ),
     );

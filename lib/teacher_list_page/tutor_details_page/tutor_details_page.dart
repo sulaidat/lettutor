@@ -2,9 +2,9 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:lettutor/models/tutor.dart';
 import 'package:lettutor/teacher_list_page/tutor_specialties.dart';
-import 'package:lettutor/tutor_details_page/video_app.dart';
+import 'package:lettutor/teacher_list_page/tutor_details_page/video_app.dart';
 
-import '../helpers/padding.dart';
+import '../../helpers/padding.dart';
 import 'tutor_card_minimal.dart';
 import 'reviews_page/reviews_page.dart';
 
@@ -207,13 +207,14 @@ class Heading1 extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Divider(),
+        vpad(10),
         Text(
           text,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
+        Divider(),
       ],
     );
   }
@@ -273,28 +274,31 @@ class ProHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        start ??
-            IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(
-                Icons.chevron_left,
-                size: 30,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-        Expanded(
-          child: Text(
-            title,
-            style: theme.textTheme.titleLarge?.copyWith(
-                // color: theme.colorScheme.primary,
+    return SizedBox(
+      height: 50,
+      child: Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          start ??
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(
+                  Icons.chevron_left,
+                  size: 30,
+                  color: theme.colorScheme.primary,
                 ),
+              ),
+          Expanded(
+            child: Text(
+              title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                  // color: theme.colorScheme.primary,
+                  ),
+            ),
           ),
-        ),
-        end ?? SizedBox.shrink(),
-      ],
+          end ?? SizedBox.shrink(),
+        ],
+      ),
     );
   }
 }

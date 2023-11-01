@@ -1,13 +1,13 @@
 import 'package:lettutor/models/tutor.dart';
 
-class LessonInfo {
+class Lesson {
   Tutor tutor;
   String? date;
   String? start;
   String? end;
 
 //<editor-fold desc="Data Methods">
-  LessonInfo({
+  Lesson({
     required this.tutor,
     this.date,
     this.start,
@@ -17,7 +17,7 @@ class LessonInfo {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is LessonInfo &&
+      (other is Lesson &&
           runtimeType == other.runtimeType &&
           tutor == other.tutor &&
           date == other.date &&
@@ -28,13 +28,13 @@ class LessonInfo {
   int get hashCode =>
       tutor.hashCode ^ date.hashCode ^ start.hashCode ^ end.hashCode;
 
-  LessonInfo copyWith({
+  Lesson copyWith({
     Tutor? tutor,
     String? time,
     String? start,
     String? end,
   }) {
-    return LessonInfo(
+    return Lesson(
       tutor: tutor ?? this.tutor,
       date: time ?? this.date,
       start: start ?? this.start,
@@ -51,8 +51,8 @@ class LessonInfo {
     };
   }
 
-  factory LessonInfo.fromMap(Map<String, dynamic> map) {
-    return LessonInfo(
+  factory Lesson.fromMap(Map<String, dynamic> map) {
+    return Lesson(
       tutor: map['tutor'] as Tutor,
       date: map['time'] as String,
       start: map['start'] as String,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
 
 class ReviewsPage extends StatelessWidget {
   const ReviewsPage({super.key});

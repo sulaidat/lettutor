@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/helpers/padding.dart';
-import 'package:lettutor/models/lesson_info.dart';
+import 'package:lettutor/models/lesson.dart';
 import 'package:lettutor/models/tutor.dart';
 import 'package:lettutor/schedule_page/history_page/history_page.dart';
 import 'package:lettutor/teacher_list_page/teacher_list_page.dart';
-import 'package:lettutor/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key, required this.lessonInfos});
 
-  final List<LessonInfo> lessonInfos;
+  final List<Lesson> lessonInfos;
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -22,34 +22,34 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Column(
-              children: [
-                ProHeader(
-                  start: hpad(20),
-                  title: 'Schedule',
-                  end: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          to(
-                              context,
-                              HistoryPage(
-                                lessonInfos: widget.lessonInfos,
-                              ));
-                        },
-                        icon: Icon(
-                          Icons.history,
-                          color: theme.colorScheme.primary,
-                        ),
+          child: Column(
+            children: [
+              ProHeader(
+                start: hpad(20),
+                title: 'Schedule',
+                end: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        to(
+                            context,
+                            HistoryPage(
+                              lessonInfos: widget.lessonInfos,
+                            ));
+                      },
+                      icon: Icon(
+                        Icons.history,
+                        color: theme.colorScheme.primary,
                       ),
-                      hpad(20),
-                    ],
-                  ),
+                    ),
+                    hpad(20),
+                  ],
                 ),
-                vpad(10),
-                ListView.separated(
+              ),
+              vpad(10),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: ListView.separated(
                   itemBuilder: ((context, index) {
                     return _buildLessonCard(context, widget.lessonInfos[index]);
                   }),
@@ -58,8 +58,8 @@ class _SchedulePageState extends State<SchedulePage> {
                   separatorBuilder: (context, index) => vpad(10),
                   itemCount: widget.lessonInfos.length,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -67,7 +67,7 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 }
 
-Widget _buildLessonCard(BuildContext context, LessonInfo info) {
+Widget _buildLessonCard(BuildContext context, Lesson info) {
   final theme = Theme.of(context);
   return Container(
     decoration: BoxDecoration(

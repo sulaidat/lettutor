@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/helpers/padding.dart';
-import 'package:lettutor/models/lesson_info.dart';
+import 'package:lettutor/models/lesson.dart';
 import 'package:lettutor/teacher_list_page/teacher_list_page.dart';
-import 'package:lettutor/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key, required this.lessonInfos});
-  final List<LessonInfo> lessonInfos;
+  final List<Lesson> lessonInfos;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class HistoryPage extends StatelessWidget {
   }
 }
 
-Widget _buildLessonCard(BuildContext context, LessonInfo info) {
+Widget _buildLessonCard(BuildContext context, Lesson info) {
   final theme = Theme.of(context);
   return Container(
     decoration: BoxDecoration(
