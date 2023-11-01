@@ -19,7 +19,7 @@ class TutorCardMinimal extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(999),
           child: Image.asset(
-            "${tutor.avatarPath}",
+            "${tutor.imageUrl}",
             width: 70,
             height: 70,
             fit: BoxFit.cover,

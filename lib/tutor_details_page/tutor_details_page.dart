@@ -1,6 +1,8 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:lettutor/models/tutor.dart';
 import 'package:lettutor/teacher_list_page/tutor_specialties.dart';
+import 'package:lettutor/tutor_details_page/video_app.dart';
 
 import '../helpers/padding.dart';
 import 'tutor_card_minimal.dart';
@@ -32,7 +34,7 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
             child: Column(
               children: [
                 ProHeader(
-                  title: 'Tutor List',
+                  title: 'Tutor Detail',
                   start: IconButton(
                       onPressed: () => Navigator.pop(context),
                       icon: Icon(
@@ -137,35 +139,21 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Education",
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      Text(
-                          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
-                      Text(
-                        "Languages",
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      Heading1(text: "Education"),
+                      Text(""
+                          "Reiciendis blanditiis sunt non. Porro rem voluptatem eum. Perspiciatis blanditiis enim at at suscipit doloremque a."),
+                      Heading1(text: "Languages"),
                       ProChipsFromString(string: "English, Vietnamese"),
-                      Text(
-                        "Specialties",
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      Heading1(text: "Specialities"),
                       ProChipsFromString(
                           string: "Pwn, Re, Crypto, Web, Forensics"),
-                      Text(
-                        "Insert Introduction video here",
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      Text(
-                        "Suggested courses",
-                        style: theme.textTheme.titleMedium,
-                      ),
+                      Heading1(text: "Introduction"),
+                      // VideoApp(),
+                      Heading1(text: "Suggested Courses"),
                       Row(
                         children: [
                           Text(
-                            "Suggested courses",
+                            "Course 1",
                             style: theme.textTheme.titleSmall,
                           ),
                           ElevatedButton(onPressed: () {}, child: Text("Go")),
@@ -174,22 +162,16 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                       Row(
                         children: [
                           Text(
-                            "Suggested courses",
+                            "Course 2",
                             style: theme.textTheme.titleSmall,
                           ),
                           ElevatedButton(onPressed: () {}, child: Text("Go")),
                         ],
                       ),
+                      Heading1(text: "Interests"),
                       Text(
-                        "Interests",
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      Text(
-                          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
-                      Text(
-                        "Teaching experience",
-                        style: theme.textTheme.titleMedium,
-                      ),
+                          "Cumque atque sapiente quibusdam laboriosam provident blanditiis suscipit modi quia. In odit rerum nemo inventore pariatur autem. Odio hic eveniet velit deleniti aut. Quod harum unde illum. Neque reiciendis et sit.Repudiandae dolorum voluptatum ut ab sit ab placeat doloremque. Molestias nemo commodi aut vitae dolorem. Labore tempora facilis voluptas enim ducimus voluptatum. Et nam delectus modi ut ad. Nostrum exercitationem et assumenda.Est ad eum recusandae repellat enim sunt iusto ea. Nulla repudiandae iusto impedit iste velit nesciunt accusamus nemo. Sint magnam voluptatem atque qui ad pariatur id fugiat. Voluptatum nam architecto ratione qui aut. Optio est molestiae eos nam ad ut eum quia. Ea et hic fugiat aut ut id esse fuga iure."),
+                      Heading1(text: "Teaching Experience"),
                       Text(
                           "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
                     ],
@@ -200,6 +182,32 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class Heading1 extends StatelessWidget {
+  const Heading1({
+    super.key,
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Divider(),
+        Text(
+          text,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -215,12 +223,12 @@ class ProButton extends StatelessWidget {
       this.color})
       : super(key: key);
 
+  final Color? color;
+  final bool isSelected;
+  final String label;
   final VoidCallback onPressed;
   final IconData selectedIcon;
   final IconData unselectedIcon;
-  final bool isSelected;
-  final String label;
-  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -252,8 +260,8 @@ class ProButton extends StatelessWidget {
 class ProHeader extends StatelessWidget {
   const ProHeader({super.key, this.start, required this.title, this.end});
 
-  final String title;
   final Widget? start, end;
+  final String title;
 
   @override
   Widget build(BuildContext context) {

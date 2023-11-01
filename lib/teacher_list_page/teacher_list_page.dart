@@ -16,42 +16,158 @@ class TeacherListPage extends StatefulWidget {
 }
 
 class _TeacherListPageState extends State<TeacherListPage> {
+  List<int> _favoriteIdx = [];
   List<Tutor> _tutors = [
     Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
-        bio: "tuyendeptrai"),
-    Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Hanna Graham",
         bio:
-            "tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai tuyendeptrai "),
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
     Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
-        bio: "tuyendeptrai"),
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Gretchen Orn",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
     Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
-        bio: "tuyendeptrai"),
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Marvin McClure",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
     Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
-        bio: "tuyendeptrai"),
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Demarco Purdy",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
     Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
-        bio: "tuyendeptrai"),
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Paris Bernier",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
     Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
-        bio: "tuyendeptrai"),
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Katelin Tromp",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
     Tutor(
-        avatarPath: "assets/imgs/avt.jpg",
-        name: "Nguyen Quang Tuyen",
-        bio: "tuyendeptrai"),
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Linnie Stehr",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
+    Tutor(
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Abdullah Hills",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
+    Tutor(
+        imageUrl: "assets/imgs/avt.jpg",
+        name: "Torey Watsica",
+        bio:
+            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
   ];
-  List<int> _favoriteIdx = [];
+
+  Widget _buildTutorCard(BuildContext context, int index) {
+    ThemeData theme = Theme.of(context);
+    Tutor tutor = _tutors[index];
+    bool isFavorite = false;
+    if (_favoriteIdx.contains(index)) isFavorite = true;
+
+    return GestureDetector(
+      onTap: () {
+        to(context, TutorDetailsPage(tutor: tutor));
+      },
+      child: Container(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.background,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 4,
+              color: Colors.grey,
+              offset: Offset(0, 2),
+            ),
+          ],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: Image.asset(
+                    "${tutor.imageUrl}",
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                hpad(10),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${tutor.name}",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onBackground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.flag),
+                          Text("Vietnam"),
+                        ],
+                      ),
+                      RatingBarIndicator(
+                        itemBuilder: (context, index) => Icon(
+                          Icons.star_rounded,
+                          color: Colors.amber,
+                        ),
+                        rating: 3,
+                        unratedColor: Colors.grey,
+                        itemCount: 5,
+                        itemSize: 20.0,
+                      ),
+                    ],
+                  ),
+                ),
+                ToggleIcon(
+                  onPressed: () {
+                    setState(() {
+                      if (isFavorite) {
+                        _favoriteIdx.remove(index);
+                      } else {
+                        _favoriteIdx.add(index);
+                      }
+                      isFavorite = !isFavorite;
+                    });
+                  },
+                  value: isFavorite,
+                )
+              ],
+            ),
+            vpad(5),
+            ProChipsFromString(
+              string:
+                  "a, aa, aaa, aaaa, aa aa, aaaaaaa, , verylonggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+            ),
+            vpad(5),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "${tutor.bio}",
+                maxLines: 4,
+                overflow: TextOverflow.fade,
+                style: theme.textTheme.bodyMedium,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,110 +235,6 @@ class _TeacherListPageState extends State<TeacherListPage> {
       ),
     );
   }
-
-  Widget _buildTutorCard(BuildContext context, int index) {
-    ThemeData theme = Theme.of(context);
-    Tutor tutor = _tutors[index];
-    bool isFavorite = false;
-    if (_favoriteIdx.contains(index)) isFavorite = true;
-
-    return GestureDetector(
-      onTap: () {
-        to(context, TutorDetailsPage(tutor: tutor));
-      },
-      child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.background,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 4,
-              color: Colors.grey,
-              offset: Offset(0, 2),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: Image.asset(
-                    "${tutor.avatarPath}",
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                hpad(10),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${tutor.name}",
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onBackground,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.flag),
-                          Text("Vietnam"),
-                        ],
-                      ),
-                      RatingBarIndicator(
-                        itemBuilder: (context, index) => Icon(
-                          Icons.star_rounded,
-                          color: Colors.amber,
-                        ),
-                        rating: 3,
-                        unratedColor: Colors.grey,
-                        itemCount: 5,
-                        itemSize: 20.0,
-                      ),
-                    ],
-                  ),
-                ),
-                ToggleIcon(
-                  onPressed: () {
-                    setState(() {
-                      if (isFavorite) {
-                        _favoriteIdx.remove(index);
-                      } else {
-                        _favoriteIdx.add(index);
-                      }
-                      isFavorite = !isFavorite;
-                    });
-                  },
-                  value: isFavorite,
-                )
-              ],
-            ),
-            vpad(5),
-            ProChipsFromString(
-              string:
-                  "a, aa, aaa, aaaa, aa aa, aaaaaaa, , aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            ),
-            vpad(5),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "${tutor.bio}",
-                maxLines: 4,
-                overflow: TextOverflow.fade,
-                style: theme.textTheme.bodyMedium,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class ToggleIcon extends StatelessWidget {
@@ -240,9 +252,9 @@ class ToggleIcon extends StatelessWidget {
     ),
   });
 
-  final bool value;
-  final Function() onPressed;
   final Widget onIcon, offIcon;
+  final Function() onPressed;
+  final bool value;
 
   @override
   Widget build(BuildContext context) {
