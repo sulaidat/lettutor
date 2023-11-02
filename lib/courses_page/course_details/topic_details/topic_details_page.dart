@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/models/topic.dart';
-import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/tutor_list_page/tutor_details_page/tutor_details_page.dart';
+
+import '../../../custom_widgets/pro_heading1.dart';
+import '../../../custom_widgets/pro_header.dart';
 
 class TopicDetailsPage extends StatelessWidget {
   const TopicDetailsPage({super.key, required this.topic});
@@ -22,7 +25,7 @@ class TopicDetailsPage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    Heading1(text: "Slides"),
+                    ProHeading1(text: "Slides"),
                     Placeholder(),
                   ],
                 ),

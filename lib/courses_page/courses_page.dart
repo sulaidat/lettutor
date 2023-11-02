@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lettutor/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/helpers/padding.dart';
 import 'package:lettutor/models/course.dart';
-import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/tutor_list_page/tutor_details_page/tutor_details_page.dart';
+
+import '../custom_widgets/pro_header.dart';
 
 class CoursesPage extends StatefulWidget {
   const CoursesPage({super.key, required this.courses});

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/helpers/padding.dart';
+import 'package:lettutor/meeting_room/waiting_room.dart';
 import 'package:lettutor/models/lesson.dart';
 import 'package:lettutor/models/tutor.dart';
 import 'package:lettutor/schedule_page/history_page/history_page.dart';
-import 'package:lettutor/teacher_list_page/teacher_list_page.dart';
-import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/tutor_list_page/tutor_list_page.dart';
+import 'package:lettutor/tutor_list_page/tutor_details_page/tutor_details_page.dart';
+
+import '../custom_widgets/pro_header.dart';
+import '../meeting_room/waiting_room.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key, required this.lessonInfos});
@@ -150,7 +154,9 @@ Widget _buildLessonCard(BuildContext context, Lesson info) {
               ),
             ),
             FilledButton(
-              onPressed: () {},
+              onPressed: () {
+                to(context, WaitingRoom());
+              },
               child: Text("Go to meeting"),
             ),
           ],

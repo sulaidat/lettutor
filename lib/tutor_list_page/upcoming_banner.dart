@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/helpers/padding.dart';
+import 'package:lettutor/meeting_room/waiting_room.dart';
 
 class UpcomingBanner extends StatelessWidget {
   const UpcomingBanner({
@@ -69,12 +70,10 @@ class UpcomingBanner extends StatelessWidget {
                     backgroundColor: theme.colorScheme.onPrimary,
                     foregroundColor: theme.colorScheme.primary,
                     textStyle: theme.textTheme.titleMedium),
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Text("Join now"),
-                  ],
-                ),
+                onPressed: () {
+                  to(context, WaitingRoom());
+                },
+                child: Text("Join now"),
               ),
             ],
           ),

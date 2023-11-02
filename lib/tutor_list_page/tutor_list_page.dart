@@ -8,14 +8,14 @@ import 'tutor_specialties.dart';
 import 'upcoming_banner.dart';
 import 'tutor_details_page/tutor_details_page.dart';
 
-class TeacherListPage extends StatefulWidget {
-  const TeacherListPage({super.key});
+class TutorListPage extends StatefulWidget {
+  const TutorListPage({super.key});
 
   @override
-  State<TeacherListPage> createState() => _TeacherListPageState();
+  State<TutorListPage> createState() => _TutorListPageState();
 }
 
-class _TeacherListPageState extends State<TeacherListPage> {
+class _TutorListPageState extends State<TutorListPage> {
   List<int> _favoriteIdx = [];
   List<Tutor> _tutors = [
     Tutor(

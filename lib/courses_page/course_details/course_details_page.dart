@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lettutor/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/helpers/padding.dart';
 import 'package:lettutor/models/course.dart';
-import 'package:lettutor/models/topic.dart';
-import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/tutor_list_page/tutor_details_page/tutor_details_page.dart';
+
+import '../../custom_widgets/pro_heading1.dart';
+import '../../custom_widgets/pro_header.dart';
 
 class CourseDetailsPage extends StatelessWidget {
   const CourseDetailsPage({
@@ -101,7 +103,7 @@ class CourseDetailsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Heading1(text: "Overview"),
+                    ProHeading1(text: "Overview"),
                     Row(
                       children: [
                         Icon(
@@ -128,7 +130,7 @@ class CourseDetailsPage extends StatelessWidget {
                       ],
                     ),
                     Text("Aliquid quam consequatur blanditiis dignissimos."),
-                    Heading1(text: "List Lessons"),
+                    ProHeading1(text: "List Lessons"),
                     GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(

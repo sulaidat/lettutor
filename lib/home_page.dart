@@ -3,7 +3,7 @@ import 'package:lettutor/models/course.dart';
 import 'package:lettutor/models/lesson.dart';
 import 'package:lettutor/models/topic.dart';
 
-import 'teacher_list_page/teacher_list_page.dart';
+import 'tutor_list_page/tutor_list_page.dart';
 import 'schedule_page/schedule_page.dart';
 import 'courses_page/courses_page.dart';
 import 'models/tutor.dart';
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: [
-          TeacherListPage(),
+          TutorListPage(),
           SchedulePage(
             lessonInfos: lessons,
           ),
