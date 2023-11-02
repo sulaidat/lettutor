@@ -95,7 +95,7 @@ Widget _buildCourseCard(BuildContext context, Course course) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "${course.level} - ${course.n_lesson} Lessons",
+                    "${course.level} - ${course.topics.length} Topics",
                     style: theme.textTheme.bodySmall,
                   ),
                   FilledButton(

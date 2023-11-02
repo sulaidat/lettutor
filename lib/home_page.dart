@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/models/course.dart';
 import 'package:lettutor/models/lesson.dart';
+import 'package:lettutor/models/topic.dart';
 
 import 'teacher_list_page/teacher_list_page.dart';
 import 'schedule_page/schedule_page.dart';
@@ -56,7 +57,18 @@ class _HomePageState extends State<HomePage> {
         bannerUrl:
             "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
         level: "Intermediate",
-        n_lesson: 9),
+        topics: [
+          Topic(name: "Food You Love"),
+          Topic(name: "Your Job"),
+          Topic(name: "Playing and Watching Sports"),
+          Topic(name: "The Best Pet"),
+          Topic(name: "Having Fun in your Free Time"),
+          Topic(name: "Your Daily Routine"),
+          Topic(name: "Childhood Memories"),
+          Topic(name: "Your Family Members"),
+          Topic(name: "Your Hometowns"),
+          Topic(name: "Shopping Habits"),
+        ]),
     Course(
         name: "Legacy Metrics Orchestrator",
         brief:
@@ -64,7 +76,18 @@ class _HomePageState extends State<HomePage> {
         bannerUrl:
             "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
         level: "Intermediate",
-        n_lesson: 9),
+        topics: [
+          Topic(name: "Food You Love"),
+          Topic(name: "Your Job"),
+          Topic(name: "Playing and Watching Sports"),
+          Topic(name: "The Best Pet"),
+          Topic(name: "Having Fun in your Free Time"),
+          Topic(name: "Your Daily Routine"),
+          Topic(name: "Childhood Memories"),
+          Topic(name: "Your Family Members"),
+          Topic(name: "Your Hometowns"),
+          Topic(name: "Shopping Habits"),
+        ]),
     Course(
         name: "Legacy Metrics Orchestrator",
         brief:
@@ -72,7 +95,18 @@ class _HomePageState extends State<HomePage> {
         bannerUrl:
             "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
         level: "Intermediate",
-        n_lesson: 9),
+        topics: [
+          Topic(name: "Food You Love"),
+          Topic(name: "Your Job"),
+          Topic(name: "Playing and Watching Sports"),
+          Topic(name: "The Best Pet"),
+          Topic(name: "Having Fun in your Free Time"),
+          Topic(name: "Your Daily Routine"),
+          Topic(name: "Childhood Memories"),
+          Topic(name: "Your Family Members"),
+          Topic(name: "Your Hometowns"),
+          Topic(name: "Shopping Habits"),
+        ]),
     Course(
         name: "Legacy Metrics Orchestrator",
         brief:
@@ -80,7 +114,56 @@ class _HomePageState extends State<HomePage> {
         bannerUrl:
             "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
         level: "Intermediate",
-        n_lesson: 9),
+        topics: [
+          Topic(name: "Food You Love"),
+          Topic(name: "Your Job"),
+          Topic(name: "Playing and Watching Sports"),
+          Topic(name: "The Best Pet"),
+          Topic(name: "Having Fun in your Free Time"),
+          Topic(name: "Your Daily Routine"),
+          Topic(name: "Childhood Memories"),
+          Topic(name: "Your Family Members"),
+          Topic(name: "Your Hometowns"),
+          Topic(name: "Shopping Habits"),
+        ]),
+    Course(
+        name: "Legacy Metrics Orchestrator",
+        brief:
+            "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
+        bannerUrl:
+            "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
+        level: "Intermediate",
+        topics: [
+          Topic(name: "Food You Love"),
+          Topic(name: "Your Job"),
+          Topic(name: "Playing and Watching Sports"),
+          Topic(name: "The Best Pet"),
+          Topic(name: "Having Fun in your Free Time"),
+          Topic(name: "Your Daily Routine"),
+          Topic(name: "Childhood Memories"),
+          Topic(name: "Your Family Members"),
+          Topic(name: "Your Hometowns"),
+          Topic(name: "Shopping Habits"),
+        ]),
+    Course(
+        name: "Legacy Metrics Orchestrator",
+        brief:
+            "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
+        bannerUrl:
+            "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
+        level: "Intermediate",
+        topics: [
+          Topic(name: "Food You Love"),
+          Topic(name: "Your Job"),
+          Topic(name: "Playing and Watching Sports"),
+          Topic(name: "The Best Pet"),
+          Topic(name: "Having Fun in your Free Time"),
+          Topic(name: "Your Daily Routine"),
+          Topic(name: "Childhood Memories"),
+          Topic(name: "Your Family Members"),
+          Topic(name: "Your Hometowns"),
+          Topic(name: "Shopping Habits"),
+        ]),
   ];
 
   @override

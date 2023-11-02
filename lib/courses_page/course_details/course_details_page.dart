@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lettutor/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/helpers/padding.dart';
 import 'package:lettutor/models/course.dart';
+import 'package:lettutor/models/topic.dart';
 import 'package:lettutor/teacher_list_page/tutor_details_page/tutor_details_page.dart';
 
 class CourseDetailsPage extends StatelessWidget {
@@ -80,7 +82,8 @@ class CourseDetailsPage extends StatelessWidget {
                                       child: ProLabel(
                                           onPressed: () {},
                                           icon: Icons.timer,
-                                          label: "${course.n_lesson} lessons"),
+                                          label:
+                                              "${course.topics.length} lessons"),
                                     ),
                                   ],
                                 ),
@@ -135,15 +138,16 @@ class CourseDetailsPage extends StatelessWidget {
                         mainAxisSpacing: 5,
                       ),
                       itemBuilder: (context, index) {
-                        final topic = course.topics![index];
                         return _buildTopicButton(
-                          (index + 1).toString() + '. ' + (topic.name ?? 'N/A'),
-                          () => MyApp.To(
-                              context,
-                              PdfPageWidget(
-                                  topic.nameFile!, topic.name ?? 'N/A')),
+                          context,
+                          "${index + 1}. ${course.topics[index].name}",
+                          () {
+                            to(context,
+                                TopicDetailsPage(topic: course.topics[index]));
+                          },
                         );
                       },
+                      itemCount: course.topics.length,
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                     )
@@ -156,6 +160,24 @@ class CourseDetailsPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildTopicButton(
+    BuildContext context, String title, VoidCallback onPressed) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      side: BorderSide(
+        color: Colors.grey.withAlpha(100),
+      ),
+    ),
+    onPressed: onPressed,
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Text(title),
+    ),
+  );
 }
 
 class ProLabel extends StatelessWidget {
