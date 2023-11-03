@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/course.dart';
-import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 
 import '../../custom_widgets/pro_heading1.dart';
 import '../../custom_widgets/pro_header.dart';

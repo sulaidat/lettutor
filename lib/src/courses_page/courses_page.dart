@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lettutor/src/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/course.dart';
-import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 
 import '../custom_widgets/pro_header.dart';
 
@@ -18,7 +17,6 @@ class CoursesPage extends StatefulWidget {
 class _CoursesPageState extends State<CoursesPage> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
