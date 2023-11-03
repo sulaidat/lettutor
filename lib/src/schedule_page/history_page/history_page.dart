@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/helpers/padding.dart';
-import 'package:lettutor/models/lesson.dart';
-import 'package:lettutor/tutor_list_page/tutor_list_page.dart';
-import 'package:lettutor/tutor_list_page/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/src/helpers/padding.dart';
+import 'package:lettutor/src/models/lesson.dart';
+import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
+import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 
 import '../../custom_widgets/pro_header.dart';
 

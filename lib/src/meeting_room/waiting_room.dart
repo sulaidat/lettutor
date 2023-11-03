@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/helpers/padding.dart';
-import 'package:lettutor/meeting_room/meeting_room.dart';
-import 'package:lettutor/theme/color_schemes.g.dart';
+import 'package:lettutor/src/helpers/padding.dart';
+import 'package:lettutor/src/meeting_room/meeting_room.dart';
+import 'package:lettutor/src/theme/color_schemes.g.dart';
 
 class WaitingRoom extends StatefulWidget {
   const WaitingRoom({super.key});

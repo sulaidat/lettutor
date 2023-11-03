@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:lettutor/models/topic.dart';
+import 'package:lettutor/src/models/topic.dart';
 
 class Course {
   String? name;

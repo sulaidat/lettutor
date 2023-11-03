@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/helpers/padding.dart';
-import 'package:lettutor/theme/color_schemes.g.dart';
+import 'package:lettutor/src/helpers/padding.dart';
+import 'package:lettutor/src/theme/color_schemes.g.dart';
 
 class MeetingRoom extends StatefulWidget {
   const MeetingRoom({super.key});

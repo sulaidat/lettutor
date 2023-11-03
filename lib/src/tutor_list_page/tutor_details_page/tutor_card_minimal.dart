@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:lettutor/helpers/padding.dart';
-import 'package:lettutor/models/tutor.dart';
+import 'package:lettutor/src/helpers/padding.dart';
+import 'package:lettutor/src/models/tutor.dart';
 
 class TutorCardMinimal extends StatelessWidget {
   const TutorCardMinimal({

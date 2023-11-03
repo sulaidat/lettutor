@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/helpers/padding.dart';
+import 'package:lettutor/src/helpers/padding.dart';
 
 class ProHeading1 extends StatelessWidget {
   const ProHeading1({

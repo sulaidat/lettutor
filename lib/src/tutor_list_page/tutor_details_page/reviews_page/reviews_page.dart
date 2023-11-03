@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/tutor_list_page/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 
 import '../../../custom_widgets/pro_header.dart';
 

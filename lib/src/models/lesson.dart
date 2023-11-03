@@ -1,4 +1,4 @@
-import 'package:lettutor/models/tutor.dart';
+import 'package:lettutor/src/models/tutor.dart';
 
 class Lesson {
   Tutor tutor;

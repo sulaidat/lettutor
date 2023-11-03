@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/login_page.dart';
 
-import 'login_page.dart';
-import 'theme/color_schemes.g.dart';
+import 'src/theme/color_schemes.g.dart';
 
 void main() {
   runApp(const Lettutor());

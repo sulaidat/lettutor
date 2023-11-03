@@ -1,8 +1,8 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:lettutor/models/tutor.dart';
-import 'package:lettutor/tutor_list_page/tutor_specialties.dart';
-import 'package:lettutor/tutor_list_page/tutor_details_page/video_app.dart';
+import 'package:lettutor/src/models/tutor.dart';
+import 'package:lettutor/src/tutor_list_page/tutor_specialties.dart';
+import 'package:lettutor/src/tutor_list_page/tutor_details_page/video_app.dart';
 
 import '../../custom_widgets/pro_heading1.dart';
 import '../../custom_widgets/pro_header.dart';
