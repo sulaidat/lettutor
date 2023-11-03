@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/course.dart';
 

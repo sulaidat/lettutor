@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/meeting_room/waiting_room.dart';
 import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
 

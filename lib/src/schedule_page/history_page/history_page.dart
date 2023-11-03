@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/lesson.dart';
 
-import '../../custom_widgets/pro_header.dart';
-
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key, required this.history});
   final List<Lesson> history;

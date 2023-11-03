@@ -4,9 +4,6 @@ import 'package:lettutor/src/models/course.dart';
 import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/topic.dart';
 
-import 'tutor_list_page/tutor_list_page.dart';
-import 'schedule_page/schedule_page.dart';
-import 'courses_page/courses_page.dart';
 import 'models/tutor.dart';
 
 class HomePage extends StatefulWidget {

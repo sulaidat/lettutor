@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/meeting_room/meeting_room.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
 
 class WaitingRoom extends StatefulWidget {

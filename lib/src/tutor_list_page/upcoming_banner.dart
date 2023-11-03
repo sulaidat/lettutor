@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/meeting_room/waiting_room.dart';
 
 class UpcomingBanner extends StatelessWidget {
   const UpcomingBanner({

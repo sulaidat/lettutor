@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -7,7 +6,6 @@ import '../helpers/padding.dart';
 import 'profile_button.dart';
 import 'tutor_specialties.dart';
 import 'upcoming_banner.dart';
-import 'tutor_details_page/tutor_details_page.dart';
 
 class TutorListPage extends StatefulWidget {
   const TutorListPage({

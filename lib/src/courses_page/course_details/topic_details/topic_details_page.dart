@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lettutor/src/models/topic.dart';
 
 import '../../../custom_widgets/pro_heading1.dart';
-import '../../../custom_widgets/pro_header.dart';
 
 class TopicDetailsPage extends StatelessWidget {
   const TopicDetailsPage({super.key, required this.topic});
