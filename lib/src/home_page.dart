@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/models/course.dart';
 import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/topic.dart';
@@ -9,7 +10,14 @@ import 'courses_page/courses_page.dart';
 import 'models/tutor.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({
+    super.key,
+    required this.child,
+    required this.selectedIndex,
+  });
+
+  final Widget child;
+  final int selectedIndex;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -168,17 +176,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final router = GoRouter.of(context);
+
     return MaterialApp(
       title: "Home page",
       theme: Theme.of(context),
       home: Scaffold(
         bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (value) {
-            setState(() {
-              pageIndex = value;
-            });
+          onDestinationSelected: (idx) {
+            if (idx == 0) router.go('/list/list');
+            if (idx == 1) router.go('/schedule');
+            if (idx == 2) router.go('/courses');
           },
-          selectedIndex: pageIndex,
+          selectedIndex: widget.selectedIndex,
           // indicatorColor: Colors.amber,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           destinations: [
@@ -199,15 +209,16 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: [
-          TutorListPage(),
-          SchedulePage(
-            lessonInfos: lessons,
-          ),
-          CoursesPage(
-            courses: courses,
-          ),
-        ][pageIndex],
+        body: widget.child,
+        // body: [
+        //   TutorListPage(),
+        //   SchedulePage(
+        //     lessonInfos: lessons,
+        //   ),
+        //   CoursesPage(
+        //     courses: courses,
+        //   ),
+        // ][pageIndex],
       ),
     );
   }
