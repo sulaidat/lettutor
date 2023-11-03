@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
       home: Scaffold(
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (idx) {
-            if (idx == 0) router.go('/list/list');
+            if (idx == 0) router.go('/list/all');
             if (idx == 1) router.go('/schedule');
             if (idx == 2) router.go('/courses');
           },

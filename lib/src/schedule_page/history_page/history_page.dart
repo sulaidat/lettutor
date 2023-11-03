@@ -5,8 +5,8 @@ import 'package:lettutor/src/models/lesson.dart';
 import '../../custom_widgets/pro_header.dart';
 
 class HistoryPage extends StatelessWidget {
-  const HistoryPage({super.key, required this.lessonInfos});
-  final List<Lesson> lessonInfos;
+  const HistoryPage({super.key, required this.history});
+  final List<Lesson> history;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class HistoryPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ProHeader(title: "History"),
+              AppBar(title: Text("History"), centerTitle: true,),
               vpad(10),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -26,14 +26,14 @@ class HistoryPage extends StatelessWidget {
                     vpad(10),
                     ListView.separated(
                       itemBuilder: (context, index) {
-                        return _buildLessonCard(context, lessonInfos[index]);
+                        return _buildLessonCard(context, history[index]);
                       },
                       separatorBuilder: (context, index) {
                         return vpad(10);
                       },
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: lessonInfos.length,
+                      itemCount: history.length,
                     ),
                   ],
                 ),

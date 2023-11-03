@@ -4,15 +4,35 @@ import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/course.dart';
 
 import '../../custom_widgets/pro_heading1.dart';
-import '../../custom_widgets/pro_header.dart';
+import '../../custom_widgets/pro_label.dart';
 
 class CourseDetailsPage extends StatelessWidget {
   const CourseDetailsPage({
     super.key,
     required this.course,
+    required this.onTopicSelect,
   });
 
   final Course course;
+  final VoidCallback onTopicSelect;
+
+  Widget _buildTopicButton(
+      BuildContext context, String title, VoidCallback onPressed) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        side: BorderSide(
+          color: Colors.grey.withAlpha(100),
+        ),
+      ),
+      onPressed: onPressed,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(title),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +42,10 @@ class CourseDetailsPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ProHeader(title: "Course Details"),
+              AppBar(
+                title: Text("Course Details"),
+                centerTitle: true,
+              ),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(
@@ -71,7 +94,6 @@ class CourseDetailsPage extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       child: ProLabel(
-                                          onPressed: () {},
                                           icon: Icons.signal_cellular_alt,
                                           label: "${course.level}"),
                                     ),
@@ -81,7 +103,6 @@ class CourseDetailsPage extends StatelessWidget {
                                     ),
                                     Expanded(
                                       child: ProLabel(
-                                          onPressed: () {},
                                           icon: Icons.timer,
                                           label:
                                               "${course.topics.length} lessons"),
@@ -142,10 +163,7 @@ class CourseDetailsPage extends StatelessWidget {
                         return _buildTopicButton(
                           context,
                           "${index + 1}. ${course.topics[index].name}",
-                          () {
-                            to(context,
-                                TopicDetailsPage(topic: course.topics[index]));
-                          },
+                          onTopicSelect,
                         );
                       },
                       itemCount: course.topics.length,
@@ -159,53 +177,6 @@ class CourseDetailsPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-Widget _buildTopicButton(
-    BuildContext context, String title, VoidCallback onPressed) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      side: BorderSide(
-        color: Colors.grey.withAlpha(100),
-      ),
-    ),
-    onPressed: onPressed,
-    child: Align(
-      alignment: Alignment.centerLeft,
-      child: Text(title),
-    ),
-  );
-}
-
-class ProLabel extends StatelessWidget {
-  const ProLabel(
-      {Key? key,
-      required this.onPressed,
-      required this.icon,
-      required this.label,
-      this.color})
-      : super(key: key);
-
-  final Color? color;
-  final String label;
-  final VoidCallback onPressed;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      children: [
-        Icon(icon),
-        Text(
-          label,
-          style: theme.textTheme.labelMedium,
-        )
-      ],
     );
   }
 }

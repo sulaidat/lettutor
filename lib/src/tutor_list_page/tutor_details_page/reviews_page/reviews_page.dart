@@ -1,27 +1,18 @@
 import 'package:flutter/material.dart';
-
-import '../../../custom_widgets/pro_header.dart';
+import 'package:lettutor/src/models/tutor.dart';
 
 class ReviewsPage extends StatelessWidget {
   const ReviewsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            ProHeader(
-              title: "Reviews",
-              start: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.chevron_left,
-                  size: 30,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
+            AppBar(
+              title: Text("Reviews"),
+              centerTitle: true,
             ),
             Container(
               width: 100,

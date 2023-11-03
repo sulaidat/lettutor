@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -9,7 +10,14 @@ import 'upcoming_banner.dart';
 import 'tutor_details_page/tutor_details_page.dart';
 
 class TutorListPage extends StatefulWidget {
-  const TutorListPage({super.key});
+  const TutorListPage({
+    super.key,
+    required this.onItemSelect,
+    required this.onJoinMeeting,
+  });
+
+  final VoidCallback onItemSelect;
+  final VoidCallback onJoinMeeting;
 
   @override
   State<TutorListPage> createState() => _TutorListPageState();
@@ -72,9 +80,7 @@ class _TutorListPageState extends State<TutorListPage> {
     if (_favoriteIdx.contains(index)) isFavorite = true;
 
     return GestureDetector(
-      onTap: () {
-        to(context, TutorDetailsPage(tutor: tutor));
-      },
+      onTap: widget.onItemSelect,
       child: Container(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: BoxDecoration(
@@ -189,7 +195,7 @@ class _TutorListPageState extends State<TutorListPage> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    UpcomingBanner(),
+                    UpcomingBanner(onJoin: widget.onJoinMeeting),
                     vpad(10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

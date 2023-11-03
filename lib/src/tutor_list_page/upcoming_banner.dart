@@ -5,7 +5,10 @@ import 'package:lettutor/src/meeting_room/waiting_room.dart';
 class UpcomingBanner extends StatelessWidget {
   const UpcomingBanner({
     super.key,
+    required this.onJoin,
   });
+
+  final VoidCallback onJoin;
 
   @override
   Widget build(BuildContext context) {
@@ -70,9 +73,7 @@ class UpcomingBanner extends StatelessWidget {
                     backgroundColor: theme.colorScheme.onPrimary,
                     foregroundColor: theme.colorScheme.primary,
                     textStyle: theme.textTheme.titleMedium),
-                onPressed: () {
-                  to(context, WaitingRoom());
-                },
+                onPressed: onJoin,
                 child: Text("Join now"),
               ),
             ],

@@ -16,9 +16,12 @@ class TopicDetailsPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ProHeader(
-                title: "Topic Details",
-                end: ProSingleIconButton(icon: Icons.menu, onPressed: () {}),
+              AppBar(
+                title: Text("Topic Details"),
+                centerTitle: true,
+                actions: [
+                  ProSingleIconButton(icon: Icons.menu, onPressed: () {})
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_specialties.dart';
 
@@ -13,9 +14,11 @@ class TutorDetailsPage extends StatefulWidget {
   const TutorDetailsPage({
     super.key,
     required this.tutor,
+    required this.onReviews,
   });
 
   final Tutor tutor;
+  final VoidCallback onReviews;
 
   @override
   State<TutorDetailsPage> createState() => _TutorDetailsPageState();
@@ -27,20 +30,16 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final routerState = GoRouterState.of(context);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ProHeader(
-                title: 'Tutor Detail',
-                start: IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.chevron_left,
-                      size: 30,
-                      color: theme.colorScheme.primary,
-                    )),
+              AppBar(
+                title: Text('Tutor Detail'),
+                centerTitle: true,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -95,9 +94,14 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                               ),
                               Expanded(
                                 child: ProToggleButton(
-                                  onPressed: () {
-                                    to(context, ReviewsPage());
-                                  },
+                                  // onPressed: () {
+                                  //   // to(context, ReviewsPage());
+                                  //   var id = int.parse(routerState.uri
+                                  //       .toString()
+                                  //       .split('/')[2]);
+                                  //   context.go('/list/$id/reviews');
+                                  // },
+                                  onPressed: widget.onReviews,
                                   selectedIcon: Icons.star,
                                   unselectedIcon: Icons.star_border,
                                   isSelected: false,

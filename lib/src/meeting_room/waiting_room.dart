@@ -4,7 +4,9 @@ import 'package:lettutor/src/meeting_room/meeting_room.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
 
 class WaitingRoom extends StatefulWidget {
-  const WaitingRoom({super.key});
+  const WaitingRoom({super.key, required this.onJoin,});
+
+  final VoidCallback onJoin;
 
   @override
   State<WaitingRoom> createState() => _WaitingRoomState();
@@ -85,9 +87,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
                       Text("Ready to join?"),
                       vpad(10),
                       FilledButton(
-                          onPressed: () {
-                            to(context, MeetingRoom());
-                          },
+                          onPressed: widget.onJoin,
                           child: Text("Join")),
                     ],
                   )

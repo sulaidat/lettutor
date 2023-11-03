@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/home_page.dart';
+
+class Account {
+  Account(this.username, this.password);
+
+  final String password;
+  final String username;
+}
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key, required this.onLogIn});
+
+  final Function(Account) onLogIn;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -12,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final usernameController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return SafeArea(
       child: Scaffold(
@@ -61,6 +71,8 @@ class _LoginPageState extends State<LoginPage> {
                         // Navigator.of(context).push(MaterialPageRoute(
                         //   builder: (context) => const HomePage(),
                         // ));
+                        widget.onLogIn(Account(usernameController.value.text,
+                            passwordController.value.text));
                       },
                       child: Text("Login"),
                     ),
@@ -129,8 +141,8 @@ class ProTextFormField extends StatelessWidget {
     required this.icon,
   });
 
-  final String label;
   final Icon icon;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -158,8 +170,8 @@ class ProPasswordFormField extends StatefulWidget {
     required this.icon,
   });
 
-  final String label;
   final Icon icon;
+  final String label;
 
   @override
   State<ProPasswordFormField> createState() => _ProPasswordFormFieldState();

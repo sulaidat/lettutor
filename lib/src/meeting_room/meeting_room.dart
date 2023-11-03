@@ -3,7 +3,9 @@ import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
 
 class MeetingRoom extends StatefulWidget {
-  const MeetingRoom({super.key});
+  const MeetingRoom({super.key, required this.onLeave,});
+
+  final VoidCallback onLeave;
 
   @override
   State<MeetingRoom> createState() => _MeetingRoomState();
@@ -97,10 +99,7 @@ class _MeetingRoomState extends State<MeetingRoom> {
                     IconButton(onPressed: () {}, icon: Icon(Icons.more_horiz)),
                     hpad(10),
                     FilledButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: widget.onLeave,
                       style: FilledButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
