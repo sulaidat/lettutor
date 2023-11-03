@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'login_page.dart';
 import 'theme/color_schemes.g.dart';
@@ -20,3 +21,25 @@ class Lettutor extends StatelessWidget {
     );
   }
 }
+
+class Lettutor2 extends StatelessWidget {
+  const Lettutor2({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routerConfig: _router,
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+    );
+  }
+}
+
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const LoginPage(),
+    )
+  ],
+);
