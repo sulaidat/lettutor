@@ -3,7 +3,7 @@ import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
 
 class MeetingRoom extends StatefulWidget {
-  const MeetingRoom({super.key, required this.onLeave,});
+  const  MeetingRoom({super.key, required this.onLeave,});
 
   final VoidCallback onLeave;
 

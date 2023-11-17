@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/src/models/tutor.dart';
-import 'package:lettutor/src/tutor_list_page/tutor_specialties.dart';
 
+import '../../custom_widgets/pro_chips_from_string.dart';
 import '../../custom_widgets/pro_heading1.dart';
 import '../../custom_widgets/pro_toggle_button.dart';
 import '../../helpers/padding.dart';
 import 'tutor_card_minimal.dart';
 
 class TutorDetailsPage extends StatefulWidget {
-  const TutorDetailsPage({
+  const  TutorDetailsPage({
     super.key,
     required this.tutor,
     required this.onReviews,

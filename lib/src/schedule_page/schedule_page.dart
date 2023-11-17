@@ -4,7 +4,7 @@ import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({
+  const  SchedulePage({
     super.key,
     required this.lessonInfos,
     required this.onHistory,
@@ -20,7 +20,7 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  Widget _buildLessonCard(BuildContext context, Lesson info) {
+  Widget  (BuildContext context, Lesson info) {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(

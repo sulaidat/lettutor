@@ -27,6 +27,7 @@ class TopicDetailsPage extends StatelessWidget {
                 child: Column(
                   children: [
                     ProHeading1(text: "Slides"),
+                    // TODO PDFView
                     Placeholder(),
                   ],
                 ),
