@@ -20,7 +20,7 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  Widget  (BuildContext context, Lesson info) {
+  Widget  _buildLessonCard(BuildContext context, Lesson info) {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
