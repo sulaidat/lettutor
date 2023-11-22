@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/login_page/password_field_model.dart';
+import 'package:lettutor/src/login_page/pro_password_form_field.dart';
+import 'package:lettutor/src/login_page/pro_text_form_field.dart';
+import 'package:lettutor/src/login_page/username_field_model.dart';
 
-class Account {
-  Account(this.username, this.password);
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key, required this.onLogIn});
 
-  final String password;
-  final String username;
-}
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.onLogIn});
-
-  final Function(Account) onLogIn;
+  // final Function(Account) onLogIn;
+  final Function(String, String) onLogIn;
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final usernameController = TextEditingController();
-    final passwordController = TextEditingController();
-
+    final usernameModel = UsernameFieldModel();
+    final passwordModel = PasswordFieldModel();
+    final formKey = GlobalKey<FormState>();
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -41,21 +41,24 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
               child: Form(
+                key: formKey,
                 child: Column(
                   children: [
                     ProTextFormField(
                       label: "Username",
                       icon: Icon(Icons.person),
+                      model: usernameModel,
                     ),
                     ProPasswordFormField(
-                      label: "Password",
+                      label: "Create password",
                       icon: Icon(Icons.key),
+                      model: passwordModel,
                     ),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          print("LoginPage::TextButton pressed");
+                          print("ForgotPasswordPage::TextButton pressed");
                         },
                         child: Text(
                           "Forgot password?",
@@ -68,11 +71,15 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //   builder: (context) => const HomePage(),
-                        // ));
-                        widget.onLogIn(Account(usernameController.value.text,
-                            passwordController.value.text));
+                        if (formKey.currentState!.validate()) {
+                          var auth = AuthService();
+                          auth.logIn(usernameModel.controller?.value.text ?? '',
+                              passwordModel.controller?.value.text ?? '');
+                          context.go('/list/all');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Processing Data')),
+                          );
+                        }
                       },
                       child: Text("Login"),
                     ),
@@ -80,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            Text("OR"),
+            Text("Or register with"),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -116,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                 Text("Not a member yet?"),
                 TextButton(
                   onPressed: () {
-                    print("LoginPage::TextButton pressed");
+                    context.go('/register');
                   },
                   child: Text(
                     "Register",
@@ -129,91 +136,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProTextFormField extends StatelessWidget {
-  const ProTextFormField({
-    super.key,
-    required this.label,
-    required this.icon,
-  });
-
-  final Icon icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5),
-      child: TextFormField(
-        decoration: InputDecoration(
-          prefixIcon: icon,
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          contentPadding: const EdgeInsets.all(0),
-        ),
-        validator: null,
-      ),
-    );
-  }
-}
-
-class ProPasswordFormField extends StatefulWidget {
-  const ProPasswordFormField({
-    super.key,
-    required this.label,
-    required this.icon,
-  });
-
-  final Icon icon;
-  final String label;
-
-  @override
-  State<ProPasswordFormField> createState() => _ProPasswordFormFieldState();
-}
-
-class _ProPasswordFormFieldState extends State<ProPasswordFormField> {
-  bool visibility = false;
-
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5),
-      child: TextFormField(
-        obscureText: !visibility,
-        decoration: InputDecoration(
-          prefixIcon: widget.icon,
-          labelText: widget.label,
-          suffixIcon: InkWell(
-            onTap: () => setState(() {
-              visibility = !visibility;
-            }),
-            child: Icon(
-              // TODO: this icon disappeared everytime app is backed and
-              // started again
-              visibility
-                  ? Icons.visibility_outlined
-                  : Icons.visibility_off_outlined,
-              // color: Colors.grey.shade700,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          contentPadding: const EdgeInsets.all(0),
-        ),
-        validator: null,
       ),
     );
   }

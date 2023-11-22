@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/auth.dart';
+import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/src/courses_page/courses_page.dart';
-import 'package:lettutor/src/home_page.dart';
-import 'package:lettutor/src/login_page.dart';
+import 'package:lettutor/src/login_page/register_page.dart';
+import 'package:lettutor/src/routes.dart';
+import 'package:lettutor/src/shell.dart';
+import 'package:lettutor/src/login_page/login_page.dart';
 import 'package:lettutor/src/meeting_room/meeting_room.dart';
 import 'package:lettutor/src/meeting_room/waiting_room.dart';
 import 'package:lettutor/src/models/course.dart';
@@ -18,6 +20,7 @@ import 'package:lettutor/src/theme/color_schemes.g.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_details_page/reviews_page/reviews_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
+import 'package:provider/provider.dart';
 
 List<Lesson> lessons = [
   Lesson(
@@ -210,6 +213,13 @@ List<Tutor> tutors = [
           "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
 ];
 
+class AppRoutes {
+  static const tutorList = '/list';
+  static const tutorDetails = '/list/:tutorId';
+  static const tutorReviews = '/list/:tutorId/reviews';
+  static const meetWait = '/meet/wait';
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -218,45 +228,51 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final auth = AppAuth();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-      builder: (context, child) {
-        if (child == null) {
-          throw ("No child in .router contructor builder");
-        }
-        return AppAuthScope(notifier: auth, child: child);
-      },
       routerConfig: GoRouter(
         debugLogDiagnostics: true,
         initialLocation: '/list/all',
         redirect: (context, state) {
-          if (state.uri.toString() != '/login' &&
-              !AppAuth.of(context).loggedIn) {
-            return '/login';
+          var auth = AuthService();
+          var path = state.uri.path;
+          print(path);
+          if (auth.isLoggedIn) {
+            return null;
+          } else if (path.contains('/login') ||
+              path.contains('/register') ||
+              path.contains('/forgot_password')) {
+            return path;
           }
-          return null;
+          return '/login';
         },
         routes: [
           GoRoute(
-            name: 'login',
+            name: routeName['/login'],
             path: '/login',
             builder: (context, state) {
               return LoginPage(
-                onLogIn: (acc) {
-                  AppAuth.of(context).logIn(acc.username, acc.password);
+                onLogIn: (username, password) {
+                  // var auth = Provider.of<AuthService>(context, listen: false);
+                  var auth = context.read<AuthService>();
+                  print("pressed");
+                  auth.logIn(username, password);
                   context.go('/list/all');
                 },
               );
             },
           ),
+          GoRoute(
+            name: routeName['/register'],
+            path: '/register',
+            builder: (context, state) => const RegisterPage(),
+          ),
           ShellRoute(
             builder: (context, state, child) {
-              return HomePage(
+              return Shell(
                 selectedIndex: switch (state.uri.path) {
                   var p when p.startsWith('/list') => 0,
                   var p when p.startsWith('/schedule') => 1,

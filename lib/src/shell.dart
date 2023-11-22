@@ -6,8 +6,8 @@ import 'package:lettutor/src/models/topic.dart';
 
 import 'models/tutor.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({
+class Shell extends StatefulWidget {
+  const Shell({
     super.key,
     required this.child,
     required this.selectedIndex,
@@ -17,10 +17,10 @@ class HomePage extends StatefulWidget {
   final int selectedIndex;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Shell> createState() => _ShellState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ShellState extends State<Shell> {
   int pageIndex = 0;
   List<Lesson> lessons = [
     Lesson(
