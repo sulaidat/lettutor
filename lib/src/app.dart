@@ -4,7 +4,9 @@ import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/src/courses_page/courses_page.dart';
+import 'package:lettutor/src/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/login_page/register_page.dart';
+import 'package:lettutor/src/login_page/reset_password_page.dart';
 import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/shell.dart';
 import 'package:lettutor/src/login_page/login_page.dart';
@@ -239,12 +241,13 @@ class _MyAppState extends State<MyApp> {
         redirect: (context, state) {
           var auth = AuthService();
           var path = state.uri.path;
-          print(path);
+          print('Current path: $path');
           if (auth.isLoggedIn) {
             return null;
-          } else if (path.contains('/login') ||
-              path.contains('/register') ||
-              path.contains('/forgot_password')) {
+          } else if (path.contains('login') ||
+              path.contains('register') ||
+              path.contains('forgot_password') ||
+              path.contains('reset_password')) {
             return path;
           }
           return '/login';
@@ -253,22 +256,22 @@ class _MyAppState extends State<MyApp> {
           GoRoute(
             name: routeName['/login'],
             path: '/login',
-            builder: (context, state) {
-              return LoginPage(
-                onLogIn: (username, password) {
-                  // var auth = Provider.of<AuthService>(context, listen: false);
-                  var auth = context.read<AuthService>();
-                  print("pressed");
-                  auth.logIn(username, password);
-                  context.go('/list/all');
-                },
-              );
-            },
+            builder: (context, state) => const LoginPage(),
           ),
           GoRoute(
             name: routeName['/register'],
             path: '/register',
             builder: (context, state) => const RegisterPage(),
+          ),
+          GoRoute(
+            name: routeName['/forgot_password'],
+            path: '/forgot_password',
+            builder: (context, state) => const ForgotPasswordPage(),
+          ),
+          GoRoute(
+            name: routeName['/reset_password'],
+            path: '/reset_password',
+            builder: (context, state) => const ResetPasswordPage(),
           ),
           ShellRoute(
             builder: (context, state, child) {

@@ -7,17 +7,20 @@ class ProTextFormField extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.model,
+    this.readOnly = false,
   });
 
   final Icon icon;
   final String label;
   final UsernameFieldModel model;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: TextFormField(
+        readOnly: readOnly,
         decoration: InputDecoration(
           prefixIcon: icon,
           labelText: label,

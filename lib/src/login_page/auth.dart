@@ -8,6 +8,7 @@ class AuthService extends ChangeNotifier {
   bool _isLoggedIn = false;
   Map<String, String> _users = {};
   bool onLogin = false;
+  bool onReset = false;
 
   // Singleton instance
   static final AuthService _instance = AuthService._internal();
@@ -21,10 +22,6 @@ class AuthService extends ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
 
   bool userExists(String username) {
-    return _users.containsKey(username);
-  }
-
-  bool userExistsForLogin(String username) {
     return _users.containsKey(username);
   }
 
@@ -52,4 +49,18 @@ class AuthService extends ChangeNotifier {
     _users[username] = hashedPassword;
     notifyListeners();
   }
+
+  void changePassword(String username, String password) {
+    // Validate password
+    // ...
+
+    String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+    _users[username] = hashedPassword;
+    notifyListeners();
+  }
+
+  void sendPasswordResetEmail(String email) {
+    // Send email
+    // ...
+  } 
 }

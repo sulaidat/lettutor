@@ -27,3 +27,28 @@ class PasswordFieldModel {
     };
   }
 }
+
+class ConfirmPasswordFieldModel{
+  TextEditingController? controller;
+  String? Function(String?)? validator;
+
+  static final ConfirmPasswordFieldModel _instance =
+      ConfirmPasswordFieldModel._internal();
+
+  factory ConfirmPasswordFieldModel() {
+    return _instance;
+  }
+
+  ConfirmPasswordFieldModel._internal() {
+    controller = TextEditingController();
+    validator = (value) {
+      if (value == null || value.isEmpty) {
+        return 'Please confirm your password';
+      }
+      if (value != PasswordFieldModel().controller!.value.text) {
+        return 'Passwords do not match';
+      }
+      return null;
+    };
+  }
+}

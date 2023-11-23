@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/login_page/password_field_model.dart';
+import 'package:lettutor/src/login_page/pro_confirm_password_form_field.dart';
 import 'package:lettutor/src/login_page/username_field_model.dart';
+import 'package:lettutor/src/routes.dart';
 
 import 'pro_password_form_field.dart';
 import 'pro_text_form_field.dart';
@@ -20,9 +22,11 @@ class _RegisterPageState extends State<RegisterPage> {
     final theme = Theme.of(context);
     final usernameModel = UsernameFieldModel();
     final passwordModel = PasswordFieldModel();
+    final confirmPasswordModel = ConfirmPasswordFieldModel();
     final formKey = GlobalKey<FormState>();
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             Image.asset(
@@ -52,16 +56,17 @@ class _RegisterPageState extends State<RegisterPage> {
                       icon: Icon(Icons.key),
                       model: passwordModel,
                     ),
-                    ProPasswordFormField(
+                    ProConfirmPasswordFormField(
                       label: "Confirm password",
                       icon: Icon(Icons.key),
-                      model: passwordModel,
+                      model: confirmPasswordModel,
                     ),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          print("RegisterPage::TextButton pressed");
+                          print("RegisterPage->forgot password button pressed");
+                          context.push('/forgot_password');
                         },
                         child: Text(
                           "Forgot password?",

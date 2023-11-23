@@ -22,8 +22,9 @@ class UsernameFieldModel {
         return 'Please enter a valid email address';
       }
       var auth = AuthService();
+      if (auth.onReset) return null;
       if (auth.onLogin) {
-        if (auth.userExistsForLogin(value)) {
+        if (auth.userExists(value)) {
           return null;
         } else {
           return 'This email is not registered';
@@ -31,9 +32,10 @@ class UsernameFieldModel {
       } else {
         if (auth.userExists(value)) {
           return 'This email is already registered';
+        } else {
+          return null;
         }
       }
-      return null;
     };
   }
 }

@@ -5,12 +5,10 @@ import 'package:lettutor/src/login_page/password_field_model.dart';
 import 'package:lettutor/src/login_page/pro_password_form_field.dart';
 import 'package:lettutor/src/login_page/pro_text_form_field.dart';
 import 'package:lettutor/src/login_page/username_field_model.dart';
+import 'package:lettutor/src/routes.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.onLogIn});
-
-  // final Function(Account) onLogIn;
-  final Function(String, String) onLogIn;
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -58,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          print("LoginPage::TextButton pressed");
+                          print("Forgot password button pressed");
+                          context.push('/forgot_password');
                         },
                         child: Text(
                           "Forgot password?",
