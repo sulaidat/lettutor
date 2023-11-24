@@ -27,7 +27,7 @@ class _TutorListPageState extends State<TutorListPage> {
   Widget _buildTutorCard(BuildContext context, int index) {
     ThemeData theme = Theme.of(context);
     final tutorList = context.read<TutorList>();
-    final tutor = tutorList.tutors[index];
+    final tutor = tutorList.displayedTutors[index];
     bool isFavorite = false;
     if (tutorList.favorites.contains(index.toString())) isFavorite = true;
 
@@ -128,12 +128,15 @@ class _TutorListPageState extends State<TutorListPage> {
     );
   }
 
+  var key = UniqueKey();
+
   Widget _buildEndDrawer() {
     if (!mounted) return Container();
     final nameController = TextEditingController();
     final tutorInfo = context.read<TutorInfo>();
     final searchFilter = context.read<SearchFilter>();
     return Drawer(
+      key: key,
       width: MediaQuery.of(context).size.width * .85,
       child: SafeArea(
         child: SingleChildScrollView(
@@ -147,6 +150,7 @@ class _TutorListPageState extends State<TutorListPage> {
                   Divider(),
                   vpad(10),
                   Heading2(text: "Name"),
+                  // TODO: Implement auto complete
                   TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
@@ -156,17 +160,19 @@ class _TutorListPageState extends State<TutorListPage> {
                   vpad(10),
                   Heading2(text: "Nationality"),
                   ProFilterChip(
-                    allCat: tutorInfo.availNationalities.toList(),
-                    hook: (value) {
-                      searchFilter.nationalities = value;
+                    all: tutorInfo.availNationalities.toList(),
+                    selected: searchFilter.nationalities.toList(),
+                    hook: (selected) {
+                      searchFilter.nationalities = selected;
                     },
                   ),
                   vpad(10),
                   Heading2(text: "Specialties"),
                   ProFilterChip(
-                    allCat: tutorInfo.availSpecialities.toList(),
-                    hook: (value) {
-                      searchFilter.specialties = value;
+                    all: tutorInfo.availSpecialities.toList(),
+                    selected: searchFilter.specialties.toList(),
+                    hook: (selected) {
+                      searchFilter.specialties = selected;
                     },
                   ),
                   vpad(30),
@@ -176,10 +182,11 @@ class _TutorListPageState extends State<TutorListPage> {
                       OutlinedNegButton(
                         label: "Reset",
                         onPressed: () {
+                          searchFilter.nationalities.clear();
+                          searchFilter.specialties.clear();
+                          nameController.clear();
                           setState(() {
-                            searchFilter.nationalities.clear();
-                            searchFilter.specialties.clear();
-                            nameController.clear();
+                            key = UniqueKey();
                           });
                         },
                       ),
@@ -187,10 +194,25 @@ class _TutorListPageState extends State<TutorListPage> {
                         label: "Confirm",
                         icon: Icon(Icons.search),
                         onPressed: () {
+                          final tutorList = context.read<TutorList>();
+                          tutorList.displayedTutors = tutorList.tutors;
                           name = nameController.text;
                           print(name);
                           print(searchFilter.nationalities);
                           print(searchFilter.specialties);
+                          if (name != "") {
+                            tutorList.filterByName(name);
+                          }
+                          if (searchFilter.nationalities.isNotEmpty) {
+                            tutorList.filtelByNationalities(
+                                searchFilter.nationalities.toList());
+                          }
+                          if (searchFilter.specialties.isNotEmpty) {
+                            tutorList.filterBySpecialty(
+                                searchFilter.specialties.toList());
+                          }
+                          setState(() {});
+                          scaffoldKey.currentState?.closeEndDrawer();
                         },
                       ),
                     ],
@@ -208,7 +230,6 @@ class _TutorListPageState extends State<TutorListPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tutorList = context.read<TutorList>();
-    print(tutorList.tutors?.length ?? 0);
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -267,7 +288,8 @@ class _TutorListPageState extends State<TutorListPage> {
                         return _buildTutorCard(context, index);
                       },
                       shrinkWrap: true,
-                      itemCount: tutorList.tutors.length ?? 0,
+                      itemCount:
+                          context.read<TutorList>().displayedTutors.length,
                       physics: NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) => vpad(10),
                     ),
@@ -284,9 +306,14 @@ class _TutorListPageState extends State<TutorListPage> {
 
 // TODO : Make a three-state filter chip
 class ProFilterChip extends StatefulWidget {
-  const ProFilterChip({super.key, required this.allCat, required this.hook});
+  const ProFilterChip(
+      {super.key,
+      required this.all,
+      required this.selected,
+      required this.hook});
 
-  final List<String> allCat;
+  final List<String> all;
+  final List<String> selected;
   final ValueChanged<Set<String>> hook;
 
   @override
@@ -295,6 +322,11 @@ class ProFilterChip extends StatefulWidget {
 
 class _ProFilterChipState extends State<ProFilterChip> {
   Set<String> filter = {};
+  @override
+  void initState() {
+    super.initState();
+    filter = widget.selected.toSet();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -304,7 +336,9 @@ class _ProFilterChipState extends State<ProFilterChip> {
       child: Wrap(
         spacing: 0,
         runSpacing: 0,
-        children: widget.allCat.map((e) {
+        children: widget.all.map((e) {
+          // print(filter);
+          // print(e);
           bool isSelected = filter.contains(e);
           return FilterChip(
             label: Text(
@@ -318,6 +352,7 @@ class _ProFilterChipState extends State<ProFilterChip> {
             ),
             selected: isSelected,
             onSelected: (bool value) {
+              print(value);
               setState(() {
                 if (value) {
                   filter.add(e);

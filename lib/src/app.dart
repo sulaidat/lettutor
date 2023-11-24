@@ -32,27 +32,32 @@ import 'package:provider/provider.dart';
 
 List<Lesson> lessons = [
   Lesson(
-      tutor: Tutor(id: "1", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(
+          id: "1", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(id: "2", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(
+          id: "2", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(id: "3", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(
+          id: "3", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(id: "4", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(
+          id: "4", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(id: "5", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(
+          id: "5", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
@@ -189,8 +194,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  TutorList tutorList = TutorList();
+  TutorInfo tutorInfo = TutorInfo();
+
+  void initData() {
+    tutorList.tutors = tutors;
+    tutorList.displayedTutors = tutors;
+    tutorInfo.availNationalities = tutorList.getNationalities();
+    tutorInfo.availSpecialities = tutorList.getSpecialties();
+    print(tutorInfo.availNationalities);
+    print(tutorInfo.availSpecialities);
+  }
+
   @override
   Widget build(BuildContext context) {
+    initData();
+
     return MaterialApp.router(
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
@@ -237,11 +256,7 @@ class _MyAppState extends State<MyApp> {
             builder: (context, state, child) {
               return MultiProvider(
                 providers: [
-                  ChangeNotifierProvider(create: (_) {
-                    TutorList tutorList = TutorList();
-                    tutorList.tutors = tutors;
-                    return tutorList;
-                  }),
+                  ChangeNotifierProvider.value(value: tutorList),
                 ],
                 child: Shell(
                   selectedIndex: switch (state.uri.path) {
@@ -260,15 +275,7 @@ class _MyAppState extends State<MyApp> {
                 path: '/list/all',
                 builder: (context, state) => MultiProvider(
                   providers: [
-                    ChangeNotifierProvider(create: (_) {
-                      TutorInfo tutorInfo = TutorInfo();
-                      tutorInfo.availNationalities =
-                          properSpit("Vietnamese, English").toSet();
-                      tutorInfo.availSpecialities = properSpit(
-                              "All, Reversing, Pwn, Web, Cryptography, Forensics")
-                          .toSet();
-                      return tutorInfo;
-                    }),
+                    ChangeNotifierProvider.value(value: tutorInfo),
                     ChangeNotifierProvider(create: (_) => SearchFilter())
                   ],
                   child: const TutorListPage(),

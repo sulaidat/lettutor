@@ -7,6 +7,7 @@ class Tutor with ChangeNotifier {
   String? introVideoUrl;
   String? bio;
   String? country;
+  String? nationality;
   Set<String>? specialties;
   Set<String>? languages;
 
@@ -17,6 +18,7 @@ class Tutor with ChangeNotifier {
     this.introVideoUrl,
     this.bio,
     this.country,
+    this.nationality,
     this.specialties,
     this.languages,
   });

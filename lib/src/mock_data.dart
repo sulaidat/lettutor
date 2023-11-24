@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:lettutor/src/models/tutor.dart';
+import 'package:lettutor/src/models/tutor_list.dart';
 
 List<String> firstNames = [
   'John',
@@ -60,18 +61,19 @@ List<String> countries = [
   'Laos',
   'Brunei'
 ];
-List<String> nationalities = [
-  'Singaporean',
-  'Malaysian',
-  'Indonesian',
-  'Thai',
-  'Vietnamese',
-  'Filipino',
-  'Myanmar',
-  'Cambodian',
-  'Laotian',
-  'Bruneian'
-];
+Map<String, String> nationalities = {
+  'Singapore': 'Singaporean',
+  'Malaysia': 'Malaysian',
+  'Indonesia': 'Indonesian',
+  'Thailand': 'Thai',
+  'Vietnam': 'Vietnamese',
+  'Philippines': 'Filipino',
+  'Myanmar': 'Myanmar',
+  'Cambodia': 'Cambodian',
+  'Laos': 'Laotian',
+  'Brunei': 'Bruneian'
+};
+
 List<String> specialties = [
   'Mathematics',
   'Physics',
@@ -83,6 +85,19 @@ List<String> specialties = [
   'Tamil',
   'History',
   'Geography'
+];
+
+List<String> languages = [
+  'English',
+  'Chinese',
+  'Malay',
+  'Tamil',
+  'Spanish',
+  'French',
+  'German',
+  'Japanese',
+  'Korean',
+  'Hindi'
 ];
 
 String randomName() {
@@ -104,23 +119,21 @@ String randomCountry() {
   return countries[Random().nextInt(1000) % countries.length];
 }
 
-String randomNationality() {
-  return nationalities[Random().nextInt(1000) % nationalities.length];
-}
-
 int maxSpecialties = 5;
 int maxLanguages = 3;
 
-List<Tutor> tutors = List.generate(10, (index) {
+List<Tutor> tutors = List.generate(20, (index) {
+  var country = randomCountry();
   return Tutor(
     id: index.toString(),
     name: randomName(),
     imageUrl: randomImageUrl(),
     bio: randomBio(),
-    country: randomCountry(),
+    country: country,
+    nationality: nationalities[country],
     specialties: Set.from(specialties.getRange(
-        0, Random().nextInt(maxSpecialties) % specialties.length)),
-    languages: Set.from(nationalities.getRange(
-        0, Random().nextInt(maxLanguages) % nationalities.length)),
+        0, 1 + Random().nextInt(maxSpecialties - 1) % specialties.length)),
+    languages: Set.from(languages.getRange(
+        0, 1 + Random().nextInt(maxLanguages - 1) % languages.length)),
   );
 });
