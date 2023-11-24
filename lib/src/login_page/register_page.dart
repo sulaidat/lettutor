@@ -4,7 +4,6 @@ import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/login_page/password_field_model.dart';
 import 'package:lettutor/src/login_page/pro_confirm_password_form_field.dart';
 import 'package:lettutor/src/login_page/username_field_model.dart';
-import 'package:lettutor/src/routes.dart';
 
 import 'pro_password_form_field.dart';
 import 'pro_text_form_field.dart';

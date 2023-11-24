@@ -1,6 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/models/search_filter.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lettutor/src/models/tutor_info.dart';
+import 'package:provider/provider.dart';
 
 import '../custom_widgets/pro_chips_from_string.dart';
 import '../helpers/padding.dart';
@@ -10,12 +15,7 @@ import 'upcoming_banner.dart';
 class TutorListPage extends StatefulWidget {
   const TutorListPage({
     super.key,
-    required this.onItemSelect,
-    required this.onJoinMeeting,
   });
-
-  final VoidCallback onItemSelect;
-  final VoidCallback onJoinMeeting;
 
   @override
   State<TutorListPage> createState() => _TutorListPageState();
@@ -70,6 +70,13 @@ class _TutorListPageState extends State<TutorListPage> {
         bio:
             "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
   ];
+
+  String name = "";
+  List<String> availNationality = properSpit("Vietnamese, English");
+  List<String> availSpecialties =
+      properSpit("All, Reversing, Pwn, Web, Cryptography, Forensics");
+  List<String> selectedNationality = [];
+  List<String> selectedSpecialties = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildTutorCard(BuildContext context, int index) {
@@ -79,7 +86,9 @@ class _TutorListPageState extends State<TutorListPage> {
     if (_favoriteIdx.contains(index)) isFavorite = true;
 
     return GestureDetector(
-      onTap: widget.onItemSelect,
+      onTap: () {
+        context.push('/list/0');
+      },
       child: Container(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: BoxDecoration(
@@ -154,9 +163,13 @@ class _TutorListPageState extends State<TutorListPage> {
               ],
             ),
             vpad(5),
-            ProChipsFromString(
-              string:
-                  "a, aa, aaa, aaaa, aa aa, aaaaaaa, , verylonggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+            ProChipsFromList(
+              all: properSpit(
+                  "a, aa, aaa, aaaa, aa aa, aaaaaaa, , verylonggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"),
+              selected: [],
+              onSelect: (_) {},
+              onUnselect: (_) {},
+              disabled: true,
             ),
             vpad(5),
             Align(
@@ -175,91 +188,73 @@ class _TutorListPageState extends State<TutorListPage> {
   }
 
   Widget _buildEndDrawer() {
-    final theme = Theme.of(context);
+    final nameController = TextEditingController();
+    final tutorInfo = context.read<TutorInfo>();
+    final searchFilter = context.read<SearchFilter>();
     return Drawer(
       width: MediaQuery.of(context).size.width * .85,
       child: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                vpad(20),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Filter",
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+            child: Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Heading1(text: "Filter"),
+                  Divider(),
+                  vpad(10),
+                  Heading2(text: "Name"),
+                  TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter tutor name',
                     ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Name",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                TextFormField(
-                  // controller: controller,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    hintText: 'Enter tutor name',
-                    // contentPadding:
-                    // EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
                   ),
-                ),
-                vpad(10),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Nationality",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  vpad(10),
+                  Heading2(text: "Nationality"),
+                  ProFilterChip(
+                    allCat: tutorInfo.availNationalities.toList(),
+                    hook: (value) {
+                      searchFilter.nationalities = value;
+                    },
+                  ),
+                  vpad(10),
+                  Heading2(text: "Specialties"),
+                  ProFilterChip(
+                    allCat: tutorInfo.availSpecialities.toList(),
+                    hook: (value) {
+                      searchFilter.specialties = value;
+                    },
+                  ),
+                  vpad(30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      OutlinedNegButton(
+                        label: "Reset",
+                        onPressed: () {
+                          setState(() {
+                            searchFilter.nationalities.clear();
+                            searchFilter.specialties.clear();
+                            nameController.clear();
+                          });
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                ProChipsFromString(string: "Vietnamese, English"),
-                vpad(10),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Specialities",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      FilledPosButton(
+                        label: "Confirm",
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          name = nameController.text;
+                          print(name);
+                          print(searchFilter.nationalities);
+                          print(searchFilter.specialties);
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                ProChipsFromString(
-                    string:
-                        "All, Reversing, Pwn, Web, Cryptography, Forensics"),
-                vpad(10),
-                Divider(),
-                vpad(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ProNegButton(label: "Reset"),
-                    ProPosButton(
-                      label: "Confirm",
-                      icon: Icon(Icons.search),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -291,7 +286,9 @@ class _TutorListPageState extends State<TutorListPage> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    UpcomingBanner(onJoin: widget.onJoinMeeting),
+                    UpcomingBanner(onJoin: () {
+                      context.push('/meet/wait');
+                    }),
                     vpad(10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -341,6 +338,65 @@ class _TutorListPageState extends State<TutorListPage> {
   }
 }
 
+// TODO : Make a three-state filter chip
+class ProFilterChip extends StatefulWidget {
+  const ProFilterChip({super.key, required this.allCat, required this.hook});
+
+  final List<String> allCat;
+  final ValueChanged<Set<String>> hook;
+
+  @override
+  State<ProFilterChip> createState() => _ProFilterChipState();
+}
+
+class _ProFilterChipState extends State<ProFilterChip> {
+  Set<String> filter = {};
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Wrap(
+        spacing: 0,
+        runSpacing: 0,
+        children: widget.allCat.map((e) {
+          bool isSelected = filter.contains(e);
+          return FilterChip(
+            label: Text(
+              e,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected
+                    ? theme.colorScheme.onPrimary // Updated label color
+                    : theme.colorScheme.onSecondaryContainer,
+              ),
+            ),
+            selected: isSelected,
+            onSelected: (bool value) {
+              setState(() {
+                if (value) {
+                  filter.add(e);
+                } else {
+                  filter.remove(e);
+                }
+              });
+              widget.hook(filter);
+            },
+            side: BorderSide.none,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(200),
+            ),
+            visualDensity: VisualDensity.compact,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            selectedColor: Theme.of(context).colorScheme.primary,
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
 class ToggleIcon extends StatelessWidget {
   const ToggleIcon({
     super.key,
@@ -369,30 +425,6 @@ class ToggleIcon extends StatelessWidget {
   }
 }
 
-class ProPosButton extends StatelessWidget {
-  const ProPosButton({
-    super.key,
-    required this.label,
-    this.icon,
-  });
-
-  final String label;
-  final Icon? icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: () {},
-      child: Row(
-        children: [
-          icon ?? SizedBox.shrink(),
-          Text(label),
-        ],
-      ),
-    );
-  }
-}
-
 class ProNegButton extends StatelessWidget {
   const ProNegButton({super.key, required this.label, this.icon});
   final String label;
@@ -411,4 +443,124 @@ class ProNegButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class FilledPosButton extends StatelessWidget {
+  const FilledPosButton({
+    Key? key,
+    required this.label,
+    this.icon,
+    this.onPressed,
+  }) : super(key: key);
+
+  final String label;
+  final Icon? icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: onPressed,
+      child: Row(
+        children: [
+          icon ?? SizedBox.shrink(),
+          Text(label),
+        ],
+      ),
+    );
+  }
+}
+
+class OutlinedNegButton extends StatelessWidget {
+  const OutlinedNegButton({
+    Key? key,
+    required this.label,
+    this.icon,
+    this.onPressed,
+  }) : super(key: key);
+
+  final String label;
+  final Icon? icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: Colors.red),
+      ),
+      child: Row(
+        children: [
+          icon ?? SizedBox.shrink(),
+          Text(
+            label,
+            style: TextStyle(color: Colors.red),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Heading1 extends StatelessWidget {
+  final String text;
+
+  const Heading1({Key? key, required this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class Heading2 extends StatelessWidget {
+  final String text;
+
+  const Heading2({Key? key, required this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class Heading3 extends StatelessWidget {
+  final String text;
+
+  const Heading3({Key? key, required this.text}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+List<String> properSpit(String s) {
+  List<String> list = [];
+  var arr = s.split(',');
+  for (var element in arr) {
+    if (element.trim() != "") {
+      list.add(element.trim());
+    }
+  }
+  return list;
 }

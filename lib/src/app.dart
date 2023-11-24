@@ -7,6 +7,8 @@ import 'package:lettutor/src/courses_page/courses_page.dart';
 import 'package:lettutor/src/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/login_page/register_page.dart';
 import 'package:lettutor/src/login_page/reset_password_page.dart';
+import 'package:lettutor/src/models/search_filter.dart';
+import 'package:lettutor/src/models/tutor_info.dart';
 import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/shell.dart';
 import 'package:lettutor/src/login_page/login_page.dart';
@@ -238,20 +240,21 @@ class _MyAppState extends State<MyApp> {
       routerConfig: GoRouter(
         debugLogDiagnostics: true,
         initialLocation: '/list/all',
-        redirect: (context, state) {
-          var auth = AuthService();
-          var path = state.uri.path;
-          print('Current path: $path');
-          if (auth.isLoggedIn) {
-            return null;
-          } else if (path.contains('login') ||
-              path.contains('register') ||
-              path.contains('forgot_password') ||
-              path.contains('reset_password')) {
-            return path;
-          }
-          return '/login';
-        },
+        // TODO Remember to uncomment this
+        // redirect: (context, state) {
+        //   var auth = AuthService();
+        //   var path = state.uri.path;
+        //   print('Current path: $path');
+        //   if (auth.isLoggedIn) {
+        //     return null;
+        //   } else if (path.contains('login') ||
+        //       path.contains('register') ||
+        //       path.contains('forgot_password') ||
+        //       path.contains('reset_password')) {
+        //     return path;
+        //   }
+        //   return '/login';
+        // },
         routes: [
           GoRoute(
             name: routeName['/login'],
@@ -287,21 +290,23 @@ class _MyAppState extends State<MyApp> {
             },
             routes: [
               GoRoute(
-                name: 'list all',
+                name: routeName['/list/all'],
                 path: '/list/all',
-                builder: (context, state) {
-                  return TutorListPage(
-                    onItemSelect: () {
-                      // TODO
-                      GoRouter.of(context).push('/list/0');
-                    },
-                    onJoinMeeting: () {
-                      // TODO
-                      print("what's wrong?");
-                      GoRouter.of(context).push('/meet/wait');
-                    },
-                  );
-                },
+                builder: (context, state) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(create: (_) {
+                      TutorInfo tutorInfo = TutorInfo();
+                      tutorInfo.availNationalities =
+                          properSpit("Vietnamese, English").toSet();
+                      tutorInfo.availSpecialities = properSpit(
+                              "All, Reversing, Pwn, Web, Cryptography, Forensics")
+                          .toSet();
+                      return tutorInfo;
+                    }),
+                    ChangeNotifierProvider(create: (_) => SearchFilter())
+                  ],
+                  child: const TutorListPage(),
+                ),
               ),
               GoRoute(
                 name: 'tutor details',

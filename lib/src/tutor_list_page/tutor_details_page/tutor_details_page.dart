@@ -8,7 +8,7 @@ import '../../helpers/padding.dart';
 import 'tutor_card_minimal.dart';
 
 class TutorDetailsPage extends StatefulWidget {
-  const  TutorDetailsPage({
+  const TutorDetailsPage({
     super.key,
     required this.tutor,
     required this.onReviews,
@@ -146,10 +146,19 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                           Text(""
                               "Reiciendis blanditiis sunt non. Porro rem voluptatem eum. Perspiciatis blanditiis enim at at suscipit doloremque a."),
                           ProHeading1(text: "Languages"),
-                          ProChipsFromString(string: "English, Vietnamese"),
+                          ProChipsFromList(
+                            all: ["English", "Vietnamese"],
+                            selected: [],
+                            onSelect: (_) {},
+                            onUnselect: (_) {},
+                          ),
                           ProHeading1(text: "Specialities"),
-                          ProChipsFromString(
-                              string: "Pwn, Re, Crypto, Web, Forensics"),
+                          ProChipsFromList(
+                            all: ["Pwn", "Re", "Crypto", "Web", "Forensics"],
+                            selected: [],
+                            onSelect: (_) {},
+                            onUnselect: (_) {},
+                          ),
                           ProHeading1(text: "Introduction"),
                           // VideoApp(),
                           ProHeading1(text: "Suggested Courses"),
