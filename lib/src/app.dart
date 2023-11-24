@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/login_page/auth.dart';
@@ -7,8 +9,10 @@ import 'package:lettutor/src/courses_page/courses_page.dart';
 import 'package:lettutor/src/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/login_page/register_page.dart';
 import 'package:lettutor/src/login_page/reset_password_page.dart';
+import 'package:lettutor/src/mock_data.dart';
 import 'package:lettutor/src/models/search_filter.dart';
 import 'package:lettutor/src/models/tutor_info.dart';
+import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/shell.dart';
 import 'package:lettutor/src/login_page/login_page.dart';
@@ -28,27 +32,27 @@ import 'package:provider/provider.dart';
 
 List<Lesson> lessons = [
   Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(id: "1", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(id: "2", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(id: "3", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(id: "4", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
   Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+      tutor: Tutor(id: "5", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
       date: "Tue, 24 Oct, 23",
       start: "00:00",
       end: "00:30"),
@@ -169,53 +173,6 @@ List<Course> courses = [
         Topic(name: "Shopping Habits"),
       ]),
 ];
-List<Tutor> tutors = [
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Hanna Graham",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Gretchen Orn",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Marvin McClure",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Demarco Purdy",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Paris Bernier",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Katelin Tromp",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Linnie Stehr",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Abdullah Hills",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Torey Watsica",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-];
 
 class AppRoutes {
   static const tutorList = '/list';
@@ -240,7 +197,7 @@ class _MyAppState extends State<MyApp> {
       routerConfig: GoRouter(
         debugLogDiagnostics: true,
         initialLocation: '/list/all',
-        // TODO Remember to uncomment this
+        // TODO : IMPORTATNT Remember to uncomment this
         // redirect: (context, state) {
         //   var auth = AuthService();
         //   var path = state.uri.path;
@@ -278,14 +235,23 @@ class _MyAppState extends State<MyApp> {
           ),
           ShellRoute(
             builder: (context, state, child) {
-              return Shell(
-                selectedIndex: switch (state.uri.path) {
-                  var p when p.startsWith('/list') => 0,
-                  var p when p.startsWith('/schedule') => 1,
-                  var p when p.startsWith('/courses') => 2,
-                  _ => 0,
-                },
-                child: child,
+              return MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(create: (_) {
+                    TutorList tutorList = TutorList();
+                    tutorList.tutors = tutors;
+                    return tutorList;
+                  }),
+                ],
+                child: Shell(
+                  selectedIndex: switch (state.uri.path) {
+                    var p when p.startsWith('/list') => 0,
+                    var p when p.startsWith('/schedule') => 1,
+                    var p when p.startsWith('/courses') => 2,
+                    _ => 0,
+                  },
+                  child: child,
+                ),
               );
             },
             routes: [

@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/models/search_filter.dart';
-import 'package:lettutor/src/models/tutor.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lettutor/src/models/tutor_info.dart';
+import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:provider/provider.dart';
 
 import '../custom_widgets/pro_chips_from_string.dart';
@@ -22,68 +21,15 @@ class TutorListPage extends StatefulWidget {
 }
 
 class _TutorListPageState extends State<TutorListPage> {
-  List<int> _favoriteIdx = [];
-  List<Tutor> _tutors = [
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Hanna Graham",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Gretchen Orn",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Marvin McClure",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Demarco Purdy",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Paris Bernier",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Katelin Tromp",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Linnie Stehr",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Abdullah Hills",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Torey Watsica",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  ];
-
   String name = "";
-  List<String> availNationality = properSpit("Vietnamese, English");
-  List<String> availSpecialties =
-      properSpit("All, Reversing, Pwn, Web, Cryptography, Forensics");
-  List<String> selectedNationality = [];
-  List<String> selectedSpecialties = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildTutorCard(BuildContext context, int index) {
     ThemeData theme = Theme.of(context);
-    Tutor tutor = _tutors[index];
+    final tutorList = context.read<TutorList>();
+    final tutor = tutorList.tutors[index];
     bool isFavorite = false;
-    if (_favoriteIdx.contains(index)) isFavorite = true;
+    if (tutorList.favorites.contains(index.toString())) isFavorite = true;
 
     return GestureDetector(
       onTap: () {
@@ -108,7 +54,7 @@ class _TutorListPageState extends State<TutorListPage> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(999),
-                  child: Image.asset(
+                  child: Image.network(
                     "${tutor.imageUrl}",
                     width: 70,
                     height: 70,
@@ -131,7 +77,7 @@ class _TutorListPageState extends State<TutorListPage> {
                       Row(
                         children: [
                           Icon(Icons.flag),
-                          Text("Vietnam"),
+                          Text("${tutor.country}"),
                         ],
                       ),
                       RatingBarIndicator(
@@ -151,9 +97,9 @@ class _TutorListPageState extends State<TutorListPage> {
                   onPressed: () {
                     setState(() {
                       if (isFavorite) {
-                        _favoriteIdx.remove(index);
+                        tutorList.removeFromFavorites(index.toString());
                       } else {
-                        _favoriteIdx.add(index);
+                        tutorList.addToFavorites(index.toString());
                       }
                       isFavorite = !isFavorite;
                     });
@@ -164,12 +110,7 @@ class _TutorListPageState extends State<TutorListPage> {
             ),
             vpad(5),
             ProChipsFromList(
-              all: properSpit(
-                  "a, aa, aaa, aaaa, aa aa, aaaaaaa, , verylonggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"),
-              selected: [],
-              onSelect: (_) {},
-              onUnselect: (_) {},
-              disabled: true,
+              list: tutor.specialties!.toList(),
             ),
             vpad(5),
             Align(
@@ -188,6 +129,7 @@ class _TutorListPageState extends State<TutorListPage> {
   }
 
   Widget _buildEndDrawer() {
+    if (!mounted) return Container();
     final nameController = TextEditingController();
     final tutorInfo = context.read<TutorInfo>();
     final searchFilter = context.read<SearchFilter>();
@@ -265,6 +207,8 @@ class _TutorListPageState extends State<TutorListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tutorList = context.read<TutorList>();
+    print(tutorList.tutors?.length ?? 0);
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -323,7 +267,7 @@ class _TutorListPageState extends State<TutorListPage> {
                         return _buildTutorCard(context, index);
                       },
                       shrinkWrap: true,
-                      itemCount: _tutors.length,
+                      itemCount: tutorList.tutors.length ?? 0,
                       physics: NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) => vpad(10),
                     ),

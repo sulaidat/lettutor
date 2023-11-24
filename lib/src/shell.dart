@@ -25,31 +25,31 @@ class _ShellState extends State<Shell> {
   List<Lesson> lessons = [
     Lesson(
         tutor:
-            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+            Tutor(id: '0', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
     Lesson(
         tutor:
-            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+            Tutor(id: '1', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
     Lesson(
         tutor:
-            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+            Tutor(id: '2', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
     Lesson(
         tutor:
-            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+            Tutor(id: '3', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
     Lesson(
         tutor:
-            Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
+            Tutor(id: '4', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
         date: "Tue, 24 Oct, 23",
         start: "00:00",
         end: "00:30"),
