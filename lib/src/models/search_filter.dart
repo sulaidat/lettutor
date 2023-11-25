@@ -4,10 +4,17 @@ class SearchFilter with ChangeNotifier {
   Set<String> _nationalities = {};
   Set<String> _specialties = {};
   String _name = '';
+  String _sort = '';
 
   Set<String> get nationalities => _nationalities;
   Set<String> get specialties => _specialties;
   String get name => _name;
+  String get sort => _sort;
+
+  set sort(String value) {
+    _sort = value;
+    notifyListeners();
+  }
 
   set nationalities(Set<String> value) {
     _nationalities = value;

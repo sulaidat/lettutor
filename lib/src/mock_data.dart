@@ -135,5 +135,6 @@ List<Tutor> tutors = List.generate(20, (index) {
         0, 1 + Random().nextInt(maxSpecialties - 1) % specialties.length)),
     languages: Set.from(languages.getRange(
         0, 1 + Random().nextInt(maxLanguages - 1) % languages.length)),
+    rating: Random().nextDouble() * 5,  // TODO: calculate rating from reviews later
   );
 });

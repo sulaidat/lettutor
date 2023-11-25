@@ -29,7 +29,7 @@ class _TutorListPageState extends State<TutorListPage> {
     final tutorList = context.read<TutorList>();
     final tutor = tutorList.displayedTutors[index];
     bool isFavorite = false;
-    if (tutorList.favorites.contains(index.toString())) isFavorite = true;
+    if (tutorList.favorites.contains(tutor.id)) isFavorite = true;
 
     return GestureDetector(
       onTap: () {
@@ -61,10 +61,9 @@ class _TutorListPageState extends State<TutorListPage> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                hpad(10),
+                hpad(5),
                 Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -85,7 +84,7 @@ class _TutorListPageState extends State<TutorListPage> {
                           Icons.star_rounded,
                           color: Colors.amber,
                         ),
-                        rating: 3,
+                        rating: tutor.rating!,
                         unratedColor: Colors.grey,
                         itemCount: 5,
                         itemSize: 20.0,
@@ -97,9 +96,17 @@ class _TutorListPageState extends State<TutorListPage> {
                   onPressed: () {
                     setState(() {
                       if (isFavorite) {
-                        tutorList.removeFromFavorites(index.toString());
+                        tutorList.removeFromFavorites(tutor.id);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Removed from favorites"),
+                          duration: Duration(seconds: 1),
+                        ));
                       } else {
-                        tutorList.addToFavorites(index.toString());
+                        tutorList.addToFavorites(tutor.id);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Added to favorites"),
+                          duration: Duration(seconds: 1),
+                        ));
                       }
                       isFavorite = !isFavorite;
                     });
@@ -132,9 +139,9 @@ class _TutorListPageState extends State<TutorListPage> {
 
   Widget _buildEndDrawer() {
     if (!mounted) return Container();
-    final nameController = TextEditingController();
     final tutorInfo = context.read<TutorInfo>();
     final searchFilter = context.read<SearchFilter>();
+    final nameController = TextEditingController(text: searchFilter.name);
     return Drawer(
       key: key,
       width: MediaQuery.of(context).size.width * .85,
@@ -175,6 +182,16 @@ class _TutorListPageState extends State<TutorListPage> {
                       searchFilter.specialties = selected;
                     },
                   ),
+                  Heading2(text: "Sort"),
+                  ProChoiceChip(
+                    all: {"Favorite", "Rating", "Price"},
+                    selected: searchFilter.sort,
+                    hook: (selected) {
+                      if (selected != null) {
+                        searchFilter.sort = selected;
+                      }
+                    },
+                  ),
                   vpad(30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -196,12 +213,10 @@ class _TutorListPageState extends State<TutorListPage> {
                         onPressed: () {
                           final tutorList = context.read<TutorList>();
                           tutorList.displayedTutors = tutorList.tutors;
-                          name = nameController.text;
-                          print(name);
-                          print(searchFilter.nationalities);
-                          print(searchFilter.specialties);
-                          if (name != "") {
-                            tutorList.filterByName(name);
+                          searchFilter.name = nameController.text;
+                          print(searchFilter);
+                          if (searchFilter.name != "") {
+                            tutorList.filterByName(searchFilter.name);
                           }
                           if (searchFilter.nationalities.isNotEmpty) {
                             tutorList.filtelByNationalities(
@@ -210,6 +225,9 @@ class _TutorListPageState extends State<TutorListPage> {
                           if (searchFilter.specialties.isNotEmpty) {
                             tutorList.filterBySpecialty(
                                 searchFilter.specialties.toList());
+                          }
+                          if (searchFilter.sort != "") {
+                            tutorList.sortBy(searchFilter.sort);
                           }
                           setState(() {});
                           scaffoldKey.currentState?.closeEndDrawer();
@@ -229,7 +247,6 @@ class _TutorListPageState extends State<TutorListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tutorList = context.read<TutorList>();
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -299,6 +316,67 @@ class _TutorListPageState extends State<TutorListPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ProChoiceChip extends StatefulWidget {
+  const ProChoiceChip({super.key, required this.all, required this.selected, required this.hook});
+
+  final Set<String> all;
+  final String selected;
+  final ValueChanged<String?> hook;
+
+  @override
+  State<ProChoiceChip> createState() => _ProChoiceChipState();
+}
+
+class _ProChoiceChipState extends State<ProChoiceChip> {
+  String? choice;
+
+  @override
+  void initState() {
+    super.initState();
+    choice = widget.selected;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Wrap(
+        spacing: 0,
+        runSpacing: 0,
+        children: widget.all.map((e) {
+          bool isSelected = choice == e;
+          return ChoiceChip(
+            label: Text(
+              e,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected
+                    ? theme.colorScheme.onPrimary // Updated label color
+                    : theme.colorScheme.onSecondaryContainer,
+              ),
+            ),
+            selected: choice == e,
+            onSelected: (bool selected) {
+              setState(() {
+                choice = selected ? e : null;
+              });
+              widget.hook(choice);
+            },
+            side: BorderSide.none,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(200),
+            ),
+            visualDensity: VisualDensity.compact,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            selectedColor: Theme.of(context).colorScheme.primary,
+          );
+        }).toList(),
       ),
     );
   }

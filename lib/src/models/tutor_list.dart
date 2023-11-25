@@ -68,4 +68,43 @@ class TutorList extends ChangeNotifier {
     }
     return nationalities;
   }
+
+  void sortByFavorite() {
+    displayedTutors.sort((a, b) {
+      if (favorites.contains(a.id) && !favorites.contains(b.id)) {
+        return -1;
+      } else if (!favorites.contains(a.id) && favorites.contains(b.id)) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    print("Favorites: $favorites");
+    print("Display: ${displayedTutors.map((e) => e.id)}");
+  }
+
+  void sortByRating() {
+    displayedTutors.sort((a, b) {
+      if (a.rating! > b.rating!) {
+        return -1;
+      } else if (a.rating! < b.rating!) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  void sortBy(String sort) {
+    switch (sort) {
+      case 'Favorite':
+        sortByFavorite();
+        break;
+      case 'Rating':
+        sortByRating();
+        break;
+      default:
+        break;
+    }
+  }
 }

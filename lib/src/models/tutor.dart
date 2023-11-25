@@ -10,6 +10,7 @@ class Tutor with ChangeNotifier {
   String? nationality;
   Set<String>? specialties;
   Set<String>? languages;
+  double? rating;
 
   Tutor({
     required this.id,
@@ -21,6 +22,7 @@ class Tutor with ChangeNotifier {
     this.nationality,
     this.specialties,
     this.languages,
+    this.rating,
   });
 
   void updateName(String newName) {
