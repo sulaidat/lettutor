@@ -4,5 +4,5 @@ final routeName = {
   '/forgot_password': 'forgot_password',
   '/reset_password': 'reset_password',
   '/home': 'home',
-  '/list/all': 'list_all',
+  '/tutor/all': 'tutor_all',
 };

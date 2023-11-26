@@ -16,8 +16,8 @@ import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/shell.dart';
 import 'package:lettutor/src/login_page/login_page.dart';
-import 'package:lettutor/src/meeting_room/meeting_room.dart';
-import 'package:lettutor/src/meeting_room/waiting_room.dart';
+import 'package:lettutor/src/login_page/meeting_room/meeting_room.dart';
+import 'package:lettutor/src/login_page/meeting_room/waiting_room.dart';
 import 'package:lettutor/src/models/course.dart';
 import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/topic.dart';
@@ -202,8 +202,8 @@ class _MyAppState extends State<MyApp> {
     tutorList.displayedTutors = tutors;
     tutorInfo.availNationalities = tutorList.getNationalities();
     tutorInfo.availSpecialities = tutorList.getSpecialties();
-    print(tutorInfo.availNationalities);
-    print(tutorInfo.availSpecialities);
+    // print(tutorInfo.availNationalities);
+    // print(tutorInfo.availSpecialities);
   }
 
   @override
@@ -215,8 +215,8 @@ class _MyAppState extends State<MyApp> {
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       routerConfig: GoRouter(
         debugLogDiagnostics: true,
-        initialLocation: '/list/all',
-        // TODO : IMPORTATNT Remember to uncomment this
+        initialLocation: '/tutor/all',
+        // TODO : IMPORTANT Remember to uncomment this
         // redirect: (context, state) {
         //   var auth = AuthService();
         //   var path = state.uri.path;
@@ -271,8 +271,8 @@ class _MyAppState extends State<MyApp> {
             },
             routes: [
               GoRoute(
-                name: routeName['/list/all'],
-                path: '/list/all',
+                name: routeName['/tutor/all'],
+                path: '/tutor/all',
                 builder: (context, state) => MultiProvider(
                   providers: [
                     ChangeNotifierProvider.value(value: tutorInfo),
@@ -282,24 +282,31 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
               GoRoute(
-                name: 'tutor details',
-                path: '/list/:tutorId',
+                name: 'tutor',
+                path: '/tutor/:tutorId',
                 builder: (context, state) {
-                  int id = int.parse(state.pathParameters['tutorId'] ?? '0');
-                  return TutorDetailsPage(
-                    tutor: tutors[id],
-                    onReviews: () {
-                      // TODO
-                      GoRouter.of(context).push('/list/$id/reviews');
-                    },
-                  );
+                  String id = state.pathParameters['tutorId'] ?? '';
+                  if (id == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Tutor not found')),
+                    );
+                    context.pop();  // is this right?
+                  }
+                  return TutorDetailsPage(tutor: tutorList.getTutorById(id));
                 },
               ),
               GoRoute(
-                name: 'reviews',
-                path: '/list/:tutorId/reviews',
+                name: 'review',
+                path: '/tutor/:tutorId/review',
                 builder: (context, state) {
-                  return ReviewsPage();
+                  String id = state.pathParameters['tutorId'] ?? '';
+                  if (id == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Something went wrong')),
+                    );
+                    context.pop();  // is this right?
+                  }
+                  return ReviewsPage(tutorId: id,);
                 },
               ),
               GoRoute(

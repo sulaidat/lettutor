@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:lettutor/src/models/review.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
 
@@ -26,6 +27,28 @@ List<String> lastNames = [
   'Garcia',
   'Rodriguez',
   'Wilson'
+];
+List<String> name = [
+  'Robert Jones',
+  'Sarah Miller',
+  'Jessica Johnson',
+  'John Williams',
+  'John Johnson',
+  'John Wilson',
+  'Sarah Brown',
+  'David Brown',
+  'Michael Rodriguez',
+  'Emily Williams',
+  'Sarah Jones',
+  'David Rodriguez',
+  'Robert Miller',
+  'Emily Rodriguez',
+  'Emily Garcia',
+  'Ashley Jones',
+  'Jane Garcia',
+  'Robert Garcia',
+  'Jane Smith',
+  'Jane Johnson'
 ];
 List<String> bios = [
   'Experienced tutor with a passion for teaching.',
@@ -100,6 +123,48 @@ List<String> languages = [
   'Hindi'
 ];
 
+List<String> educations = [
+  'Bachelor of Science in Computer Science',
+  'Master of Science in Data Science',
+  'Bachelor of Arts in Graphic Design',
+  'Master of Business Administration',
+  'Bachelor of Science in Mechanical Engineering',
+  'Doctor of Philosophy in Physics',
+  'Bachelor of Arts in English Literature',
+  'Master of Science in Cybersecurity',
+  'Bachelor of Science in Biology',
+  'Doctor of Medicine',
+  // add more as needed
+];
+
+List<String> teachingExperiences = [
+  '2 years of teaching Computer Science at XYZ University',
+  '5 years of teaching Data Science at ABC Institute',
+  '1 year of teaching Graphic Design at DEF College',
+  '3 years of teaching Business Administration at GHI University',
+  '4 years of teaching Mechanical Engineering at JKL Institute',
+  '6 years of teaching Physics at MNO College',
+  '2 years of teaching English Literature at PQR University',
+  '5 years of teaching Cybersecurity at STU Institute',
+  '3 years of teaching Biology at VWX College',
+  '4 years of teaching Medicine at YZ University',
+  // add more as needed
+];
+
+List<String> interests = [
+  'Reading',
+  'Traveling',
+  'Cooking',
+  'Hiking',
+  'Photography',
+  'Music',
+  'Painting',
+  'Gardening',
+  'Coding',
+  'Gaming',
+  // add more as needed
+];
+
 String randomName() {
   String firstName = firstNames[Random().nextInt(1000) % firstNames.length];
   String lastName = lastNames[Random().nextInt(100) % lastNames.length];
@@ -119,6 +184,30 @@ String randomCountry() {
   return countries[Random().nextInt(1000) % countries.length];
 }
 
+String randomEducation() {
+  return educations[Random().nextInt(1000) % educations.length];
+}
+
+String randomTeachingExperience() {
+  return teachingExperiences[Random().nextInt(1000) % teachingExperiences.length];
+}
+
+String randomInterests() {
+  return interests[Random().nextInt(1000) % interests.length];
+}
+
+List<Review> generateMockReviews() {
+  return List<Review>.generate(10, (index) {
+    return Review(
+      id: 'id$index',
+      name: 'Reviewer $index',
+      review: 'This is a review from Reviewer $index.',
+      rating: (Random().nextDouble() * 4) + 1, // generate a random rating between 1 and 5
+      date: DateTime.now().subtract(Duration(days: Random().nextInt(1000) % 365)) // generate a random date between now and 1 year ago
+    );
+  });
+}
+
 int maxSpecialties = 5;
 int maxLanguages = 3;
 
@@ -126,8 +215,9 @@ List<Tutor> tutors = List.generate(20, (index) {
   var country = randomCountry();
   return Tutor(
     id: index.toString(),
-    name: randomName(),
-    imageUrl: randomImageUrl(),
+    name: name[index],
+    imageUrl: 'https://randomuser.me/api/portraits/men/$index.jpg',
+    // imageUrl: 'assets/imgs/tutors/${index % 20}.jpg',
     bio: randomBio(),
     country: country,
     nationality: nationalities[country],
@@ -135,6 +225,11 @@ List<Tutor> tutors = List.generate(20, (index) {
         0, 1 + Random().nextInt(maxSpecialties - 1) % specialties.length)),
     languages: Set.from(languages.getRange(
         0, 1 + Random().nextInt(maxLanguages - 1) % languages.length)),
-    rating: Random().nextDouble() * 5,  // TODO: calculate rating from reviews later
+    rating:
+        Random().nextDouble() * 5, // TODO: calculate rating from reviews later
+    education: randomEducation(),
+    teachingExperience: randomTeachingExperience(),
+    interests: randomInterests(),
+    reviews: generateMockReviews()
   );
 });

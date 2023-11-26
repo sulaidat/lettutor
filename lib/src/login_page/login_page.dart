@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                         if (formKey.currentState!.validate()) {
                           auth.logIn(usernameModel.controller?.value.text ?? '',
                               passwordModel.controller?.value.text ?? '');
-                          context.go('/list/all');
+                          context.go('/tutor/all');
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Logged in')),
                           );

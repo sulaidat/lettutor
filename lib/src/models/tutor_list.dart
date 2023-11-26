@@ -29,6 +29,10 @@ class TutorList extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isFavorite(String id) {
+    return favorites.contains(id);
+  }
+
   void filterByName(String name) {
     displayedTutors =
         displayedTutors.where((tutor) => tutor.name!.contains(name)).toList();
@@ -79,8 +83,8 @@ class TutorList extends ChangeNotifier {
         return 0;
       }
     });
-    print("Favorites: $favorites");
-    print("Display: ${displayedTutors.map((e) => e.id)}");
+    // print("Favorites: $favorites");
+    // print("Display: ${displayedTutors.map((e) => e.id)}");
   }
 
   void sortByRating() {
@@ -106,5 +110,9 @@ class TutorList extends ChangeNotifier {
       default:
         break;
     }
+  }
+
+  Tutor getTutorById(String id) {
+    return tutors.firstWhere((tutor) => tutor.id == id);
   }
 }
