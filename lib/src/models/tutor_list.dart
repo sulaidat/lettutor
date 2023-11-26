@@ -115,4 +115,9 @@ class TutorList extends ChangeNotifier {
   Tutor getTutorById(String id) {
     return tutors.firstWhere((tutor) => tutor.id == id);
   }
+
+  void reportTutor(String tutorId, List<String> violations) {
+    // TODO: print for now, implement later
+    print("Report tutor $tutorId for violations: $violations");
+  }
 }

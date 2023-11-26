@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
+import 'package:lettutor/src/mock_data.dart';
+import 'package:lettutor/src/models/bonker.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
+import 'package:lettutor/src/models/violation_report.dart';
 import 'package:provider/provider.dart';
 
 import '../../custom_widgets/pro_chips_from_string.dart';
@@ -91,7 +94,22 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                               ),
                               Expanded(
                                 child: ProToggleButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    final tutorList = context.read<TutorList>();
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return ChangeNotifierProvider.value(
+                                          value: tutorList,
+                                          child: ReportDialog(
+                                            options: violations,
+                                            hook: (violations) {},
+                                            tutorId: widget.tutor.id,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
                                   selectedIcon: Icons.report,
                                   unselectedIcon: Icons.report_gmailerrorred,
                                   isSelected: false,
@@ -172,6 +190,99 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ReportDialog extends StatefulWidget {
+  const ReportDialog({
+    super.key,
+    required this.options,
+    required this.hook,
+    required this.tutorId,
+  });
+
+  final String tutorId;
+  final List<String> options;
+  final ValueChanged<List<String>> hook;
+
+  @override
+  State<ReportDialog> createState() => _ReportDialogState();
+}
+
+class _ReportDialogState extends State<ReportDialog> {
+  late List<bool> selectedOptions;
+  String otherOption = '';
+
+  @override
+  void initState() {
+    super.initState();
+    selectedOptions = List<bool>.filled(widget.options.length, false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      title: Text('Report'),
+      children: <Widget>[
+        for (int i = 0; i < widget.options.length; i++)
+          CheckboxListTile(
+            title: Text(widget.options[i]),
+            value: selectedOptions[i],
+            onChanged: (bool? value) {
+              setState(() {
+                selectedOptions[i] = value!;
+              });
+            },
+          ),
+        ListTile(
+          title: TextField(
+            onChanged: (value) {
+              setState(() {
+                otherOption = value;
+              });
+            },
+            decoration: InputDecoration(
+              labelText: 'Other',
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                var violations = selectedOptions
+                    .asMap()
+                    .entries
+                    .where((element) => element.value)
+                    .map((e) => e.key)
+                    .map((e) => widget.options[e])
+                    .toList();
+                if (otherOption.isNotEmpty) {
+                  violations.add(otherOption);
+                }
+                context.read<TutorList>().reportTutor(
+                      widget.tutorId,
+                      violations,
+                    );
+                widget.hook(violations);
+                Navigator.pop(context);
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

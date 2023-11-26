@@ -165,6 +165,14 @@ List<String> interests = [
   // add more as needed
 ];
 
+List<String> violations = [
+  'No-show',
+  'Late',
+  'Inappropriate behavior',
+  'Spam',
+  'Scam or fraud',
+];
+
 String randomName() {
   String firstName = firstNames[Random().nextInt(1000) % firstNames.length];
   String lastName = lastNames[Random().nextInt(100) % lastNames.length];
