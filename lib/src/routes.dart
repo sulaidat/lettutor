@@ -5,4 +5,9 @@ final routeName = {
   '/reset_password': 'reset_password',
   '/home': 'home',
   '/tutor/all': 'tutor_all',
+  '/schedule': 'schedule',
+  '/schedule/detail': 'schedule_detail',
+  '/schedule/history': 'schedule_history',
+  '/waitingroom': 'waitingroom',
+  '/meeting': 'meeting',
 };

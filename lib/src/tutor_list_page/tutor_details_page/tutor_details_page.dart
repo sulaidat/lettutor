@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
+import 'package:lettutor/src/custom_widgets/pro_pos_button.dart';
 import 'package:lettutor/src/mock_data.dart';
 import 'package:lettutor/src/models/bonker.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:lettutor/src/models/violation_report.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../custom_widgets/pro_chips_from_string.dart';
 import '../../custom_widgets/pro_heading1.dart';
@@ -121,7 +125,49 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                           ),
                           vpad(5),
                           FilledButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  var scheduleInfo =
+                                      context.watch<ScheduleInfo>();
+                                  var lessons =
+                                      scheduleInfo.getAvailableLessonsByTutorId(
+                                          widget.tutor.id);
+                                  if (lessons == null || lessons.isEmpty) {
+                                    return Center(
+                                        child: Text("No available lessons"));
+                                  } else {
+                                    return ListView.builder(
+                                      itemCount: lessons.length,
+                                      itemBuilder: (context, index) {
+                                        final lesson = lessons[index];
+                                        return ListTile(
+                                          title: Text(DateFormat('yMd')
+                                              .format(lesson.date)),
+                                          subtitle: Text(
+                                              'Start: ${lesson.start}, End: ${lesson.end}'),
+                                          trailing: FilledButton(
+                                            onPressed: () {
+                                              scheduleInfo
+                                                  .bookLesson(lesson.id);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'Lesson booked successfully!'),
+                                                ),
+                                              );
+                                            },
+                                            child: Text("Book"),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              );
+                            },
                             style: FilledButton.styleFrom(),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/review.dart';
 import 'package:lettutor/src/models/tutor.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
@@ -197,7 +198,8 @@ String randomEducation() {
 }
 
 String randomTeachingExperience() {
-  return teachingExperiences[Random().nextInt(1000) % teachingExperiences.length];
+  return teachingExperiences[
+      Random().nextInt(1000) % teachingExperiences.length];
 }
 
 String randomInterests() {
@@ -207,12 +209,15 @@ String randomInterests() {
 List<Review> generateMockReviews() {
   return List<Review>.generate(10, (index) {
     return Review(
-      id: 'id$index',
-      name: 'Reviewer $index',
-      review: 'This is a review from Reviewer $index.',
-      rating: (Random().nextDouble() * 4) + 1, // generate a random rating between 1 and 5
-      date: DateTime.now().subtract(Duration(days: Random().nextInt(1000) % 365)) // generate a random date between now and 1 year ago
-    );
+        id: 'id$index',
+        name: 'Reviewer $index',
+        review: 'This is a review from Reviewer $index.',
+        rating: (Random().nextDouble() * 4) +
+            1, // generate a random rating between 1 and 5
+        date: DateTime.now().subtract(Duration(
+            days: Random().nextInt(1000) %
+                365)) // generate a random date between now and 1 year ago
+        );
   });
 }
 
@@ -238,6 +243,16 @@ List<Tutor> tutors = List.generate(20, (index) {
     education: randomEducation(),
     teachingExperience: randomTeachingExperience(),
     interests: randomInterests(),
-    reviews: generateMockReviews()
+    reviews: generateMockReviews(),
+  );
+});
+
+List<Lesson> lessons = List.generate(tutors.length*2, (index) {
+  return Lesson(
+    id: index.toString(),
+    date: DateTime.now().add(Duration(days: Random().nextInt(1000) % 365)),
+    start: '10:00',
+    end: '11:00',
+    tutor: null,
   );
 });

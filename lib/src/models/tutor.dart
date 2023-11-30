@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/review.dart';
 
 class Tutor with ChangeNotifier {
@@ -17,22 +18,21 @@ class Tutor with ChangeNotifier {
   String? interests;
   List<Review>? reviews;
 
-  Tutor({
-    required this.id,
-    this.name,
-    this.imageUrl,
-    this.introVideoUrl,
-    this.bio,
-    this.country,
-    this.nationality,
-    this.specialties,
-    this.languages,
-    this.rating,
-    this.education,
-    this.teachingExperience,
-    this.interests,
-    this.reviews,
-  });
+  Tutor(
+      {required this.id,
+      this.name,
+      this.imageUrl,
+      this.introVideoUrl,
+      this.bio,
+      this.country,
+      this.nationality,
+      this.specialties,
+      this.languages,
+      this.rating,
+      this.education,
+      this.teachingExperience,
+      this.interests,
+      this.reviews,});
 
   void updateName(String newName) {
     name = newName;

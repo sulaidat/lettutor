@@ -13,7 +13,10 @@ class HistoryPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              AppBar(title: Text("History"), centerTitle: true,),
+              AppBar(
+                title: Text("History"),
+                centerTitle: true,
+              ),
               vpad(10),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -76,8 +79,8 @@ Widget _buildLessonCard(BuildContext context, Lesson info) {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(999),
-              child: Image.asset(
-                "${info.tutor.imageUrl}",
+              child: Image.network(
+                "${info.tutor!.imageUrl}",
                 width: 70,
                 height: 70,
                 fit: BoxFit.cover,
@@ -89,7 +92,7 @@ Widget _buildLessonCard(BuildContext context, Lesson info) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${info.tutor.name}",
+                    "${info.tutor!.name}",
                     style: theme.textTheme.titleMedium,
                   ),
                   Row(

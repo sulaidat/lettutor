@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/models/course.dart';
-import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/topic.dart';
 
-import 'models/tutor.dart';
 
 class Shell extends StatefulWidget {
   const Shell({
@@ -22,38 +20,6 @@ class Shell extends StatefulWidget {
 
 class _ShellState extends State<Shell> {
   int pageIndex = 0;
-  List<Lesson> lessons = [
-    Lesson(
-        tutor:
-            Tutor(id: '0', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-        date: "Tue, 24 Oct, 23",
-        start: "00:00",
-        end: "00:30"),
-    Lesson(
-        tutor:
-            Tutor(id: '1', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-        date: "Tue, 24 Oct, 23",
-        start: "00:00",
-        end: "00:30"),
-    Lesson(
-        tutor:
-            Tutor(id: '2', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-        date: "Tue, 24 Oct, 23",
-        start: "00:00",
-        end: "00:30"),
-    Lesson(
-        tutor:
-            Tutor(id: '3', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-        date: "Tue, 24 Oct, 23",
-        start: "00:00",
-        end: "00:30"),
-    Lesson(
-        tutor:
-            Tutor(id: '4', name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-        date: "Tue, 24 Oct, 23",
-        start: "00:00",
-        end: "00:30"),
-  ];
   List<Course> courses = [
     Course(
         name: "Legacy Metrics Orchestrator",

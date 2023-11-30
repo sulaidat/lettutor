@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/src/courses_page/courses_page.dart';
@@ -10,6 +7,7 @@ import 'package:lettutor/src/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/login_page/register_page.dart';
 import 'package:lettutor/src/login_page/reset_password_page.dart';
 import 'package:lettutor/src/mock_data.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
 import 'package:lettutor/src/models/tutor_info.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
@@ -19,9 +17,7 @@ import 'package:lettutor/src/login_page/login_page.dart';
 import 'package:lettutor/src/login_page/meeting_room/meeting_room.dart';
 import 'package:lettutor/src/login_page/meeting_room/waiting_room.dart';
 import 'package:lettutor/src/models/course.dart';
-import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/topic.dart';
-import 'package:lettutor/src/models/tutor.dart';
 import 'package:lettutor/src/schedule_page/history_page/history_page.dart';
 import 'package:lettutor/src/schedule_page/schedule_page.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
@@ -30,38 +26,6 @@ import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_pa
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
 import 'package:provider/provider.dart';
 
-List<Lesson> lessons = [
-  Lesson(
-      tutor: Tutor(
-          id: "1", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(
-          id: "2", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(
-          id: "3", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(
-          id: "4", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(
-          id: "5", name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-];
 List<Course> courses = [
   Course(
       name: "Legacy Metrics Orchestrator",
@@ -196,14 +160,34 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   TutorList tutorList = TutorList();
   TutorInfo tutorInfo = TutorInfo();
+  ScheduleInfo scheduleInfo = ScheduleInfo();
 
   void initData() {
+    // asign 2 available lessons to each tutor
+    for (var i = 0; i < lessons.length; i++) {
+      lessons[i].tutor = tutors[i % tutors.length];
+    }
+
+    scheduleInfo.availableLessons = lessons;
+    scheduleInfo.bookedLessons = [];
+    scheduleInfo.completedLessons = [];
+
+    // book some lessons for testing
+    scheduleInfo.bookLesson('1');
+    scheduleInfo.bookLesson('3');
+    scheduleInfo.bookLesson('5');
+    scheduleInfo.bookLesson('7');
+    scheduleInfo.bookLesson('9');
+
+    // complete some lessons for testing
+    scheduleInfo.completeLesson('7');
+    scheduleInfo.completeLesson('9');
+
     tutorList.tutors = tutors;
     tutorList.displayedTutors = tutors;
+
     tutorInfo.availNationalities = tutorList.getNationalities();
     tutorInfo.availSpecialities = tutorList.getSpecialties();
-    // print(tutorInfo.availNationalities);
-    // print(tutorInfo.availSpecialities);
   }
 
   @override
@@ -257,6 +241,7 @@ class _MyAppState extends State<MyApp> {
               return MultiProvider(
                 providers: [
                   ChangeNotifierProvider.value(value: tutorList),
+                  ChangeNotifierProvider.value(value: scheduleInfo)
                 ],
                 child: Shell(
                   selectedIndex: switch (state.uri.path) {
@@ -290,7 +275,7 @@ class _MyAppState extends State<MyApp> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Tutor not found')),
                     );
-                    context.pop();  // is this right?
+                    context.pop(); // is this right?
                   }
                   return TutorDetailsPage(tutor: tutorList.getTutorById(id));
                 },
@@ -304,25 +289,17 @@ class _MyAppState extends State<MyApp> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Something went wrong')),
                     );
-                    context.pop();  // is this right?
+                    context.pop(); // is this right?
                   }
-                  return ReviewsPage(tutorId: id,);
+                  return ReviewsPage(
+                    tutorId: id,
+                  );
                 },
               ),
               GoRoute(
-                name: 'schedule',
+                name: routeName['/schedule'],
                 path: '/schedule',
-                builder: (context, state) {
-                  return SchedulePage(
-                    lessonInfos: lessons,
-                    onHistory: () {
-                      GoRouter.of(context).push("/schedule/history");
-                    },
-                    onJoin: () {
-                      GoRouter.of(context).push('/meet/wait');
-                    },
-                  );
-                },
+                builder: (context, state) => SchedulePage(),
               ),
               GoRoute(
                 name: 'history',
