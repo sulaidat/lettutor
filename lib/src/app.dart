@@ -5,6 +5,7 @@ import 'package:lettutor/src/courses_page/course_details/topic_details/topic_det
 import 'package:lettutor/src/courses_page/course_shell.dart';
 import 'package:lettutor/src/courses_page/courses_page.dart';
 import 'package:lettutor/src/courses_page/ebook_page/ebook_page.dart';
+import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/login_page/register_page.dart';
 import 'package:lettutor/src/login_page/reset_password_page.dart';
@@ -204,20 +205,20 @@ class _MyAppState extends State<MyApp> {
         debugLogDiagnostics: true,
         initialLocation: '/tutor/all',
         // TODO : IMPORTANT Remember to uncomment this
-        // redirect: (context, state) {
-        //   var auth = AuthService();
-        //   var path = state.uri.path;
-        //   print('Current path: $path');
-        //   if (auth.isLoggedIn) {
-        //     return null;
-        //   } else if (path.contains('login') ||
-        //       path.contains('register') ||
-        //       path.contains('forgot_password') ||
-        //       path.contains('reset_password')) {
-        //     return path;
-        //   }
-        //   return '/login';
-        // },
+        redirect: (context, state) {
+          var auth = AuthService();
+          var path = state.uri.path;
+          print('Current path: $path');
+          if (auth.isLoggedIn) {
+            return null;
+          } else if (path.contains('login') ||
+              path.contains('register') ||
+              path.contains('forgot_password') ||
+              path.contains('reset_password')) {
+            return path;
+          }
+          return '/login';
+        },
         routes: [
           GoRoute(
             name: routeName['/login'],
