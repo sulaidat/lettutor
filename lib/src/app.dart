@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
+import 'package:lettutor/src/courses_page/course_shell.dart';
 import 'package:lettutor/src/courses_page/courses_page.dart';
+import 'package:lettutor/src/courses_page/ebook_page/ebook_page.dart';
 import 'package:lettutor/src/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/login_page/register_page.dart';
 import 'package:lettutor/src/login_page/reset_password_page.dart';
@@ -243,7 +245,7 @@ class _MyAppState extends State<MyApp> {
                   ChangeNotifierProvider.value(value: tutorList),
                   ChangeNotifierProvider.value(value: scheduleInfo)
                 ],
-                child: Shell(
+                child: AppShell(
                   selectedIndex: switch (state.uri.path) {
                     var p when p.startsWith('/list') => 0,
                     var p when p.startsWith('/schedule') => 1,
@@ -302,24 +304,29 @@ class _MyAppState extends State<MyApp> {
                 builder: (context, state) => SchedulePage(),
               ),
               GoRoute(
-                name: 'history',
+                // TODO: leave a message for the tutor
+                name: routeName['/schedule/history'],
                 path: '/schedule/history',
-                builder: (context, state) {
-                  return HistoryPage(history: lessons);
-                },
+                builder: (context, state) => HistoryPage(),
               ),
-              GoRoute(
-                name: 'courses',
-                path: '/courses',
-                builder: (context, state) {
-                  return CoursesPage(
-                    courses: courses,
-                    onDiscover: () {
-                      // TODO
-                      GoRouter.of(context).push('/courses/0');
-                    },
-                  );
-                },
+              ShellRoute(
+                builder: (context, state, child) => CourseShell(child: child),
+                routes: [
+                  GoRoute(
+                    name: routeName['/courses'],
+                    path: '/courses',
+                    builder: (context, state) => CoursesPage(
+                      courses: courses,
+                      onDiscover: () {},
+                    ),
+                  ),
+                  GoRoute(
+                    name: routeName['/ebook'],
+                    path: '/ebook',
+                    builder: (context, state) => EbookPage(),
+                    // builder: (context, state) => Placeholder(),
+                  )
+                ],
               ),
               GoRoute(
                 name: 'course detail',

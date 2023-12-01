@@ -10,4 +10,6 @@ final routeName = {
   '/schedule/history': 'schedule_history',
   '/waitingroom': 'waitingroom',
   '/meeting': 'meeting',
+  '/courses': 'courses',
+  '/ebook': 'ebook',
 };

@@ -57,15 +57,24 @@ class _TutorListPageState extends State<TutorListPage> {
           children: [
             Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: Image.network(
-                    "${tutor.imageUrl}",
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(999),
+                //   child: Image.network(
+                //     "${tutor.imageUrl}",
+                //     width: 70,
+                //     height: 70,
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
+                IconButton(
+  icon: CircleAvatar(
+    backgroundImage: NetworkImage("${tutor.imageUrl}"),
+    radius: 35,
+  ),
+  onPressed: () {
+    // Handle button press
+  },
+),
                 hpad(5),
                 Expanded(
                   child: Column(

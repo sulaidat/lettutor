@@ -74,4 +74,8 @@ class ScheduleInfo with ChangeNotifier {
   void sortBookedLessons() {
     bookedLessons?.sort((a, b) => a.date.compareTo(b.date));
   }
+
+  void sortCompletedLessons() {
+    completedLessons?.sort((a, b) => a.date.compareTo(b.date));
+  }
 }

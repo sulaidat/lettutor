@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/lesson.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
+import 'package:provider/provider.dart';
 
 class HistoryPage extends StatelessWidget {
-  const HistoryPage({super.key, required this.history});
-  final List<Lesson> history;
+  const HistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final scheduleInfo = context.read<ScheduleInfo>();
+    scheduleInfo.sortCompletedLessons();
+    final completedLessons = scheduleInfo.completedLessons;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -19,26 +24,25 @@ class HistoryPage extends StatelessWidget {
               ),
               vpad(10),
               Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Here is the list of lessons you have attended"),
-                    vpad(10),
-                    ListView.separated(
-                      itemBuilder: (context, index) {
-                        return _buildLessonCard(context, history[index]);
-                      },
-                      separatorBuilder: (context, index) {
-                        return vpad(10);
-                      },
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: history.length,
-                    ),
-                  ],
-                ),
-              )
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: () {
+                    if (completedLessons!.isEmpty) {
+                      return Text("You have no completed lessons");
+                    } else {
+                      return ListView.separated(
+                        itemBuilder: (context, index) {
+                          return _buildLessonCard(
+                              context, completedLessons[index]);
+                        },
+                        separatorBuilder: (context, index) {
+                          return vpad(10);
+                        },
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: completedLessons.length,
+                      );
+                    }
+                  }())
             ],
           ),
         ),
@@ -65,7 +69,7 @@ Widget _buildLessonCard(BuildContext context, Lesson info) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "${info.date}",
+          DateFormat.yMd().format(info.date),
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
