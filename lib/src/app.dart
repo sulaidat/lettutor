@@ -14,6 +14,7 @@ import 'package:lettutor/src/models/search_filter.dart';
 import 'package:lettutor/src/models/tutor_info.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:lettutor/src/routes.dart';
+import 'package:lettutor/src/setting_page/setting_page.dart';
 import 'package:lettutor/src/shell.dart';
 import 'package:lettutor/src/login_page/login_page.dart';
 import 'package:lettutor/src/login_page/meeting_room/meeting_room.dart';
@@ -257,6 +258,11 @@ class _MyAppState extends State<MyApp> {
               );
             },
             routes: [
+              GoRoute(
+                name: routeName['/settings'],
+                path: '/settings',
+                builder: (context, state) => SettingsPage(),
+              ),
               GoRoute(
                 name: routeName['/tutor/all'],
                 path: '/tutor/all',

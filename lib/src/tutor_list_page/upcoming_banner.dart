@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lettutor/src/helpers/padding.dart';
+import 'package:lettutor/src/models/lesson.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
+import 'package:lettutor/src/tutor_list_page/countdown.dart';
+import 'package:provider/provider.dart';
 
-class UpcomingBanner extends StatelessWidget {
+class UpcomingBanner extends StatefulWidget {
   const UpcomingBanner({
     super.key,
     required this.onJoin,
@@ -10,7 +15,13 @@ class UpcomingBanner extends StatelessWidget {
   final VoidCallback onJoin;
 
   @override
+  State<UpcomingBanner> createState() => _UpcomingBannerState();
+}
+
+class _UpcomingBannerState extends State<UpcomingBanner> {
+  @override
   Widget build(BuildContext context) {
+    final scheduleInfo = context.read<ScheduleInfo>();
     final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -24,15 +35,6 @@ class UpcomingBanner extends StatelessWidget {
         ],
         borderRadius: BorderRadius.circular(10),
         color: theme.colorScheme.primary,
-        // gradient: LinearGradient(
-        //   stops: [0, 1],
-        //   begin: Alignment.bottomLeft,
-        //   end: Alignment.topRight,
-        //   colors: <Color>[
-        //     Colors.blue.shade600,
-        //     Colors.blue.shade900,
-        //   ],
-        // ),
       ),
       child: Column(
         children: [
@@ -50,19 +52,21 @@ class UpcomingBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Tue, 24 Oct 00:00 - 00:30",
+                    "${DateFormat('MEd').format(scheduleInfo.bookedLessons![0].date)} ${scheduleInfo.bookedLessons![0].start} - ${scheduleInfo.bookedLessons![0].end}",
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Text(
-                    "Start in 1:00:00",
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.amberAccent,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  // Text(
+                  //   "Start in 1:00:00",
+                  //   style: theme.textTheme.bodyMedium?.copyWith(
+                  //     color: Colors.amberAccent,
+                  //     fontWeight: FontWeight.w600,
+                  //   ),
+                  // ),
+                  LessonCountdown(
+                      upcomingLessonTime: scheduleInfo.bookedLessons![0].date),
                 ],
               ),
               hpad(10),
@@ -72,14 +76,14 @@ class UpcomingBanner extends StatelessWidget {
                     backgroundColor: theme.colorScheme.onPrimary,
                     foregroundColor: theme.colorScheme.primary,
                     textStyle: theme.textTheme.titleMedium),
-                onPressed: onJoin,
+                onPressed: widget.onJoin,
                 child: Text("Join now"),
               ),
             ],
           ),
           vpad(5),
           Text(
-            "Total lesson time: 1000 hours 59 minutes",
+            "Total lesson time: ${formatDuration(calculateTotalLessonTime(scheduleInfo.completedLessons!))}",
             style: TextStyle(
               color: theme.colorScheme.onPrimary,
             ),
@@ -90,19 +94,18 @@ class UpcomingBanner extends StatelessWidget {
   }
 }
 
-// class TeacherCard extends StatelessWidget {
-//   const TeacherCard({
-//     super.key,
-//     required this.avatar,
-//     required this.name,
-//     required this.country,
-//     required this.rating,
-//   });
+int calculateTotalLessonTime(List<Lesson> completedLessons) {
+  int totalDuration = 0;
 
-//   final avatar, name, country, rating;
+  for (var lesson in completedLessons) {
+    totalDuration += lesson.duration!;
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Placeholder();
-//   }
-// }
+  return totalDuration;
+}
+
+String formatDuration(int totalMinutes) {
+  int hours = totalMinutes ~/ 60;
+  int minutes = totalMinutes % 60;
+  return '$hours hours $minutes minutes';
+}

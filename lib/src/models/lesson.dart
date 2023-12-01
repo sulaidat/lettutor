@@ -7,6 +7,7 @@ class Lesson extends ChangeNotifier {
   String start;
   String end;
   Tutor? tutor;
+  int? duration;
 
   Lesson({
     required this.id,
@@ -14,6 +15,7 @@ class Lesson extends ChangeNotifier {
     required this.start,
     required this.end,
     this.tutor,
+    this.duration
   });
 
   void updateLesson() {

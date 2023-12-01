@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lettutor/src/models/tutor_info.dart';
@@ -57,24 +59,15 @@ class _TutorListPageState extends State<TutorListPage> {
           children: [
             Row(
               children: [
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(999),
-                //   child: Image.network(
-                //     "${tutor.imageUrl}",
-                //     width: 70,
-                //     height: 70,
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
-                IconButton(
-  icon: CircleAvatar(
-    backgroundImage: NetworkImage("${tutor.imageUrl}"),
-    radius: 35,
-  ),
-  onPressed: () {
-    // Handle button press
-  },
-),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: Image.network(
+                    "${tutor.imageUrl}",
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 hpad(5),
                 Expanded(
                   child: Column(
@@ -250,6 +243,8 @@ class _TutorListPageState extends State<TutorListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final auth = AuthService();
+    final scheduleInfo = context.watch<ScheduleInfo>();
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -263,7 +258,20 @@ class _TutorListPageState extends State<TutorListPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ProfileButton(),
+                  Text(
+                    auth.username, // replace with your username variable
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  IconButton(
+                    icon: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          auth.avatar), // replace with your image url
+                      radius: 20,
+                    ),
+                    onPressed: () {
+                      context.push('/settings');
+                    },
+                  ),
                   hpad(20),
                 ],
               ),
@@ -271,9 +279,10 @@ class _TutorListPageState extends State<TutorListPage> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    UpcomingBanner(onJoin: () {
-                      context.push('/meet/wait');
-                    }),
+                    if (scheduleInfo.bookedLessons!.isNotEmpty) // Add this line
+                      UpcomingBanner(onJoin: () {
+                        context.push('/meet/wait');
+                      }),
                     vpad(10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

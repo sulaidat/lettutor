@@ -12,4 +12,5 @@ final routeName = {
   '/meeting': 'meeting',
   '/courses': 'courses',
   '/ebook': 'ebook',
+  '/settings': 'settings',
 };

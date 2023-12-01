@@ -254,5 +254,6 @@ List<Lesson> lessons = List.generate(tutors.length*2, (index) {
     start: '10:00',
     end: '11:00',
     tutor: null,
+    duration: 61,
   );
 });

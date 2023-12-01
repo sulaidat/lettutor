@@ -2,13 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
 
-
-
 class AuthService extends ChangeNotifier {
   bool _isLoggedIn = false;
   Map<String, String> _users = {};
   bool onLogin = false;
   bool onReset = false;
+  String avatar =
+      'https://anh.eva.vn//upload/4-2016/images/2016-11-28/1480309415-moc-uyen-thanh-ava.jpg';
+      String username = 'admin';
 
   // Singleton instance
   static final AuthService _instance = AuthService._internal();
@@ -62,5 +63,5 @@ class AuthService extends ChangeNotifier {
   void sendPasswordResetEmail(String email) {
     // Send email
     // ...
-  } 
+  }
 }
