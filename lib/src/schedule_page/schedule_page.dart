@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/lesson.dart';
-import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
+import 'package:provider/provider.dart';
+
+import '../custom_widgets/pro_fav_toggle_icon.dart';
 
 class SchedulePage extends StatefulWidget {
-  const  SchedulePage({
+  const SchedulePage({
     super.key,
-    required this.lessonInfos,
-    required this.onHistory,
-    required this.onJoin,
   });
-
-  final List<Lesson> lessonInfos;
-  final VoidCallback onHistory;
-  final VoidCallback onJoin;
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  Widget  (BuildContext context, Lesson info) {
+  Widget _buildLessonCard(BuildContext context, Lesson info) {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
@@ -38,7 +36,7 @@ class _SchedulePageState extends State<SchedulePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "${info.date}",
+            DateFormat('yMd').format(info.date),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -52,8 +50,8 @@ class _SchedulePageState extends State<SchedulePage> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(999),
-                child: Image.asset(
-                  "${info.tutor.imageUrl}",
+                child: Image.network(
+                  "${info.tutor!.imageUrl}",
                   width: 70,
                   height: 70,
                   fit: BoxFit.cover,
@@ -65,7 +63,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${info.tutor.name}",
+                      "${info.tutor!.name}",
                       style: theme.textTheme.titleMedium,
                     ),
                     Row(
@@ -87,7 +85,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   ],
                 ),
               ),
-              ToggleIcon(value: true, onPressed: () {}),
+              ProFavToggleIcon(tutorId: info.tutor!.id, hook: (isToggled) {}),
             ],
           ),
           vpad(5),
@@ -95,7 +93,9 @@ class _SchedulePageState extends State<SchedulePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<ScheduleInfo>().cancelLesson(info.id);
+                },
                 style: OutlinedButton.styleFrom(),
                 child: Text(
                   "Cancel",
@@ -103,7 +103,9 @@ class _SchedulePageState extends State<SchedulePage> {
                 ),
               ),
               FilledButton(
-                onPressed: widget.onJoin,
+                onPressed: () {
+                  context.push("/meeting");
+                },
                 child: Text("Go to meeting"),
               ),
             ],
@@ -115,6 +117,8 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheduleInfo = context.watch<ScheduleInfo>();
+    scheduleInfo.sortBookedLessons();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -125,29 +129,40 @@ class _SchedulePageState extends State<SchedulePage> {
                 centerTitle: true,
                 actions: [
                   IconButton(
-                    onPressed: widget.onHistory,
-                    // onPressed: () {
-                    //   // TODO
-                    //   // context.pushNamed('history', queryParameters: )
-                    //   context.push("/schedule/history");
-                    // },
+                    onPressed: () {
+                      context.push("/schedule/history");
+                    },
                     icon: Icon(Icons.history),
                   ),
                 ],
               ),
               vpad(10),
               Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ListView.separated(
-                  itemBuilder: ((context, index) {
-                    return _buildLessonCard(context, widget.lessonInfos[index]);
-                  }),
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) => vpad(10),
-                  itemCount: widget.lessonInfos.length,
-                ),
-              ),
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: () {
+                    var bookedLessons = scheduleInfo.bookedLessons;
+                    if (bookedLessons == null || bookedLessons.isEmpty) {
+                      return Center(child: Text('You have no booked lessons'));
+                    } else {
+                      bookedLessons.sort((a, b) {
+                        var comparison = a.date.compareTo(b.date);
+                        if (comparison != 0) return comparison;
+                        comparison = a.start.compareTo(b.start);
+                        if (comparison != 0) return comparison;
+                        return a.end.compareTo(b.end);
+                      });
+                      return ListView.separated(
+                        itemCount: bookedLessons.length,
+                        itemBuilder: ((context, index) {
+                          return _buildLessonCard(
+                              context, bookedLessons[index]);
+                        }),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) => Divider(),
+                      );
+                    }
+                  }()),
             ],
           ),
         ),

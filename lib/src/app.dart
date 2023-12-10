@@ -1,51 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/auth.dart';
 import 'package:lettutor/src/courses_page/course_details/course_details_page.dart';
 import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
+import 'package:lettutor/src/courses_page/course_shell.dart';
 import 'package:lettutor/src/courses_page/courses_page.dart';
-import 'package:lettutor/src/home_page.dart';
-import 'package:lettutor/src/login_page.dart';
-import 'package:lettutor/src/meeting_room/meeting_room.dart';
-import 'package:lettutor/src/meeting_room/waiting_room.dart';
+import 'package:lettutor/src/courses_page/ebook_page/ebook_page.dart';
+import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/login_page/forgot_password_page.dart';
+import 'package:lettutor/src/login_page/register_page.dart';
+import 'package:lettutor/src/login_page/reset_password_page.dart';
+import 'package:lettutor/src/mock_data.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
+import 'package:lettutor/src/models/search_filter.dart';
+import 'package:lettutor/src/models/tutor_info.dart';
+import 'package:lettutor/src/models/tutor_list.dart';
+import 'package:lettutor/src/routes.dart';
+import 'package:lettutor/src/setting_page/setting_page.dart';
+import 'package:lettutor/src/shell.dart';
+import 'package:lettutor/src/login_page/login_page.dart';
+import 'package:lettutor/src/login_page/meeting_room/meeting_room.dart';
+import 'package:lettutor/src/login_page/meeting_room/waiting_room.dart';
 import 'package:lettutor/src/models/course.dart';
-import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/topic.dart';
-import 'package:lettutor/src/models/tutor.dart';
 import 'package:lettutor/src/schedule_page/history_page/history_page.dart';
 import 'package:lettutor/src/schedule_page/schedule_page.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_details_page/reviews_page/reviews_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
+import 'package:provider/provider.dart';
 
-List<Lesson> lessons = [
-  Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-  Lesson(
-      tutor: Tutor(name: "Nguyen Quang Tuyen", imageUrl: "assets/imgs/avt.jpg"),
-      date: "Tue, 24 Oct, 23",
-      start: "00:00",
-      end: "00:30"),
-];
 List<Course> courses = [
   Course(
       name: "Legacy Metrics Orchestrator",
@@ -162,53 +146,13 @@ List<Course> courses = [
         Topic(name: "Shopping Habits"),
       ]),
 ];
-List<Tutor> tutors = [
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Hanna Graham",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Gretchen Orn",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Marvin McClure",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Demarco Purdy",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Paris Bernier",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Katelin Tromp",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Linnie Stehr",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Abdullah Hills",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  Tutor(
-      imageUrl: "assets/imgs/avt.jpg",
-      name: "Torey Watsica",
-      bio:
-          "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-];
+
+class AppRoutes {
+  static const tutorList = '/list';
+  static const tutorDetails = '/list/:tutorId';
+  static const tutorReviews = '/list/:tutorId/reviews';
+  static const meetWait = '/meet/wait';
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -218,127 +162,178 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final auth = AppAuth();
+  TutorList tutorList = TutorList();
+  TutorInfo tutorInfo = TutorInfo();
+  ScheduleInfo scheduleInfo = ScheduleInfo();
+
+  void initData() {
+    // asign 2 available lessons to each tutor
+    for (var i = 0; i < lessons.length; i++) {
+      lessons[i].tutor = tutors[i % tutors.length];
+    }
+
+    scheduleInfo.availableLessons = lessons;
+    scheduleInfo.bookedLessons = [];
+    scheduleInfo.completedLessons = [];
+
+    // book some lessons for testing
+    scheduleInfo.bookLesson('1');
+    scheduleInfo.bookLesson('3');
+    scheduleInfo.bookLesson('5');
+    scheduleInfo.bookLesson('7');
+    scheduleInfo.bookLesson('9');
+
+    // complete some lessons for testing
+    scheduleInfo.completeLesson('7');
+    scheduleInfo.completeLesson('9');
+
+    tutorList.tutors = tutors;
+    tutorList.displayedTutors = tutors;
+
+    tutorInfo.availNationalities = tutorList.getNationalities();
+    tutorInfo.availSpecialities = tutorList.getSpecialties();
+  }
 
   @override
   Widget build(BuildContext context) {
+    initData();
+
     return MaterialApp.router(
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
       darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-      builder: (context, child) {
-        if (child == null) {
-          throw ("No child in .router contructor builder");
-        }
-        return AppAuthScope(notifier: auth, child: child);
-      },
       routerConfig: GoRouter(
         debugLogDiagnostics: true,
-        initialLocation: '/list/all',
+        initialLocation: '/tutor/all',
+        // TODO : IMPORTANT Remember to uncomment this
         redirect: (context, state) {
-          if (state.uri.toString() != '/login' &&
-              !AppAuth.of(context).loggedIn) {
-            return '/login';
+          var auth = AuthService();
+          var path = state.uri.path;
+          print('Current path: $path');
+          if (auth.isLoggedIn) {
+            return null;
+          } else if (path.contains('login') ||
+              path.contains('register') ||
+              path.contains('forgot_password') ||
+              path.contains('reset_password')) {
+            return path;
           }
-          return null;
+          return '/login';
         },
         routes: [
           GoRoute(
-            name: 'login',
+            name: routeName['/login'],
             path: '/login',
-            builder: (context, state) {
-              return LoginPage(
-                onLogIn: (acc) {
-                  AppAuth.of(context).logIn(acc.username, acc.password);
-                  context.go('/list/all');
-                },
-              );
-            },
+            builder: (context, state) => const LoginPage(),
+          ),
+          GoRoute(
+            name: routeName['/register'],
+            path: '/register',
+            builder: (context, state) => const RegisterPage(),
+          ),
+          GoRoute(
+            name: routeName['/forgot_password'],
+            path: '/forgot_password',
+            builder: (context, state) => const ForgotPasswordPage(),
+          ),
+          GoRoute(
+            name: routeName['/reset_password'],
+            path: '/reset_password',
+            builder: (context, state) => const ResetPasswordPage(),
           ),
           ShellRoute(
             builder: (context, state, child) {
-              return HomePage(
-                selectedIndex: switch (state.uri.path) {
-                  var p when p.startsWith('/list') => 0,
-                  var p when p.startsWith('/schedule') => 1,
-                  var p when p.startsWith('/courses') => 2,
-                  _ => 0,
-                },
-                child: child,
+              return MultiProvider(
+                providers: [
+                  ChangeNotifierProvider.value(value: tutorList),
+                  ChangeNotifierProvider.value(value: scheduleInfo)
+                ],
+                child: AppShell(
+                  selectedIndex: switch (state.uri.path) {
+                    var p when p.startsWith('/list') => 0,
+                    var p when p.startsWith('/schedule') => 1,
+                    var p when p.startsWith('/courses') => 2,
+                    _ => 0,
+                  },
+                  child: child,
+                ),
               );
             },
             routes: [
               GoRoute(
-                name: 'list all',
-                path: '/list/all',
+                name: routeName['/settings'],
+                path: '/settings',
+                builder: (context, state) => SettingsPage(),
+              ),
+              GoRoute(
+                name: routeName['/tutor/all'],
+                path: '/tutor/all',
+                builder: (context, state) => MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider.value(value: tutorInfo),
+                    ChangeNotifierProvider(create: (_) => SearchFilter())
+                  ],
+                  child: const TutorListPage(),
+                ),
+              ),
+              GoRoute(
+                name: 'tutor',
+                path: '/tutor/:tutorId',
                 builder: (context, state) {
-                  return TutorListPage(
-                    onItemSelect: () {
-                      // TODO
-                      GoRouter.of(context).push('/list/0');
-                    },
-                    onJoinMeeting: () {
-                      // TODO
-                      print("what's wrong?");
-                      GoRouter.of(context).push('/meet/wait');
-                    },
+                  String id = state.pathParameters['tutorId'] ?? '';
+                  if (id == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Tutor not found')),
+                    );
+                    context.pop(); // is this right?
+                  }
+                  return TutorDetailsPage(tutor: tutorList.getTutorById(id));
+                },
+              ),
+              GoRoute(
+                name: 'review',
+                path: '/tutor/:tutorId/review',
+                builder: (context, state) {
+                  String id = state.pathParameters['tutorId'] ?? '';
+                  if (id == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Something went wrong')),
+                    );
+                    context.pop(); // is this right?
+                  }
+                  return ReviewsPage(
+                    tutorId: id,
                   );
                 },
               ),
               GoRoute(
-                name: 'tutor details',
-                path: '/list/:tutorId',
-                builder: (context, state) {
-                  int id = int.parse(state.pathParameters['tutorId'] ?? '0');
-                  return TutorDetailsPage(
-                    tutor: tutors[id],
-                    onReviews: () {
-                      // TODO
-                      GoRouter.of(context).push('/list/$id/reviews');
-                    },
-                  );
-                },
-              ),
-              GoRoute(
-                name: 'reviews',
-                path: '/list/:tutorId/reviews',
-                builder: (context, state) {
-                  return ReviewsPage();
-                },
-              ),
-              GoRoute(
-                name: 'schedule',
+                name: routeName['/schedule'],
                 path: '/schedule',
-                builder: (context, state) {
-                  return SchedulePage(
-                    lessonInfos: lessons,
-                    onHistory: () {
-                      GoRouter.of(context).push("/schedule/history");
-                    },
-                    onJoin: () {
-                      GoRouter.of(context).push('/meet/wait');
-                    },
-                  );
-                },
+                builder: (context, state) => SchedulePage(),
               ),
               GoRoute(
-                name: 'history',
+                // TODO: leave a message for the tutor
+                name: routeName['/schedule/history'],
                 path: '/schedule/history',
-                builder: (context, state) {
-                  return HistoryPage(history: lessons);
-                },
+                builder: (context, state) => HistoryPage(),
               ),
-              GoRoute(
-                name: 'courses',
-                path: '/courses',
-                builder: (context, state) {
-                  return CoursesPage(
-                    courses: courses,
-                    onDiscover: () {
-                      // TODO
-                      GoRouter.of(context).push('/courses/0');
-                    },
-                  );
-                },
+              ShellRoute(
+                builder: (context, state, child) => CourseShell(child: child),
+                routes: [
+                  GoRoute(
+                    name: routeName['/courses'],
+                    path: '/courses',
+                    builder: (context, state) => CoursesPage(
+                      courses: courses,
+                      onDiscover: () {},
+                    ),
+                  ),
+                  GoRoute(
+                    name: routeName['/ebook'],
+                    path: '/ebook',
+                    builder: (context, state) => EbookPage(),
+                    // builder: (context, state) => Placeholder(),
+                  )
+                ],
               ),
               GoRoute(
                 name: 'course detail',

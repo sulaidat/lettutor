@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
+import 'package:lettutor/src/custom_widgets/pro_heading.dart';
+import 'package:lettutor/src/custom_widgets/pro_pos_button.dart';
+import 'package:lettutor/src/mock_data.dart';
+import 'package:lettutor/src/models/bonker.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/tutor.dart';
+import 'package:lettutor/src/models/tutor_list.dart';
+import 'package:lettutor/src/models/violation_report.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../custom_widgets/pro_chips_from_string.dart';
 import '../../custom_widgets/pro_heading1.dart';
@@ -8,14 +19,12 @@ import '../../helpers/padding.dart';
 import 'tutor_card_minimal.dart';
 
 class TutorDetailsPage extends StatefulWidget {
-  const  TutorDetailsPage({
+  const TutorDetailsPage({
     super.key,
     required this.tutor,
-    required this.onReviews,
   });
 
   final Tutor tutor;
-  final VoidCallback onReviews;
 
   @override
   State<TutorDetailsPage> createState() => _TutorDetailsPageState();
@@ -74,30 +83,9 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                               Expanded(
                                 child: ProToggleButton(
                                   onPressed: () {
-                                    setState(() {
-                                      isFavorite = !isFavorite;
-                                    });
+                                    context.push(
+                                        '/tutor/${widget.tutor.id}/review');
                                   },
-                                  selectedIcon: Icons.favorite,
-                                  unselectedIcon: Icons.favorite_border,
-                                  isSelected: isFavorite,
-                                  label: "Favorite",
-                                ),
-                              ),
-                              SizedBox(
-                                height: 40,
-                                child: VerticalDivider(),
-                              ),
-                              Expanded(
-                                child: ProToggleButton(
-                                  // onPressed: () {
-                                  //   // to(context, ReviewsPage());
-                                  //   var id = int.parse(routerState.uri
-                                  //       .toString()
-                                  //       .split('/')[2]);
-                                  //   context.go('/list/$id/reviews');
-                                  // },
-                                  onPressed: widget.onReviews,
                                   selectedIcon: Icons.star,
                                   unselectedIcon: Icons.star_border,
                                   isSelected: false,
@@ -110,7 +98,22 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                               ),
                               Expanded(
                                 child: ProToggleButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    final tutorList = context.read<TutorList>();
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return ChangeNotifierProvider.value(
+                                          value: tutorList,
+                                          child: ReportDialog(
+                                            options: violations,
+                                            hook: (violations) {},
+                                            tutorId: widget.tutor.id,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
                                   selectedIcon: Icons.report,
                                   unselectedIcon: Icons.report_gmailerrorred,
                                   isSelected: false,
@@ -122,7 +125,49 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                           ),
                           vpad(5),
                           FilledButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  var scheduleInfo =
+                                      context.watch<ScheduleInfo>();
+                                  var lessons =
+                                      scheduleInfo.getAvailableLessonsByTutorId(
+                                          widget.tutor.id);
+                                  if (lessons == null || lessons.isEmpty) {
+                                    return Center(
+                                        child: Text("No available lessons"));
+                                  } else {
+                                    return ListView.builder(
+                                      itemCount: lessons.length,
+                                      itemBuilder: (context, index) {
+                                        final lesson = lessons[index];
+                                        return ListTile(
+                                          title: Text(DateFormat('yMd')
+                                              .format(lesson.date)),
+                                          subtitle: Text(
+                                              'Start: ${lesson.start}, End: ${lesson.end}'),
+                                          trailing: FilledButton(
+                                            onPressed: () {
+                                              scheduleInfo
+                                                  .bookLesson(lesson.id);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'Lesson booked successfully!'),
+                                                ),
+                                              );
+                                            },
+                                            child: Text("Book"),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              );
+                            },
                             style: FilledButton.styleFrom(),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -142,17 +187,20 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ProHeading1(text: "Education"),
-                          Text(""
-                              "Reiciendis blanditiis sunt non. Porro rem voluptatem eum. Perspiciatis blanditiis enim at at suscipit doloremque a."),
-                          ProHeading1(text: "Languages"),
-                          ProChipsFromString(string: "English, Vietnamese"),
-                          ProHeading1(text: "Specialities"),
-                          ProChipsFromString(
-                              string: "Pwn, Re, Crypto, Web, Forensics"),
-                          ProHeading1(text: "Introduction"),
+                          vpad(5),
+                          Heading1(text: "Education"),
+                          Text("${widget.tutor.education}"),
+                          Heading1(text: "Languages"),
+                          ProChipsFromList(
+                            list: widget.tutor.languages!.toList(),
+                          ),
+                          Heading1(text: "Specialities"),
+                          ProChipsFromList(
+                            list: widget.tutor.specialties!.toList(),
+                          ),
+                          Heading1(text: "Introduction Video"),
                           // VideoApp(),
-                          ProHeading1(text: "Suggested Courses"),
+                          Heading1(text: "Suggested Courses"),
                           Row(
                             children: [
                               Text(
@@ -173,12 +221,10 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                   onPressed: () {}, child: Text("Go")),
                             ],
                           ),
-                          ProHeading1(text: "Interests"),
-                          Text(
-                              "Cumque atque sapiente quibusdam laboriosam provident blanditiis suscipit modi quia. In odit rerum nemo inventore pariatur autem. Odio hic eveniet velit deleniti aut. Quod harum unde illum. Neque reiciendis et sit.Repudiandae dolorum voluptatum ut ab sit ab placeat doloremque. Molestias nemo commodi aut vitae dolorem. Labore tempora facilis voluptas enim ducimus voluptatum. Et nam delectus modi ut ad. Nostrum exercitationem et assumenda.Est ad eum recusandae repellat enim sunt iusto ea. Nulla repudiandae iusto impedit iste velit nesciunt accusamus nemo. Sint magnam voluptatem atque qui ad pariatur id fugiat. Voluptatum nam architecto ratione qui aut. Optio est molestiae eos nam ad ut eum quia. Ea et hic fugiat aut ut id esse fuga iure."),
-                          ProHeading1(text: "Teaching Experience"),
-                          Text(
-                              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+                          Heading1(text: "Interests"),
+                          Text("${widget.tutor.interests}"),
+                          Heading1(text: "Teaching Experience"),
+                          Text("${widget.tutor.teachingExperience}"),
                         ],
                       ),
                     )
@@ -190,6 +236,99 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ReportDialog extends StatefulWidget {
+  const ReportDialog({
+    super.key,
+    required this.options,
+    required this.hook,
+    required this.tutorId,
+  });
+
+  final String tutorId;
+  final List<String> options;
+  final ValueChanged<List<String>> hook;
+
+  @override
+  State<ReportDialog> createState() => _ReportDialogState();
+}
+
+class _ReportDialogState extends State<ReportDialog> {
+  late List<bool> selectedOptions;
+  String otherOption = '';
+
+  @override
+  void initState() {
+    super.initState();
+    selectedOptions = List<bool>.filled(widget.options.length, false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      title: Text('Report'),
+      children: <Widget>[
+        for (int i = 0; i < widget.options.length; i++)
+          CheckboxListTile(
+            title: Text(widget.options[i]),
+            value: selectedOptions[i],
+            onChanged: (bool? value) {
+              setState(() {
+                selectedOptions[i] = value!;
+              });
+            },
+          ),
+        ListTile(
+          title: TextField(
+            onChanged: (value) {
+              setState(() {
+                otherOption = value;
+              });
+            },
+            decoration: InputDecoration(
+              labelText: 'Other',
+            ),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                var violations = selectedOptions
+                    .asMap()
+                    .entries
+                    .where((element) => element.value)
+                    .map((e) => e.key)
+                    .map((e) => widget.options[e])
+                    .toList();
+                if (otherOption.isNotEmpty) {
+                  violations.add(otherOption);
+                }
+                context.read<TutorList>().reportTutor(
+                      widget.tutorId,
+                      violations,
+                    );
+                widget.hook(violations);
+                Navigator.pop(context);
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

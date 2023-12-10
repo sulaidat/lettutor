@@ -1,85 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/models/tutor.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/models/schedule_info.dart';
+import 'package:lettutor/src/models/search_filter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lettutor/src/models/tutor_info.dart';
+import 'package:lettutor/src/models/tutor_list.dart';
+import 'package:provider/provider.dart';
 
 import '../custom_widgets/pro_chips_from_string.dart';
+import '../custom_widgets/pro_choice_chip.dart';
+import '../custom_widgets/pro_fav_toggle_icon.dart';
+import '../custom_widgets/pro_heading.dart';
+import '../custom_widgets/pro_neg_button.dart';
+import '../custom_widgets/pro_pos_button.dart';
 import '../helpers/padding.dart';
+import '../custom_widgets/pro_filter_chip.dart';
 import 'profile_button.dart';
 import 'upcoming_banner.dart';
 
 class TutorListPage extends StatefulWidget {
   const TutorListPage({
     super.key,
-    required this.onItemSelect,
-    required this.onJoinMeeting,
   });
-
-  final VoidCallback onItemSelect;
-  final VoidCallback onJoinMeeting;
 
   @override
   State<TutorListPage> createState() => _TutorListPageState();
 }
 
 class _TutorListPageState extends State<TutorListPage> {
-  List<int> _favoriteIdx = [];
-  List<Tutor> _tutors = [
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Hanna Graham",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Gretchen Orn",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Marvin McClure",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Demarco Purdy",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Paris Bernier",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Katelin Tromp",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Linnie Stehr",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Abdullah Hills",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-    Tutor(
-        imageUrl: "assets/imgs/avt.jpg",
-        name: "Torey Watsica",
-        bio:
-            "Aliquid beatae esse dolorem corporis ex. Et quidem qui nam numquam doloremque. Quaerat molestias repellat aut sint."),
-  ];
+  String name = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _buildTutorCard(BuildContext context, int index) {
     ThemeData theme = Theme.of(context);
-    Tutor tutor = _tutors[index];
-    bool isFavorite = false;
-    if (_favoriteIdx.contains(index)) isFavorite = true;
+    final tutorList = context.read<TutorList>();
+    final tutor = tutorList.displayedTutors[index];
 
     return GestureDetector(
-      onTap: widget.onItemSelect,
+      onTap: () {
+        // context.push('/list/0');
+        context.push('/tutor/${tutor.id}');
+      },
       child: Container(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: BoxDecoration(
@@ -99,17 +61,16 @@ class _TutorListPageState extends State<TutorListPage> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(999),
-                  child: Image.asset(
+                  child: Image.network(
                     "${tutor.imageUrl}",
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
                   ),
                 ),
-                hpad(10),
+                hpad(5),
                 Expanded(
                   child: Column(
-                    mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -122,41 +83,37 @@ class _TutorListPageState extends State<TutorListPage> {
                       Row(
                         children: [
                           Icon(Icons.flag),
-                          Text("Vietnam"),
+                          Text("${tutor.country}"),
                         ],
                       ),
-                      RatingBarIndicator(
-                        itemBuilder: (context, index) => Icon(
-                          Icons.star_rounded,
-                          color: Colors.amber,
-                        ),
-                        rating: 3,
-                        unratedColor: Colors.grey,
-                        itemCount: 5,
-                        itemSize: 20.0,
+                      Row(
+                        children: [
+                          RatingBarIndicator(
+                            itemBuilder: (context, index) => Icon(
+                              Icons.star_rounded,
+                              color: Colors.amber,
+                            ),
+                            rating: tutor.rating!,
+                            unratedColor: Colors.grey,
+                            itemCount: 5,
+                            itemSize: 20.0,
+                          ),
+                          hpad(5),
+                          Text(tutor.rating!.toStringAsFixed(1)),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                ToggleIcon(
-                  onPressed: () {
-                    setState(() {
-                      if (isFavorite) {
-                        _favoriteIdx.remove(index);
-                      } else {
-                        _favoriteIdx.add(index);
-                      }
-                      isFavorite = !isFavorite;
-                    });
-                  },
-                  value: isFavorite,
+                ProFavToggleIcon(
+                  tutorId: tutor.id,
+                  hook: (isToggled) {},
                 )
               ],
             ),
             vpad(5),
-            ProChipsFromString(
-              string:
-                  "a, aa, aaa, aaaa, aa aa, aaaaaaa, , verylonggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+            ProChipsFromList(
+              list: tutor.specialties!.toList(),
             ),
             vpad(5),
             Align(
@@ -174,92 +131,108 @@ class _TutorListPageState extends State<TutorListPage> {
     );
   }
 
+  var key = UniqueKey();
+
   Widget _buildEndDrawer() {
-    final theme = Theme.of(context);
+    if (!mounted) return Container();
+    final tutorInfo = context.read<TutorInfo>();
+    final searchFilter = context.read<SearchFilter>();
+    final nameController = TextEditingController(text: searchFilter.name);
     return Drawer(
+      key: key,
       width: MediaQuery.of(context).size.width * .85,
       child: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                vpad(20),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Filter",
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+            child: Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Heading1(text: "Filter"),
+                  Divider(),
+                  vpad(10),
+                  Heading2(text: "Name"),
+                  // TODO: Implement auto complete
+                  TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter tutor name',
                     ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Name",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                TextFormField(
-                  // controller: controller,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    hintText: 'Enter tutor name',
-                    // contentPadding:
-                    // EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
                   ),
-                ),
-                vpad(10),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Nationality",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  vpad(10),
+                  Heading2(text: "Nationality"),
+                  ProFilterChip(
+                    all: tutorInfo.availNationalities.toList(),
+                    selected: searchFilter.nationalities.toList(),
+                    hook: (selected) {
+                      searchFilter.nationalities = selected;
+                    },
+                  ),
+                  vpad(10),
+                  Heading2(text: "Specialties"),
+                  ProFilterChip(
+                    all: tutorInfo.availSpecialities.toList(),
+                    selected: searchFilter.specialties.toList(),
+                    hook: (selected) {
+                      searchFilter.specialties = selected;
+                    },
+                  ),
+                  Heading2(text: "Sort"),
+                  ProChoiceChip(
+                    all: {"Favorite", "Rating", "Price"},
+                    selected: searchFilter.sort,
+                    hook: (selected) {
+                      if (selected != null) {
+                        searchFilter.sort = selected;
+                      }
+                    },
+                  ),
+                  vpad(30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ProNegButton(
+                        label: "Reset",
+                        onPressed: () {
+                          searchFilter.nationalities.clear();
+                          searchFilter.specialties.clear();
+                          nameController.clear();
+                          setState(() {
+                            key = UniqueKey();
+                          });
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                ProChipsFromString(string: "Vietnamese, English"),
-                vpad(10),
-                Row(
-                  children: [
-                    hpad(20),
-                    Text(
-                      "Specialities",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      ProPosButton(
+                        label: "Confirm",
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          final tutorList = context.read<TutorList>();
+                          tutorList.displayedTutors = tutorList.tutors;
+                          searchFilter.name = nameController.text;
+                          print(searchFilter);
+                          if (searchFilter.name != "") {
+                            tutorList.filterByName(searchFilter.name);
+                          }
+                          if (searchFilter.nationalities.isNotEmpty) {
+                            tutorList.filtelByNationalities(
+                                searchFilter.nationalities.toList());
+                          }
+                          if (searchFilter.specialties.isNotEmpty) {
+                            tutorList.filterBySpecialty(
+                                searchFilter.specialties.toList());
+                          }
+                          if (searchFilter.sort != "") {
+                            tutorList.sortBy(searchFilter.sort);
+                          }
+                          setState(() {});
+                          scaffoldKey.currentState?.closeEndDrawer();
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                ProChipsFromString(
-                    string:
-                        "All, Reversing, Pwn, Web, Cryptography, Forensics"),
-                vpad(10),
-                Divider(),
-                vpad(10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ProNegButton(label: "Reset"),
-                    ProPosButton(
-                      label: "Confirm",
-                      icon: Icon(Icons.search),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -270,6 +243,8 @@ class _TutorListPageState extends State<TutorListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final auth = AuthService();
+    final scheduleInfo = context.watch<ScheduleInfo>();
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -283,7 +258,20 @@ class _TutorListPageState extends State<TutorListPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ProfileButton(),
+                  Text(
+                    auth.username, // replace with your username variable
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  IconButton(
+                    icon: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          auth.avatar), // replace with your image url
+                      radius: 20,
+                    ),
+                    onPressed: () {
+                      context.push('/settings');
+                    },
+                  ),
                   hpad(20),
                 ],
               ),
@@ -291,7 +279,10 @@ class _TutorListPageState extends State<TutorListPage> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    UpcomingBanner(onJoin: widget.onJoinMeeting),
+                    if (scheduleInfo.bookedLessons!.isNotEmpty) // Add this line
+                      UpcomingBanner(onJoin: () {
+                        context.push('/meet/wait');
+                      }),
                     vpad(10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -326,7 +317,8 @@ class _TutorListPageState extends State<TutorListPage> {
                         return _buildTutorCard(context, index);
                       },
                       shrinkWrap: true,
-                      itemCount: _tutors.length,
+                      itemCount:
+                          context.read<TutorList>().displayedTutors.length,
                       physics: NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) => vpad(10),
                     ),
@@ -336,78 +328,6 @@ class _TutorListPageState extends State<TutorListPage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ToggleIcon extends StatelessWidget {
-  const ToggleIcon({
-    super.key,
-    required this.value,
-    required this.onPressed,
-    this.onIcon = const Icon(
-      Icons.favorite,
-      color: Colors.pink,
-    ),
-    this.offIcon = const Icon(
-      Icons.favorite_border_outlined,
-      color: Colors.pink,
-    ),
-  });
-
-  final Widget onIcon, offIcon;
-  final Function() onPressed;
-  final bool value;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      icon: value ? onIcon : offIcon,
-    );
-  }
-}
-
-class ProPosButton extends StatelessWidget {
-  const ProPosButton({
-    super.key,
-    required this.label,
-    this.icon,
-  });
-
-  final String label;
-  final Icon? icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: () {},
-      child: Row(
-        children: [
-          icon ?? SizedBox.shrink(),
-          Text(label),
-        ],
-      ),
-    );
-  }
-}
-
-class ProNegButton extends StatelessWidget {
-  const ProNegButton({super.key, required this.label, this.icon});
-  final String label;
-  final Icon? icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: () {},
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(color: Colors.black12),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(color: Colors.red),
       ),
     );
   }
