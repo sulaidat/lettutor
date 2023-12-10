@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/api/api.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/login_page/password_field_model.dart';
 import 'package:lettutor/src/login_page/pro_password_form_field.dart';
@@ -74,10 +75,8 @@ class _LoginPageState extends State<LoginPage> {
                         if (formKey.currentState!.validate()) {
                           auth.logIn(usernameModel.controller?.value.text ?? '',
                               passwordModel.controller?.value.text ?? '');
-                          context.go('/tutor/all');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Logged in')),
-                          );
+                          _login(usernameModel.controller!.value.text,
+                              passwordModel.controller!.value.text, context);
                         }
                         auth.onLogin = false;
                       },
@@ -138,5 +137,24 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _login(String email, String password, BuildContext context) async {
+    final api = Api();
+    final user = await api.login(email, password, context);
+    if (context.mounted) {
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Logged in')),
+        );
+        var auth = AuthService();
+        auth.isLoggedIn = true;
+        context.go('/list/all');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login failed')),
+        );
+      }
+    }
   }
 }

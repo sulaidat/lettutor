@@ -22,6 +22,11 @@ class AuthService extends ChangeNotifier {
 
   bool get isLoggedIn => _isLoggedIn;
 
+  set isLoggedIn(bool value) {
+    _isLoggedIn = value;
+    notifyListeners();
+  }
+
   bool userExists(String username) {
     return _users.containsKey(username);
   }
