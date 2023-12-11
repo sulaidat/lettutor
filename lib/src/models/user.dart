@@ -1,5 +1,3 @@
-
-
 class User {
   String? id;
   String? email;
@@ -90,8 +88,7 @@ class User {
     studentGroupId = json['studentGroupId'];
   }
 
-
-  User.fromJsonFromRegister(Map<String, dynamic> json) {
+  User.fromJsonFromRegisterResponse(Map<String, dynamic> json) {
     id = json['id'];
     email = json['email'];
     name = json['name'];

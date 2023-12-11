@@ -1,54 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/api/api.dart';
+import 'package:lettutor/src/custom_widgets/pro_heading.dart';
+import 'package:lettutor/src/custom_widgets/pro_neg_button.dart';
+import 'package:lettutor/src/custom_widgets/pro_pos_button.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
-  const ForgotPasswordPage({super.key});
+  ForgotPasswordPage({super.key});
+
+  final TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-
-    return Scaffold(
-      appBar: AppBar(title: Text('Forgot Password')),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(
-                    labelText: 'Email', border: OutlineInputBorder()),
-                validator: (value) {
-                  var auth = AuthService();
-                  if (auth.userExists(emailController.text) == false) {
-                    return 'Email does not exist';
-                  }
-                  return null;
-                },
+    final theme = Theme.of(context);
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Image.asset(
+              "assets/imgs/logo.png",
+              width: 100,
+              height: 100,
+            ),
+            Text(
+              "Lettutor",
+              style: theme.textTheme.displayMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Heading1(text: "Forgot password?"),
+                  Text("Provide your email to reset your password"),
+                  TextFormField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      hintText: "Enter your email",
+                      prefixIcon: Icon(Icons.email),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      ProNegButton(
+                        label: "Cancel",
+                        onPressed: () {
+                          context.go('/login');
+                        },
+                      ),
+                      Spacer(),
+                      ProPosButton(
+                        label: "Send reset link",
+                        onPressed: () {
+                          _sendResetLink(emailController.value.text, context);
+                        },
+                      ),
+                    ],
+                  )
+                ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    var auth = AuthService();
-                    auth.sendPasswordResetEmail(
-                        emailController.text); // do nothing
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Password reset email sent')),
-                    );
-                    context.go('/reset_password');
-                  }
-                },
-                child: Text('Send Password Reset Email'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void _sendResetLink(String email, BuildContext context) async {
+    final res = await Api.forgotPassword(email);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res),
+        ),
+      );
+      context.go("/login");
+    }
   }
 }

@@ -70,15 +70,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        var auth = AuthService();
-                        auth.onLogin = true;
+                        Auth.onLogin = true;
                         if (formKey.currentState!.validate()) {
-                          auth.logIn(usernameModel.controller?.value.text ?? '',
-                              passwordModel.controller?.value.text ?? '');
                           _login(usernameModel.controller!.value.text,
                               passwordModel.controller!.value.text, context);
                         }
-                        auth.onLogin = false;
+                        Auth.onLogin = false;
                       },
                       child: Text("Login"),
                     ),
@@ -140,21 +137,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login(String email, String password, BuildContext context) async {
-    final api = Api();
-    final user = await api.login(email, password, context);
-    if (context.mounted) {
-      if (user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Logged in')),
-        );
-        var auth = AuthService();
-        auth.isLoggedIn = true;
-        context.go('/list/all');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login failed')),
-        );
-      }
+    final user = await Api.login(email, password, context);
+    if (user != null) {
+      Auth.isLoggedIn = true;
+      context.go('/tutor/all');
     }
   }
 }

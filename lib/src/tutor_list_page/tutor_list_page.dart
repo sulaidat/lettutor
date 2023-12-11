@@ -243,7 +243,7 @@ class _TutorListPageState extends State<TutorListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final auth = AuthService();
+    final auth = Auth();
     final scheduleInfo = context.watch<ScheduleInfo>();
 
     return Scaffold(
@@ -255,26 +255,26 @@ class _TutorListPageState extends State<TutorListPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    auth.username, // replace with your username variable
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  IconButton(
-                    icon: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          auth.avatar), // replace with your image url
-                      radius: 20,
-                    ),
-                    onPressed: () {
-                      context.push('/settings');
-                    },
-                  ),
-                  hpad(20),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     Text(
+              //       auth.username, // replace with your username variable
+              //       style: TextStyle(fontSize: 16),
+              //     ),
+              //     IconButton(
+              //       icon: CircleAvatar(
+              //         backgroundImage: NetworkImage(
+              //             auth.avatar), // replace with your image url
+              //         radius: 20,
+              //       ),
+              //       onPressed: () {
+              //         context.push('/settings');
+              //       },
+              //     ),
+              //     hpad(20),
+              //   ],
+              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(

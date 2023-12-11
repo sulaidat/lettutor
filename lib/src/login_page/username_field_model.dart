@@ -21,21 +21,21 @@ class UsernameFieldModel {
           .hasMatch(value)) {
         return 'Please enter a valid email address';
       }
-      var auth = AuthService();
-      if (auth.onReset) return null;
-      if (auth.onLogin) {
-        if (auth.userExists(value)) {
-          return null;
-        } else {
-          return 'This email is not registered';
-        }
-      } else {
-        if (auth.userExists(value)) {
-          return 'This email is already registered';
-        } else {
-          return null;
-        }
-      }
+      if (Auth.onReset) return null;
+      return null;
+      // if (Auth.onLogin) {
+      //   if (Auth.userExists(value)) {
+      //     return null;
+      //   } else {
+      //     return 'This email is not registered';
+      //   }
+      // } else {
+      //   if (Auth.userExists(value)) {
+      //     return 'This email is already registered';
+      //   } else {
+      //     return null;
+      //   }
+      // }
     };
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/api/api.dart';
 import 'package:lettutor/src/login_page/password_field_model.dart';
 import 'package:lettutor/src/login_page/pro_confirm_password_form_field.dart';
 import 'package:lettutor/src/login_page/username_field_model.dart';
@@ -78,15 +78,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print("RegisterPage::ElevatedButton pressed");
                         if (formKey.currentState!.validate()) {
-                          var auth = AuthService();
-                          auth.register(usernameModel.controller!.value.text,
-                              passwordModel.controller!.value.text);
-                          context.go('/login');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Registered')),
-                          );
+                          _register(usernameModel.controller!.value.text,
+                              passwordModel.controller!.value.text, context);
                         }
                       },
                       child: Text("Register"),
@@ -146,5 +140,25 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  void _register(String email, String password, BuildContext context) {
+    final user = Api.register(email, password, context);
+    if (context.mounted) {
+      if (user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Register successfully"),
+          ),
+        );
+        context.go('/verify_account', extra: email);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Register failed, something went wrong"),
+          ),
+        );
+      }
+    }
   }
 }

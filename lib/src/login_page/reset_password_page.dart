@@ -46,18 +46,18 @@ class ResetPasswordPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         print("Confirm button pressed");
-                        var auth = AuthService();
-                        auth.onReset = true;
-                        if (formKey.currentState!.validate()) {
-                          auth.changePassword(
-                              usernameModel.controller!.value.text,
-                              passwordModel.controller!.value.text);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Password reseted')),
-                          );
-                          context.go('/login');
-                        }
-                        auth.onReset = false;
+                        // var auth = Auth();
+                        // auth.onReset = true;
+                        // if (formKey.currentState!.validate()) {
+                        //   auth.changePassword(
+                        //       usernameModel.controller!.value.text,
+                        //       passwordModel.controller!.value.text);
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //     const SnackBar(content: Text('Password reseted')),
+                        //   );
+                        //   context.go('/login');
+                        // }
+                        // auth.onReset = false;
                       },
                       child: Text("Confirm"),
                     ),

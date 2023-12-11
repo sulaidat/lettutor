@@ -1,6 +1,7 @@
 final routeName = {
   '/login': 'login',
   '/register': 'register',
+  '/verify_account': 'verify_account',
   '/forgot_password': 'forgot_password',
   '/reset_password': 'reset_password',
   '/home': 'home',

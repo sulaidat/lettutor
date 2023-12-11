@@ -9,6 +9,7 @@ import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/login_page/register_page.dart';
 import 'package:lettutor/src/login_page/reset_password_page.dart';
+import 'package:lettutor/src/login_page/verify_page.dart';
 import 'package:lettutor/src/mock_data.dart';
 import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
@@ -29,6 +30,7 @@ import 'package:lettutor/src/tutor_list_page/tutor_details_page/reviews_page/rev
 import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List<Course> courses = [
   Course(
@@ -157,6 +159,13 @@ class AppRoutes {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  // static late SharedPreferences prefs;
+  // static late final String accessToken;
+
+  // Future<SharedPreferences> getShare() async {
+  //   return SharedPreferences.getInstance();
+  // }
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -204,17 +213,16 @@ class _MyAppState extends State<MyApp> {
       routerConfig: GoRouter(
         debugLogDiagnostics: true,
         initialLocation: '/tutor/all',
-        // TODO : IMPORTANT Remember to uncomment this
         redirect: (context, state) {
-          var auth = AuthService();
           var path = state.uri.path;
           print('Current path: $path');
-          if (auth.isLoggedIn) {
+          if (Auth.isLoggedIn) {
             return null;
           } else if (path.contains('login') ||
               path.contains('register') ||
               path.contains('forgot_password') ||
-              path.contains('reset_password')) {
+              path.contains('reset_password') ||
+              path.contains('verify_account')) {
             return path;
           }
           return '/login';
@@ -231,9 +239,17 @@ class _MyAppState extends State<MyApp> {
             builder: (context, state) => const RegisterPage(),
           ),
           GoRoute(
+            name: routeName['/verify_account'],
+            path: '/verify_account',
+            builder: (context, state) {
+              String email = state.extra! as String;
+              return VerifyPage(email: email);
+            },
+          ),
+          GoRoute(
             name: routeName['/forgot_password'],
             path: '/forgot_password',
-            builder: (context, state) => const ForgotPasswordPage(),
+            builder: (context, state) => ForgotPasswordPage(),
           ),
           GoRoute(
             name: routeName['/reset_password'],
