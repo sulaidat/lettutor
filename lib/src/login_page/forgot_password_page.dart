@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/api/api.dart';
+import 'package:lettutor/src/api/auth_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/custom_widgets/pro_neg_button.dart';
 import 'package:lettutor/src/custom_widgets/pro_pos_button.dart';
@@ -55,7 +55,17 @@ class ForgotPasswordPage extends StatelessWidget {
                       ProPosButton(
                         label: "Send reset link",
                         onPressed: () {
-                          _sendResetLink(emailController.value.text, context);
+                          _sendResetLink(
+                            emailController.value.text,
+                            (msg) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(msg),
+                                ),
+                              );
+                              context.go('/login');
+                            },
+                          );
                         },
                       ),
                     ],
@@ -69,15 +79,8 @@ class ForgotPasswordPage extends StatelessWidget {
     );
   }
 
-  void _sendResetLink(String email, BuildContext context) async {
-    final res = await Api.forgotPassword(email);
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(res),
-        ),
-      );
-      context.go("/login");
-    }
+  void _sendResetLink(String email, Function(String) hook) async {
+    final msg = await AuthApi.forgotPassword(email: email);
+    hook(msg);
   }
 }

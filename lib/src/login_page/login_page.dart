@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/api/api.dart';
+import 'package:lettutor/src/api/auth_api.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/login_page/password_field_model.dart';
 import 'package:lettutor/src/login_page/pro_password_form_field.dart';
 import 'package:lettutor/src/login_page/pro_text_form_field.dart';
 import 'package:lettutor/src/login_page/username_field_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,12 +16,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final emailModel = UsernameFieldModel();
+  final passwordModel = PasswordFieldModel();
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final usernameModel = UsernameFieldModel();
-    final passwordModel = PasswordFieldModel();
-    final formKey = GlobalKey<FormState>();
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -45,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                     ProTextFormField(
                       label: "Username",
                       icon: Icon(Icons.person),
-                      model: usernameModel,
+                      model: emailModel,
                     ),
                     ProPasswordFormField(
                       label: "Create password",
@@ -70,12 +72,26 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Auth.onLogin = true;
+                        AppState.onLogin = true;
                         if (formKey.currentState!.validate()) {
-                          _login(usernameModel.controller!.value.text,
-                              passwordModel.controller!.value.text, context);
+                          _login((success, e) {
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Login success"),
+                                ),
+                              );
+                              context.go('/tutor/all');
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.toString()),
+                                ),
+                              );
+                            }
+                          });
                         }
-                        Auth.onLogin = false;
+                        AppState.onLogin = false;
                       },
                       child: Text("Login"),
                     ),
@@ -136,11 +152,22 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login(String email, String password, BuildContext context) async {
-    final user = await Api.login(email, password, context);
-    if (user != null) {
-      Auth.isLoggedIn = true;
-      context.go('/tutor/all');
+  void _login(Function(bool, dynamic) hook) async {
+    try {
+      final email = emailModel.controller!.value.text;
+      final password = passwordModel.controller!.value.text;
+      final (user, token) = await AuthApi.login(
+        email: email,
+        password: password,
+      );
+      AppState.isLoggedIn = true;
+      AppState.user = user;
+      AppState.token = token;
+      var pref = await SharedPreferences.getInstance();
+      pref.setString("refresh_token", token.refresh!.token!);
+      hook(true, '');
+    } catch (e) {
+      hook(false, e);
     }
   }
 }

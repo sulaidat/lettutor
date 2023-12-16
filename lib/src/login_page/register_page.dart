@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/api/api.dart';
+import 'package:lettutor/src/api/auth_api.dart';
 import 'package:lettutor/src/login_page/password_field_model.dart';
 import 'package:lettutor/src/login_page/pro_confirm_password_form_field.dart';
 import 'package:lettutor/src/login_page/username_field_model.dart';
+import 'package:lettutor/src/models/user/token.dart';
+import 'package:lettutor/src/models/user/user.dart';
 
 import 'pro_password_form_field.dart';
 import 'pro_text_form_field.dart';
@@ -79,8 +81,29 @@ class _RegisterPageState extends State<RegisterPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          _register(usernameModel.controller!.value.text,
-                              passwordModel.controller!.value.text, context);
+                          _register(
+                            usernameModel.controller!.value.text,
+                            passwordModel.controller!.value.text,
+                            (success, e) {
+                              if (success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Register success"),
+                                  ),
+                                );
+                                context.go('/verify_account',
+                                    extra:
+                                        usernameModel.controller!.value.text);
+                              } else {
+                                print(e);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(e ?? "Register failed"),
+                                  ),
+                                );
+                              }
+                            },
+                          );
                         }
                       },
                       child: Text("Register"),
@@ -142,23 +165,13 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _register(String email, String password, BuildContext context) {
-    final user = Api.register(email, password, context);
-    if (context.mounted) {
-      if (user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Register successfully"),
-          ),
-        );
-        context.go('/verify_account', extra: email);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Register failed, something went wrong"),
-          ),
-        );
-      }
+  void _register(
+      String email, String password, Function(bool, String?) hook) async {
+    try {
+      await AuthApi.register(email: email, password: password);
+      hook(true, null);
+    } catch (e) {
+      hook(false, e.toString());
     }
   }
 }

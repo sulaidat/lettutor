@@ -21,7 +21,7 @@ class UsernameFieldModel {
           .hasMatch(value)) {
         return 'Please enter a valid email address';
       }
-      if (Auth.onReset) return null;
+      if (AppState.onReset) return null;
       return null;
       // if (Auth.onLogin) {
       //   if (Auth.userExists(value)) {

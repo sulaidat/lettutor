@@ -243,7 +243,6 @@ class _TutorListPageState extends State<TutorListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final auth = Auth();
     final scheduleInfo = context.watch<ScheduleInfo>();
 
     return Scaffold(

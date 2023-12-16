@@ -216,7 +216,7 @@ class _MyAppState extends State<MyApp> {
         redirect: (context, state) {
           var path = state.uri.path;
           print('Current path: $path');
-          if (Auth.isLoggedIn) {
+          if (AppState.isLoggedIn) {
             return null;
           } else if (path.contains('login') ||
               path.contains('register') ||
@@ -268,6 +268,7 @@ class _MyAppState extends State<MyApp> {
                     var p when p.startsWith('/list') => 0,
                     var p when p.startsWith('/schedule') => 1,
                     var p when p.startsWith('/courses') => 2,
+                    var p when p.startsWith('/settings') => 3,
                     _ => 0,
                   },
                   child: child,
