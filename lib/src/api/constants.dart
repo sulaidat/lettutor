@@ -15,11 +15,16 @@ class Constants {
       "auth/verifyAccount"; // auth/verifyAccount?token=123
   static String refreshToken = "auth/refresh-token";
   static String forgotPassword = "user/forgotPassword";
-  static authOption(String token) =>
-      Options(headers: {'Authorization': 'Bearer $token'});
+  static authOption(String token) => Options(
+        headers: {'Authorization': 'Bearer $token'},
+        validateStatus: (status) {
+          return status! < 500;
+        },
+      );
 
   // user api
   static String userInfo = "${baseUrl}user/info";
+  static String total = "${baseUrl}call/total";
 
   // tutor api
   static tutorListWithPage({
@@ -36,20 +41,19 @@ class Constants {
   static String tutorSearch = "${baseUrl}tutor/search";
   static String addToFavorite = "${baseUrl}user/manageFavoriteTutor";
   static String report = "${baseUrl}report";
-  
+
   // schedule api
-  static String callTotal = "call/total";
-  static String upcommingLesson(DateTime dateTime) {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    return "booking/next?date=$now";
-  }
+  static String callTotal = "${baseUrl}call/total";
+  static String upcommingLesson = "${baseUrl}booking/next";
+
   static String bookedClassesWithPage({
     required int page,
-    required int perPage, 
+    required int perPage,
   }) {
     final now = DateTime.now().millisecondsSinceEpoch;
     return '${baseUrl}booking/list/student?page=$page&perPage=$perPage&dateTimeGte=$now&orderBy=meeting&sortBy=asc';
   }
+
   static String learnTopic = "${baseUrl}learn-topic";
   static String testPreparation = "${baseUrl}test-preparation";
 
@@ -58,9 +62,10 @@ class Constants {
     required int page,
     required int size,
     required String search,
-  })  {
+  }) {
     return '${baseUrl}course?page=$page&size=$size${search.isNotEmpty ? '&q=$search' : ''}';
   }
+
   static String courseById(String id) {
     return '${baseUrl}course/$id';
   }
@@ -68,10 +73,7 @@ class Constants {
   // booking api
   static String schedule = "${baseUrl}schedule";
   static String booking = "${baseUrl}booking";
-
 }
-
-
 
 const countryList = {
   "AF": "Afghanistan",

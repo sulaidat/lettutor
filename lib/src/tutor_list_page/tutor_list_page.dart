@@ -278,10 +278,9 @@ class _TutorListPageState extends State<TutorListPage> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    if (scheduleInfo.bookedLessons!.isNotEmpty) // Add this line
-                      UpcomingBanner(onJoin: () {
-                        context.push('/meet/wait');
-                      }),
+                    // if (scheduleInfo.bookedLessons!.isNotEmpty) // Add this line
+                    vpad(10),
+                    UpcomingBanner(),
                     vpad(10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
