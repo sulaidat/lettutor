@@ -23,6 +23,9 @@ class UserApi {
       throw Exception(res.data['message']);
     }
     final List<dynamic> data = res.data["data"];
+    if (data.isEmpty) {
+      throw Exception("You have not booked any lesson");
+    }
     List<BookingInfo> lessons = data.map((e) => BookingInfo.fromJson(e)).toList();
     lessons.sort(
       (a, b) {

@@ -28,8 +28,22 @@ class AuthApi {
   // TODO
   // static loginByGoogle() {}
   // static loginByFacebook() {}
-  // static continueSession() {}
-  // static continueSession() {}
+
+  static refreshToken({required String refreshToken}) async {
+    final res = await Dio().post(
+      "${Constants.baseUrl}${Constants.refreshToken}",
+      data: {
+        "refreshToken": refreshToken,
+        "timezone": "7",
+      },
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    final user = User.fromJson(res.data['user']);
+    final token = Token.fromJson(res.data['tokens']);
+    return (user, token);
+  }
 
   static register({required String email, required String password}) async {
     final res =

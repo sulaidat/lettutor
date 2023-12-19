@@ -19,6 +19,7 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
   late BookingInfo _upcomingClass;
   bool _isLoading = true;
   bool _isError = false;
+  late String _msg;
 
   _fetchTotalLessonTime(String token) async {
     try {
@@ -34,7 +35,7 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
       }
     } catch (e) {
       setState(() {
-        print(e.toString());
+        _msg = e.toString().substring(11);
         _isError = true;
       });
     }
@@ -78,7 +79,7 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
           ? Center(
               child: _isError
                   ? Text(
-                      "Error when fetching data",
+                      _msg,
                       style: theme.textTheme.bodyMedium
                           ?.copyWith(color: theme.colorScheme.onPrimary),
                     )
