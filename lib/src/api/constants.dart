@@ -18,7 +18,7 @@ class Constants {
   static authOption(String token) => Options(
         headers: {'Authorization': 'Bearer $token'},
         validateStatus: (status) {
-          return status! < 500;
+          return status! <= 500;
         },
       );
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lettutor/src/api/auth_api.dart';
 import 'package:lettutor/src/api/constants.dart';
 import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/models/topic.dart';
 import 'package:lettutor/src/models/user/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,8 +15,8 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   String birthday = '';
-  List<Topic> chosenTestPreparations = [];
-  List<Topic> chosenTopics = [];
+  List<TestPreparation> chosenTestPreparations = [];
+  List<LearnTopic> chosenTopics = [];
   String country = '';
   String emailAddress = '';
   String level = '';

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/api/tutor_api.dart';
+import 'package:lettutor/src/api/user_api.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lettutor/src/models/tutor/tutor.dart';
+// import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor_info.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
+import 'package:lettutor/src/tutor_list_page/tutor_card.dart';
 import 'package:provider/provider.dart';
 
 import '../custom_widgets/pro_chips_from_string.dart';
@@ -16,7 +21,6 @@ import '../custom_widgets/pro_neg_button.dart';
 import '../custom_widgets/pro_pos_button.dart';
 import '../helpers/padding.dart';
 import '../custom_widgets/pro_filter_chip.dart';
-import 'profile_button.dart';
 import 'upcoming_banner.dart';
 
 class TutorListPage extends StatefulWidget {
@@ -31,105 +35,122 @@ class TutorListPage extends StatefulWidget {
 class _TutorListPageState extends State<TutorListPage> {
   String name = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isLoading = true;
+  List<Tutor> _tutors = [];
 
-  Widget _buildTutorCard(BuildContext context, int index) {
-    ThemeData theme = Theme.of(context);
-    final tutorList = context.read<TutorList>();
-    final tutor = tutorList.displayedTutors[index];
-
-    return GestureDetector(
-      onTap: () {
-        // context.push('/list/0');
-        context.push('/tutor/${tutor.id}');
-      },
-      child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.background,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 4,
-              color: Colors.grey,
-              offset: Offset(0, 2),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: Image.network(
-                    "${tutor.imageUrl}",
-                    width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                hpad(5),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${tutor.name}",
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onBackground,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.flag),
-                          Text("${tutor.country}"),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          RatingBarIndicator(
-                            itemBuilder: (context, index) => Icon(
-                              Icons.star_rounded,
-                              color: Colors.amber,
-                            ),
-                            rating: tutor.rating!,
-                            unratedColor: Colors.grey,
-                            itemCount: 5,
-                            itemSize: 20.0,
-                          ),
-                          hpad(5),
-                          Text(tutor.rating!.toStringAsFixed(1)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                ProFavToggleIcon(
-                  tutorId: tutor.id,
-                  hook: (isToggled) {},
-                )
-              ],
-            ),
-            vpad(5),
-            ProChipsFromList(
-              list: tutor.specialties!.toList(),
-            ),
-            vpad(5),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "${tutor.bio}",
-                maxLines: 4,
-                overflow: TextOverflow.fade,
-                style: theme.textTheme.bodyMedium,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+  _fetchTutors() async {
+    try {
+      _tutors = await TutorApi.getListTutorWithPage(
+        page: 1,
+        perPage: 100,
+        token: AppState.token.access!.token!,
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      final msg = e.toString().substring(11);
+      print(msg);
+    }
   }
+
+  // Widget _buildTutorCard(BuildContext context, Tutor tutor) {
+  //   ThemeData theme = Theme.of(context);
+  //   // final tutorList = context.read<TutorList>();
+  //   // final tutor = tutorList.displayedTutors[index];
+
+  //   return GestureDetector(
+  //     onTap: () {
+  //       context.push('/tutor/${tutor.id}');
+  //     },
+  //     child: Container(
+  //       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+  //       decoration: BoxDecoration(
+  //         color: theme.colorScheme.background,
+  //         boxShadow: [
+  //           BoxShadow(
+  //             blurRadius: 4,
+  //             color: Colors.grey,
+  //             offset: Offset(0, 2),
+  //           ),
+  //         ],
+  //         borderRadius: BorderRadius.circular(10),
+  //       ),
+  //       child: Column(
+  //         children: [
+  //           Row(
+  //             children: [
+  //               ClipRRect(
+  //                 borderRadius: BorderRadius.circular(999),
+  //                 child: Image.network(
+  //                   "${tutor.imageUrl}",
+  //                   width: 70,
+  //                   height: 70,
+  //                   fit: BoxFit.cover,
+  //                 ),
+  //               ),
+  //               hpad(5),
+  //               Expanded(
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                       "${tutor.name}",
+  //                       style: theme.textTheme.titleMedium?.copyWith(
+  //                         color: theme.colorScheme.onBackground,
+  //                         fontWeight: FontWeight.w600,
+  //                       ),
+  //                     ),
+  //                     Row(
+  //                       children: [
+  //                         Icon(Icons.flag),
+  //                         Text("${tutor.country}"),
+  //                       ],
+  //                     ),
+  //                     Row(
+  //                       children: [
+  //                         RatingBarIndicator(
+  //                           itemBuilder: (context, index) => Icon(
+  //                             Icons.star_rounded,
+  //                             color: Colors.amber,
+  //                           ),
+  //                           rating: tutor.rating!,
+  //                           unratedColor: Colors.grey,
+  //                           itemCount: 5,
+  //                           itemSize: 20.0,
+  //                         ),
+  //                         hpad(5),
+  //                         Text(tutor.rating!.toStringAsFixed(1)),
+  //                       ],
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               ProFavToggleIcon(
+  //                 tutorId: tutor.id,
+  //                 hook: (isToggled) {},
+  //               )
+  //             ],
+  //           ),
+  //           vpad(5),
+  //           ProChipsFromList(
+  //             list: tutor.specialties!.toList(),
+  //           ),
+  //           vpad(5),
+  //           Align(
+  //             alignment: Alignment.centerLeft,
+  //             child: Text(
+  //               "${tutor.bio}",
+  //               maxLines: 4,
+  //               overflow: TextOverflow.fade,
+  //               style: theme.textTheme.bodyMedium,
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   var key = UniqueKey();
 
@@ -245,6 +266,10 @@ class _TutorListPageState extends State<TutorListPage> {
     final theme = Theme.of(context);
     final scheduleInfo = context.watch<ScheduleInfo>();
 
+    if (_isLoading) {
+      _fetchTutors();
+    }
+
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawerEnableOpenDragGesture: false,
@@ -254,31 +279,10 @@ class _TutorListPageState extends State<TutorListPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     Text(
-              //       auth.username, // replace with your username variable
-              //       style: TextStyle(fontSize: 16),
-              //     ),
-              //     IconButton(
-              //       icon: CircleAvatar(
-              //         backgroundImage: NetworkImage(
-              //             auth.avatar), // replace with your image url
-              //         radius: 20,
-              //       ),
-              //       onPressed: () {
-              //         context.push('/settings');
-              //       },
-              //     ),
-              //     hpad(20),
-              //   ],
-              // ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   children: [
-                    // if (scheduleInfo.bookedLessons!.isNotEmpty) // Add this line
                     vpad(10),
                     UpcomingBanner(),
                     vpad(10),
@@ -310,16 +314,20 @@ class _TutorListPageState extends State<TutorListPage> {
                       ],
                     ),
                     vpad(10),
-                    ListView.separated(
-                      itemBuilder: (context, index) {
-                        return _buildTutorCard(context, index);
-                      },
-                      shrinkWrap: true,
-                      itemCount:
-                          context.read<TutorList>().displayedTutors.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) => vpad(10),
-                    ),
+                    _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.separated(
+                            itemBuilder: (context, index) {
+                              return TutorCard(tutor: _tutors[index]);
+                            },
+                            shrinkWrap: true,
+                            itemCount: context
+                                .read<TutorList>()
+                                .displayedTutors
+                                .length,
+                            physics: NeverScrollableScrollPhysics(),
+                            separatorBuilder: (context, index) => vpad(10),
+                          ),
                   ],
                 ),
               ),

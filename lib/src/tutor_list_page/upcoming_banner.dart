@@ -16,25 +16,41 @@ class UpcomingBanner extends StatefulWidget {
 
 class _UpcomingBannerState extends State<UpcomingBanner> {
   late Duration _totalLessonTime;
-  late BookingInfo _upcomingClass;
-  bool _isLoading = true;
+  late BookingInfo? _upcomingClass;
+  bool _isLoading1 = true;
+  bool _isLoading2 = true;
   bool _isError = false;
   late String _msg;
+
+  _fetUpcomingLesson(String token) async {
+    try {
+      final upcoming = await UserApi.getUpcomingLesson(token: token);
+
+      setState(() {
+        _upcomingClass = upcoming;
+        _isLoading1 = false;
+        _isError = false;
+      });
+    } catch (e) {
+      setState(() {
+        // NOTE: loop until success
+        _msg = e.toString().substring(11);
+        _isError = true;
+      });
+    }
+  }
 
   _fetchTotalLessonTime(String token) async {
     try {
       final total = await UserApi.getTotalLessonTime(token: token);
-      final upcoming = await UserApi.getUpcomingLesson(token: token);
-
-      if (mounted) {
-        setState(() {
-          _totalLessonTime = Duration(minutes: total);
-          _upcomingClass = upcoming;
-          _isLoading = false;
-        });
-      }
+      setState(() {
+        _totalLessonTime = Duration(minutes: total);
+        _isLoading2 = false;
+        _isError = false;
+      });
     } catch (e) {
       setState(() {
+        // NOTE: loop until success
         _msg = e.toString().substring(11);
         _isError = true;
       });
@@ -57,9 +73,9 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if (_isLoading) {
-      final accessToken = AppState.token.access!.token;
-      _fetchTotalLessonTime(accessToken as String);
+    if (_isLoading1 && _isLoading2) {
+      _fetchTotalLessonTime(AppState.token.access!.token!);
+      _fetUpcomingLesson(AppState.token.access!.token!);
     }
 
     return Container(
@@ -75,7 +91,7 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
         borderRadius: BorderRadius.circular(10),
         color: theme.colorScheme.primary,
       ),
-      child: _isLoading
+      child: _isLoading1 || _isLoading2
           ? Center(
               child: _isError
                   ? Text(
@@ -99,25 +115,32 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${DateFormat.yMMMEd().format(DateTime.fromMillisecondsSinceEpoch(_upcomingClass.scheduleDetailInfo!.startPeriodTimestamp ?? 0))} "
-                          "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(_upcomingClass.scheduleDetailInfo!.startPeriodTimestamp ?? 0))} - "
-                          "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(_upcomingClass.scheduleDetailInfo!.endPeriodTimestamp ?? 0))}",
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.w600,
+                    _upcomingClass == null
+                        ? Text(
+                            "You have not booked any lesson",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${DateFormat.yMMMEd().format(DateTime.fromMillisecondsSinceEpoch(_upcomingClass?.scheduleDetailInfo!.startPeriodTimestamp ?? 0))} "
+                                "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(_upcomingClass?.scheduleDetailInfo!.startPeriodTimestamp ?? 0))} - "
+                                "${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(_upcomingClass?.scheduleDetailInfo!.endPeriodTimestamp ?? 0))}",
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onPrimary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              LessonCountdown(
+                                  upcomingLessonTime:
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                          _upcomingClass!.scheduleDetailInfo!
+                                              .startPeriodTimestamp!)),
+                            ],
                           ),
-                        ),
-                        LessonCountdown(
-                            upcomingLessonTime:
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    _upcomingClass.scheduleDetailInfo!
-                                        .startPeriodTimestamp!)),
-                      ],
-                    ),
                     hpad(10),
                     FilledButton(
                       style: FilledButton.styleFrom(
