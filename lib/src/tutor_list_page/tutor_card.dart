@@ -7,6 +7,7 @@ import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
+import 'package:lettutor/src/routes.dart';
 
 import '../custom_widgets/rating_bar.dart';
 
@@ -52,10 +53,11 @@ class _TutorCardState extends State<TutorCard> {
 
     return GestureDetector(
       onTap: () {
-        // setState(() {
-        //   _shouldFetch = true;
-        // });
-        context.push('/tutor/detail', extra: _tutorInfo.user!.id).then((value) {
+        context
+            .pushNamed(routeName['/tutor/detail']!,
+                queryParameters: {'tutorId': _tutorInfo.user!.id},
+                extra: widget.tutor)
+            .then((value) {
           setState(() {
             _shouldFetch = true;
           });

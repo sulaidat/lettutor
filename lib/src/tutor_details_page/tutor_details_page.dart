@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +17,11 @@ class TutorDetailsPage extends StatefulWidget {
   const TutorDetailsPage({
     super.key,
     required this.tutorId,
+    required this.tutor,
   });
 
   final String tutorId;
+  final Tutor tutor;
 
   @override
   State<TutorDetailsPage> createState() => _TutorDetailsPageState();
@@ -61,7 +65,7 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
               _shouldFetch
                   ? Center(child: CircularProgressIndicator())
                   : Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: Column(
                         children: [
                           Container(
@@ -87,7 +91,7 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     "${_tutorInfo.bio}",
-                                    maxLines: 4,
+                                    // maxLines: 4,
                                     overflow: TextOverflow.fade,
                                     style: theme.textTheme.bodyMedium,
                                   ),
@@ -98,15 +102,17 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Expanded(
-                                      child: ProToggleButton(
-                                        onPressed: () {
-                                          // context.push(
-                                          //     '/tutor/${_tutorInfo.totalFeedback}/review');
-                                        },
-                                        selectedIcon: Icons.star,
-                                        unselectedIcon: Icons.star_border,
-                                        isSelected: false,
-                                        label: "Reviews",
+                                      child: InkWell(
+                                        child: ProToggleButton(
+                                          onPressed: () {
+                                            context.push('/tutor/feedback',
+                                                extra: widget.tutor.feedbacks);
+                                          },
+                                          selectedIcon: Icons.star,
+                                          unselectedIcon: Icons.star_border,
+                                          isSelected: false,
+                                          label: "Reviews",
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
@@ -115,7 +121,7 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                     ),
                                     Expanded(
                                       child: ProToggleButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           // final tutorList = context.read<TutorList>();
                                           // showDialog(
                                           //   context: context,
@@ -130,6 +136,20 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                           //     );
                                           //   },
                                           // );
+                                          final res = await showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  ReportDialog(
+                                                    tutorId:
+                                                        widget.tutor.userId!,
+                                                  ));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(res.toString()),
+                                              duration: Duration(seconds: 1),
+                                            ),
+                                          );
                                         },
                                         selectedIcon: Icons.report,
                                         unselectedIcon:
@@ -261,27 +281,30 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
 class ReportDialog extends StatefulWidget {
   const ReportDialog({
     super.key,
-    required this.options,
-    required this.hook,
     required this.tutorId,
   });
 
   final String tutorId;
-  final List<String> options;
-  final ValueChanged<List<String>> hook;
 
   @override
   State<ReportDialog> createState() => _ReportDialogState();
 }
 
 class _ReportDialogState extends State<ReportDialog> {
-  late List<bool> selectedOptions;
-  String otherOption = '';
+  late List<bool> _selectedOptions;
+  final List<String> _options = [
+    'Inappropriate behavior',
+    'Inappropriate language',
+    'Inappropriate profile picture',
+    'Inappropriate video',
+    'Inappropriate teaching method',
+  ];
+  String _otherOption = '';
 
   @override
   void initState() {
     super.initState();
-    selectedOptions = List<bool>.filled(widget.options.length, false);
+    _selectedOptions = List<bool>.filled(_options.length, false);
   }
 
   @override
@@ -292,13 +315,13 @@ class _ReportDialogState extends State<ReportDialog> {
       ),
       title: Text('Report'),
       children: <Widget>[
-        for (int i = 0; i < widget.options.length; i++)
+        for (int i = 0; i < _options.length; i++)
           CheckboxListTile(
-            title: Text(widget.options[i]),
-            value: selectedOptions[i],
+            title: Text(_options[i]),
+            value: _selectedOptions[i],
             onChanged: (bool? value) {
               setState(() {
-                selectedOptions[i] = value!;
+                _selectedOptions[i] = value!;
               });
             },
           ),
@@ -306,7 +329,7 @@ class _ReportDialogState extends State<ReportDialog> {
           title: TextField(
             onChanged: (value) {
               setState(() {
-                otherOption = value;
+                _otherOption = value;
               });
             },
             decoration: InputDecoration(
@@ -325,22 +348,39 @@ class _ReportDialogState extends State<ReportDialog> {
             ),
             TextButton(
               onPressed: () {
-                var violations = selectedOptions
+                // var violations = _selectedOptions
+                //     .asMap()
+                //     .entries
+                //     .where((element) => element.value)
+                //     .map((e) => e.key)
+                //     .map((e) => _options[e])
+                //     .toList();
+                // if (_otherOption.isNotEmpty) {
+                //   violations.add(_otherOption);
+                // }
+                // context.read<TutorList>().reportTutor(
+                //       widget.tutorId,
+                //       violations,
+                //     );
+                // widget.hook(violations);
+                String content = _selectedOptions
                     .asMap()
                     .entries
                     .where((element) => element.value)
                     .map((e) => e.key)
-                    .map((e) => widget.options[e])
-                    .toList();
-                if (otherOption.isNotEmpty) {
-                  violations.add(otherOption);
+                    .map((e) => _options[e])
+                    .toList()
+                    .join(', ');
+                if (_otherOption.isNotEmpty) {
+                  content += ', $_otherOption';
                 }
-                context.read<TutorList>().reportTutor(
-                      widget.tutorId,
-                      violations,
-                    );
-                widget.hook(violations);
-                Navigator.pop(context);
+                TutorApi.reportTutor(
+                  token: AppState.token.access!.token!,
+                  tutorId: widget.tutorId,
+                  content: content,
+                ).then((value) {
+                  Navigator.pop(context, value);
+                });
               },
               child: Text('Submit'),
             ),
@@ -349,4 +389,6 @@ class _ReportDialogState extends State<ReportDialog> {
       ],
     );
   }
+
+  _reportTutor({required Function(String) hook}) async {}
 }

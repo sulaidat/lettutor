@@ -49,8 +49,26 @@ class TutorApi {
     if (res.statusCode != 200) {
       throw Exception(res.data['message']);
     }
-    final test = res.data;
     final tutorInfo = TutorInfo.fromJson(res.data);
     return tutorInfo;
+  }
+
+  static reportTutor({
+    required String token,
+    required String tutorId,
+    required String content,
+  }) async {
+    final res = await Dio().post(
+      Constants.report,
+      data: {
+        "tutorId": tutorId,
+        "content": content,
+      },
+      options: Constants.authOption(token),
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    return res.data['message'];
   }
 }

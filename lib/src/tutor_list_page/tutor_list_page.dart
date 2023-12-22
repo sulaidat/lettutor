@@ -165,7 +165,6 @@ class _TutorListPageState extends State<TutorListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheduleInfo = context.watch<ScheduleInfo>();
 
     if (_isLoading) {
       _fetchTutors();

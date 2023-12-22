@@ -14,6 +14,7 @@ import 'package:lettutor/src/mock_data.dart';
 import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
+import 'package:lettutor/src/models/tutor/tutor_feedback.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:lettutor/src/routes.dart';
@@ -27,7 +28,7 @@ import 'package:lettutor/src/models/topic.dart';
 import 'package:lettutor/src/schedule_page/history_page/history_page.dart';
 import 'package:lettutor/src/schedule_page/schedule_page.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
-import 'package:lettutor/src/reviews_page/reviews_page.dart';
+import 'package:lettutor/src/feedback_page/feedback_page.dart';
 import 'package:lettutor/src/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
 import 'package:provider/provider.dart';
@@ -294,28 +295,17 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
               GoRoute(
-                name: routeName['/tutor/detail'],
-                path: '/tutor/detail',
-                builder: (context, state) {
-                  final String tutorId = state.extra as String;
-                  return TutorDetailsPage(tutorId: tutorId);
-                },
-              ),
+                  name: routeName['/tutor/detail'],
+                  path: '/tutor/detail',
+                  builder: (context, state) => TutorDetailsPage(
+                        tutorId: state.uri.queryParameters['tutorId']!,
+                        tutor: state.extra as Tutor,
+                      )),
               GoRoute(
-                name: 'review',
-                path: '/tutor/:tutorId/review',
-                builder: (context, state) {
-                  String id = state.pathParameters['tutorId'] ?? '';
-                  if (id == '') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Something went wrong')),
-                    );
-                    context.pop(); // is this right?
-                  }
-                  return ReviewsPage(
-                    tutorId: id,
-                  );
-                },
+                name: routeName['/tutor/feedback'],
+                path: '/tutor/feedback',
+                builder: (context, state) =>
+                    FeedbackPage(feedbacks: state.extra as List<TutorFeedback>),
               ),
               GoRoute(
                 name: routeName['/schedule'],

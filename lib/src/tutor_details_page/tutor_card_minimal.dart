@@ -6,8 +6,6 @@ import 'package:lettutor/src/custom_widgets/rating_bar.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
-import 'package:lettutor/src/models/tutor_list.dart';
-import 'package:provider/provider.dart';
 
 class TutorCardMinimal extends StatefulWidget {
   const TutorCardMinimal({
@@ -109,45 +107,6 @@ class _TutorCardMinimalState extends State<TutorCardMinimal> {
             icon: _isFavorite
                 ? Icon(Icons.favorite, color: Colors.red)
                 : Icon(Icons.favorite_border, color: Colors.grey)),
-        // IconButton(
-        //   onPressed: () async {
-        //     setState(() {
-        //       _isFavorite = !_isFavorite;
-        //     });
-        //     try {
-        //       await TutorApi.addTutorToFavorite(
-        //         token: AppState.token.access!.token!,
-        //         tutorId: widget.tutor.userId!,
-        //       );
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(
-        //           content: Text(_isFavorite
-        //               ? "Added to favorite"
-        //               : "Removed from favorite"),
-        //           duration: Duration(seconds: 1),
-        //         ),
-        //       );
-        //       // _fetchTutorInfo(); // NOTE: use this is slow, we trust the apit addTutorToFavorite
-        //     } catch (e) {
-        //       print(e.toString());
-        //       setState(() {
-        //         _isFavorite = !_isFavorite;
-        //       });
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(
-        //           content: Text(e.toString()),
-        //           duration: Duration(seconds: 1),
-        //         ),
-        //       );
-        //     }
-        //   },
-        //   icon: _isFavorite
-        //       ? Icon(Icons.favorite, color: Colors.red)
-        //       : Icon(
-        //           Icons.favorite_border,
-        //           color: Colors.grey,
-        //         ),
-        // ),
       ],
     );
   }
