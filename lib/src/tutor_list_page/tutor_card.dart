@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_chips_from_string.dart';
-import 'package:lettutor/src/custom_widgets/pro_fav_toggle_icon.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
+
+import '../custom_widgets/rating_bar.dart';
 
 class TutorCard extends StatefulWidget {
   const TutorCard({super.key, required this.tutor});
@@ -19,8 +20,14 @@ class TutorCard extends StatefulWidget {
 }
 
 class _TutorCardState extends State<TutorCard> {
-  TutorInfo? _tutorInfo;
   bool _isFavorite = false;
+  bool _shouldFetch = true;
+  late TutorInfo _tutorInfo;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   _fetchTutorInfo() async {
     try {
@@ -28,7 +35,8 @@ class _TutorCardState extends State<TutorCard> {
           token: AppState.token.access!.token!, tutorId: widget.tutor.userId!);
       setState(() {
         _tutorInfo = res;
-        _isFavorite = _tutorInfo!.isFavorite!;
+        _isFavorite = _tutorInfo.isFavorite!;
+        _shouldFetch = false;
       });
     } catch (e) {
       print(e.toString());
@@ -36,18 +44,22 @@ class _TutorCardState extends State<TutorCard> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _fetchTutorInfo();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    if (_shouldFetch) {
+      _fetchTutorInfo();
+    }
 
     return GestureDetector(
       onTap: () {
-        context.push('/tutor/${widget.tutor.id}');
+        // setState(() {
+        //   _shouldFetch = true;
+        // });
+        context.push('/tutor/detail', extra: _tutorInfo.user!.id).then((value) {
+          setState(() {
+            _shouldFetch = true;
+          });
+        });
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -66,19 +78,6 @@ class _TutorCardState extends State<TutorCard> {
           children: [
             Row(
               children: [
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(999),
-                //   child: CachedNetworkImage(
-                //     imageUrl: "${widget.tutor.avatar}",
-                //     width: 70,
-                //     height: 70,
-                //     fit: BoxFit.cover,
-                //     errorWidget: (context, url, error) => Icon(
-                //       Icons.person,
-                //       size: 32,
-                //     ),
-                //   ),
-                // ),
                 Container(
                     width: 70,
                     height: 70,
@@ -108,23 +107,9 @@ class _TutorCardState extends State<TutorCard> {
                           Text("${widget.tutor.country}"),
                         ],
                       ),
-                      Row(
-                        children: [
-                          widget.tutor.rating == null
-                              ? Text("No rating")
-                              : Row(children: _ratingBar(widget.tutor.rating!)),
-                          // RatingBarIndicator(
-                          //   itemBuilder: (context, index) => Icon(
-                          //     Icons.star_rounded,
-                          //     color: Colors.amber,
-                          //   ),
-                          //   rating: widget.tutor.rating!,
-                          //   unratedColor: Colors.grey,
-                          //   itemCount: 5,
-                          //   itemSize: 20.0,
-                          // ),
-                        ],
-                      ),
+                      widget.tutor.rating == null
+                          ? Text("No rating")
+                          : RatingBar(rating: widget.tutor.rating!),
                     ],
                   ),
                 ),
@@ -134,7 +119,7 @@ class _TutorCardState extends State<TutorCard> {
                         _isFavorite = !_isFavorite;
                       });
                       try {
-                        final res = await TutorApi.addTutorToFavorite(
+                        await TutorApi.changeFavorite(
                           token: AppState.token.access!.token!,
                           tutorId: widget.tutor.userId!,
                         );
@@ -143,6 +128,7 @@ class _TutorCardState extends State<TutorCard> {
                             content: Text(_isFavorite
                                 ? "Added to favorite"
                                 : "Removed from favorite"),
+                            duration: Duration(seconds: 1),
                           ),
                         );
                         // _fetchTutorInfo(); // NOTE: use this is slow, we trust the apit addTutorToFavorite
@@ -154,6 +140,7 @@ class _TutorCardState extends State<TutorCard> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(e.toString()),
+                            duration: Duration(seconds: 1),
                           ),
                         );
                       }
@@ -172,7 +159,7 @@ class _TutorCardState extends State<TutorCard> {
             ),
             vpad(5),
             ProChipsFromList(
-              list: _str2list(widget.tutor.specialties as String),
+              list: str2list(widget.tutor.specialties as String),
             ),
             vpad(5),
             Align(
@@ -188,20 +175,5 @@ class _TutorCardState extends State<TutorCard> {
         ),
       ),
     );
-  }
-
-  _str2list(String str) {
-    return str.split(',').map((e) => e.trim()).toList();
-  }
-
-  List<Widget> _ratingBar(double rating) {
-    List<Widget> rowList = List<Widget>.generate(
-        rating.round(),
-        (index) => const Icon(
-              Icons.star,
-              color: Colors.amber,
-            ));
-    rowList.add(Text(rating.toStringAsFixed(1)));
-    return rowList;
   }
 }

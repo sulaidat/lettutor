@@ -21,7 +21,7 @@ class TutorApi {
     return tutors.map((e) => Tutor.fromJson(e)).toList();
   }
 
-  static addTutorToFavorite({
+  static changeFavorite({
     required String token,
     required String tutorId,
   }) async {

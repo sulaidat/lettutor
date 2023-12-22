@@ -13,7 +13,8 @@ import 'package:lettutor/src/login_page/verify_page.dart';
 import 'package:lettutor/src/mock_data.dart';
 import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
-import 'package:lettutor/src/models/tutor_info.dart';
+import 'package:lettutor/src/models/tutor/tutor.dart';
+import 'package:lettutor/src/models/tutor/tutor_info.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/setting_page/setting_page.dart';
@@ -26,8 +27,8 @@ import 'package:lettutor/src/models/topic.dart';
 import 'package:lettutor/src/schedule_page/history_page/history_page.dart';
 import 'package:lettutor/src/schedule_page/schedule_page.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
-import 'package:lettutor/src/tutor_list_page/tutor_details_page/reviews_page/reviews_page.dart';
-import 'package:lettutor/src/tutor_list_page/tutor_details_page/tutor_details_page.dart';
+import 'package:lettutor/src/reviews_page/reviews_page.dart';
+import 'package:lettutor/src/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -199,8 +200,8 @@ class _MyAppState extends State<MyApp> {
     tutorList.tutors = tutors;
     tutorList.displayedTutors = tutors;
 
-    tutorInfo.availNationalities = tutorList.getNationalities();
-    tutorInfo.availSpecialities = tutorList.getSpecialties();
+    // tutorInfo.availNationalities = tutorList.getNationalities();
+    // tutorInfo.availSpecialities = tutorList.getSpecialties();
   }
 
   @override
@@ -286,24 +287,18 @@ class _MyAppState extends State<MyApp> {
                 path: '/tutor/all',
                 builder: (context, state) => MultiProvider(
                   providers: [
-                    ChangeNotifierProvider.value(value: tutorInfo),
+                    // ChangeNotifierProvider.value(value: tutorInfo),
                     ChangeNotifierProvider(create: (_) => SearchFilter())
                   ],
                   child: const TutorListPage(),
                 ),
               ),
               GoRoute(
-                name: 'tutor',
-                path: '/tutor/:tutorId',
+                name: routeName['/tutor/detail'],
+                path: '/tutor/detail',
                 builder: (context, state) {
-                  String id = state.pathParameters['tutorId'] ?? '';
-                  if (id == '') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Tutor not found')),
-                    );
-                    context.pop(); // is this right?
-                  }
-                  return TutorDetailsPage(tutor: tutorList.getTutorById(id));
+                  final String tutorId = state.extra as String;
+                  return TutorDetailsPage(tutorId: tutorId);
                 },
               ),
               GoRoute(

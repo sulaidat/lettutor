@@ -5,7 +5,6 @@ import 'package:lettutor/src/api/user_api.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 // import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor_info.dart';
@@ -54,109 +53,11 @@ class _TutorListPageState extends State<TutorListPage> {
     }
   }
 
-  // Widget _buildTutorCard(BuildContext context, Tutor tutor) {
-  //   ThemeData theme = Theme.of(context);
-  //   // final tutorList = context.read<TutorList>();
-  //   // final tutor = tutorList.displayedTutors[index];
-
-  //   return GestureDetector(
-  //     onTap: () {
-  //       context.push('/tutor/${tutor.id}');
-  //     },
-  //     child: Container(
-  //       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-  //       decoration: BoxDecoration(
-  //         color: theme.colorScheme.background,
-  //         boxShadow: [
-  //           BoxShadow(
-  //             blurRadius: 4,
-  //             color: Colors.grey,
-  //             offset: Offset(0, 2),
-  //           ),
-  //         ],
-  //         borderRadius: BorderRadius.circular(10),
-  //       ),
-  //       child: Column(
-  //         children: [
-  //           Row(
-  //             children: [
-  //               ClipRRect(
-  //                 borderRadius: BorderRadius.circular(999),
-  //                 child: Image.network(
-  //                   "${tutor.imageUrl}",
-  //                   width: 70,
-  //                   height: 70,
-  //                   fit: BoxFit.cover,
-  //                 ),
-  //               ),
-  //               hpad(5),
-  //               Expanded(
-  //                 child: Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       "${tutor.name}",
-  //                       style: theme.textTheme.titleMedium?.copyWith(
-  //                         color: theme.colorScheme.onBackground,
-  //                         fontWeight: FontWeight.w600,
-  //                       ),
-  //                     ),
-  //                     Row(
-  //                       children: [
-  //                         Icon(Icons.flag),
-  //                         Text("${tutor.country}"),
-  //                       ],
-  //                     ),
-  //                     Row(
-  //                       children: [
-  //                         RatingBarIndicator(
-  //                           itemBuilder: (context, index) => Icon(
-  //                             Icons.star_rounded,
-  //                             color: Colors.amber,
-  //                           ),
-  //                           rating: tutor.rating!,
-  //                           unratedColor: Colors.grey,
-  //                           itemCount: 5,
-  //                           itemSize: 20.0,
-  //                         ),
-  //                         hpad(5),
-  //                         Text(tutor.rating!.toStringAsFixed(1)),
-  //                       ],
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               ProFavToggleIcon(
-  //                 tutorId: tutor.id,
-  //                 hook: (isToggled) {},
-  //               )
-  //             ],
-  //           ),
-  //           vpad(5),
-  //           ProChipsFromList(
-  //             list: tutor.specialties!.toList(),
-  //           ),
-  //           vpad(5),
-  //           Align(
-  //             alignment: Alignment.centerLeft,
-  //             child: Text(
-  //               "${tutor.bio}",
-  //               maxLines: 4,
-  //               overflow: TextOverflow.fade,
-  //               style: theme.textTheme.bodyMedium,
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   var key = UniqueKey();
 
   Widget _buildEndDrawer() {
     if (!mounted) return Container();
-    final tutorInfo = context.read<TutorInfo>();
+    // final tutorInfo = context.read<TutorInfo>();
     final searchFilter = context.read<SearchFilter>();
     final nameController = TextEditingController(text: searchFilter.name);
     return Drawer(
@@ -183,22 +84,22 @@ class _TutorListPageState extends State<TutorListPage> {
                   ),
                   vpad(10),
                   Heading2(text: "Nationality"),
-                  ProFilterChip(
-                    all: tutorInfo.availNationalities.toList(),
-                    selected: searchFilter.nationalities.toList(),
-                    hook: (selected) {
-                      searchFilter.nationalities = selected;
-                    },
-                  ),
+                  // ProFilterChip(
+                  //   all: tutorInfo.availNationalities.toList(),
+                  //   selected: searchFilter.nationalities.toList(),
+                  //   hook: (selected) {
+                  //     searchFilter.nationalities = selected;
+                  //   },
+                  // ),
                   vpad(10),
                   Heading2(text: "Specialties"),
-                  ProFilterChip(
-                    all: tutorInfo.availSpecialities.toList(),
-                    selected: searchFilter.specialties.toList(),
-                    hook: (selected) {
-                      searchFilter.specialties = selected;
-                    },
-                  ),
+                  // ProFilterChip(
+                  //   all: tutorInfo.availSpecialities.toList(),
+                  //   selected: searchFilter.specialties.toList(),
+                  //   hook: (selected) {
+                  //     searchFilter.specialties = selected;
+                  //   },
+                  // ),
                   Heading2(text: "Sort"),
                   ProChoiceChip(
                     all: {"Favorite", "Rating", "Price"},
