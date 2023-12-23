@@ -313,7 +313,6 @@ class _MyAppState extends State<MyApp> {
                 builder: (context, state) => SchedulePage(),
               ),
               GoRoute(
-                // TODO: leave a message for the tutor
                 name: routeName['/schedule/history'],
                 path: '/schedule/history',
                 builder: (context, state) => HistoryPage(),

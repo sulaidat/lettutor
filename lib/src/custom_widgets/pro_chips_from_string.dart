@@ -21,12 +21,14 @@ class ProChipsFromList extends StatelessWidget {
 }
 
 class ProChip extends StatelessWidget {
-  const ProChip({
+  ProChip({
     super.key,
     required this.label,
+    this.hook
   });
 
   final String label;
+  Function? hook;
 
   @override
   Widget build(BuildContext context) {

@@ -3,10 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/mock_data.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
-import 'package:lettutor/src/models/tutor_list.dart';
-import 'package:provider/provider.dart';
+import 'package:lettutor/src/tutor_details_page/tutor_booking_sheet.dart';
 
 import '../custom_widgets/pro_chips_from_string.dart';
 import '../custom_widgets/pro_toggle_button.dart';
@@ -111,7 +111,8 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                           selectedIcon: Icons.star,
                                           unselectedIcon: Icons.star_border,
                                           isSelected: false,
-                                          label: "Reviews",
+                                          label:
+                                              "Reviews (${widget.tutor.feedbacks!.length})",
                                         ),
                                       ),
                                     ),
@@ -122,20 +123,6 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                     Expanded(
                                       child: ProToggleButton(
                                         onPressed: () async {
-                                          // final tutorList = context.read<TutorList>();
-                                          // showDialog(
-                                          //   context: context,
-                                          //   builder: (BuildContext context) {
-                                          //     return ChangeNotifierProvider.value(
-                                          //       value: tutorList,
-                                          //       child: ReportDialog(
-                                          //         options: violations,
-                                          //         hook: (violations) {},
-                                          //         tutorId: widget.tutor.userId!,
-                                          //       ),
-                                          //     );
-                                          //   },
-                                          // );
                                           final res = await showDialog(
                                               context: context,
                                               builder: (context) =>
@@ -163,48 +150,20 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                                 ),
                                 vpad(5),
                                 FilledButton(
-                                  onPressed: () {
-                                    // showModalBottomSheet(
-                                    //   context: context,
-                                    //   builder: (context) {
-                                    //     var scheduleInfo =
-                                    //         context.watch<ScheduleInfo>();
-                                    //     var lessons =
-                                    //         scheduleInfo.getAvailableLessonsByTutorId(
-                                    //             widget.tutor.userId!);
-                                    //     if (lessons == null || lessons.isEmpty) {
-                                    //       return Center(
-                                    //           child: Text("No available lessons"));
-                                    //     } else {
-                                    //       return ListView.builder(
-                                    //         itemCount: lessons.length,
-                                    //         itemBuilder: (context, index) {
-                                    //           final lesson = lessons[index];
-                                    //           return ListTile(
-                                    //             title: Text(DateFormat('yMd')
-                                    //                 .format(lesson.date)),
-                                    //             subtitle: Text(
-                                    //                 'Start: ${lesson.start}, End: ${lesson.end}'),
-                                    //             trailing: FilledButton(
-                                    //               onPressed: () {
-                                    //                 scheduleInfo
-                                    //                     .bookLesson(lesson.id);
-                                    //                 ScaffoldMessenger.of(context)
-                                    //                     .showSnackBar(
-                                    //                   SnackBar(
-                                    //                     content: Text(
-                                    //                         'Lesson booked successfully!'),
-                                    //                   ),
-                                    //                 );
-                                    //               },
-                                    //               child: Text("Book"),
-                                    //             ),
-                                    //           );
-                                    //         },
-                                    //       );
-                                    //     }
-                                    //   },
-                                    // );
+                                  onPressed: () async {
+                                    await showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        elevation: 5,
+                                        clipBehavior: Clip.hardEdge,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            topRight: Radius.circular(10),
+                                          ),
+                                        ),
+                                        builder: (context) => TutorBookingSheet(
+                                            tutorId: widget.tutorId));
                                   },
                                   style: FilledButton.styleFrom(),
                                   child: Row(
@@ -348,21 +307,6 @@ class _ReportDialogState extends State<ReportDialog> {
             ),
             TextButton(
               onPressed: () {
-                // var violations = _selectedOptions
-                //     .asMap()
-                //     .entries
-                //     .where((element) => element.value)
-                //     .map((e) => e.key)
-                //     .map((e) => _options[e])
-                //     .toList();
-                // if (_otherOption.isNotEmpty) {
-                //   violations.add(_otherOption);
-                // }
-                // context.read<TutorList>().reportTutor(
-                //       widget.tutorId,
-                //       violations,
-                //     );
-                // widget.hook(violations);
                 String content = _selectedOptions
                     .asMap()
                     .entries
@@ -389,6 +333,4 @@ class _ReportDialogState extends State<ReportDialog> {
       ],
     );
   }
-
-  _reportTutor({required Function(String) hook}) async {}
 }
