@@ -32,28 +32,49 @@ class TutorListPage extends StatefulWidget {
 }
 
 class _TutorListPageState extends State<TutorListPage> {
+  var key = UniqueKey();
   String name = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
   bool _isLoading = true;
+  bool _noMoreTutors = false;
+  int _page = 1;
+  final ScrollController _scrollController = ScrollController();
   List<Tutor> _tutors = [];
 
-  _fetchTutors() async {
-    try {
-      _tutors = await TutorApi.getListTutorWithPage(
-        page: 1,
-        perPage: 100,
-        token: AppState.token.access!.token!,
-      );
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      final msg = e.toString().substring(11);
-      print(msg);
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_endOfList);
+  }
+
+  _endOfList() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _fetchTutors();
     }
   }
 
-  var key = UniqueKey();
+  _fetchTutors() async {
+    await TutorApi.getListTutorWithPage(
+      page: _page,
+      perPage: 100,
+      token: AppState.token.access!.token!,
+    ).then((value) {
+      setState(() {
+        if (value.length == 0) {
+          _noMoreTutors = true;
+          _scrollController.removeListener(_endOfList);
+          return;
+        }
+        _page++;
+        _tutors.addAll(value as List<Tutor>);
+        _isLoading = false;
+      });
+    }).catchError((e) {
+      print(e);
+    });
+  }
 
   Widget _buildEndDrawer() {
     if (!mounted) return Container();
@@ -177,6 +198,7 @@ class _TutorListPageState extends State<TutorListPage> {
       key: scaffoldKey,
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             children: [
               Padding(
@@ -217,14 +239,17 @@ class _TutorListPageState extends State<TutorListPage> {
                     _isLoading
                         ? Center(child: CircularProgressIndicator())
                         : ListView.separated(
+                            itemCount: _noMoreTutors
+                                ? _tutors.length
+                                : _tutors.length + 1,
                             itemBuilder: (context, index) {
+                              if (index == _tutors.length) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              }
                               return TutorCard(tutor: _tutors[index]);
                             },
                             shrinkWrap: true,
-                            itemCount: context
-                                .read<TutorList>()
-                                .displayedTutors
-                                .length,
                             physics: NeverScrollableScrollPhysics(),
                             separatorBuilder: (context, index) => vpad(10),
                           ),
