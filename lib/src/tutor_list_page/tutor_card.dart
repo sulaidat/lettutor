@@ -21,14 +21,9 @@ class TutorCard extends StatefulWidget {
 }
 
 class _TutorCardState extends State<TutorCard> {
-  bool _isFavorite = false;
   bool _shouldFetch = true;
   late TutorInfo _tutorInfo;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  late Tutor _tutor;
 
   _fetchTutorInfo() async {
     try {
@@ -36,7 +31,6 @@ class _TutorCardState extends State<TutorCard> {
           token: AppState.token.access!.token!, tutorId: widget.tutor.userId!);
       setState(() {
         _tutorInfo = res;
-        _isFavorite = _tutorInfo.isFavorite!;
         _shouldFetch = false;
       });
     } catch (e) {
@@ -59,7 +53,7 @@ class _TutorCardState extends State<TutorCard> {
                 extra: widget.tutor)
             .then((value) {
           setState(() {
-            _shouldFetch = true;
+            // _shouldFetch = true;
           });
         });
       },
@@ -116,38 +110,43 @@ class _TutorCardState extends State<TutorCard> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () async {
-                      setState(() {
-                        _isFavorite = !_isFavorite;
-                      });
-                      try {
+                    onPressed: () {
+                      setState(() async {
                         await TutorApi.changeFavorite(
                           token: AppState.token.access!.token!,
                           tutorId: widget.tutor.userId!,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(_isFavorite
-                                ? "Added to favorite"
-                                : "Removed from favorite"),
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
-                        // _fetchTutorInfo(); // NOTE: use this is slow, we trust the apit addTutorToFavorite
-                      } catch (e) {
-                        print(e.toString());
-                        setState(() {
-                          _isFavorite = !_isFavorite;
+                        ).then((value) {
+                          widget.tutor.isFavoriteTutor = value == true;
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(e.toString()),
-                            duration: Duration(seconds: 1),
-                          ),
-                        );
-                      }
+                      });
+                      // try {
+                      //   await TutorApi.changeFavorite(
+                      //     token: AppState.token.access!.token!,
+                      //     tutorId: widget.tutor.userId!,
+                      //   );
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     SnackBar(
+                      //       content: Text(_isFavorite
+                      //           ? "Added to favorite"
+                      //           : "Removed from favorite"),
+                      //       duration: Duration(seconds: 1),
+                      //     ),
+                      //   );
+                      //   // _fetchTutorInfo(); // NOTE: use this is slow, we trust the apit addTutorToFavorite
+                      // } catch (e) {
+                      //   print(e.toString());
+                      //   setState(() {
+                      //     _isFavorite = !_isFavorite;
+                      //   });
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     SnackBar(
+                      //       content: Text(e.toString()),
+                      //       duration: Duration(seconds: 1),
+                      //     ),
+                      //   );
+                      // }
                     },
-                    icon: _isFavorite
+                    icon: widget.tutor.isFavoriteTutor ?? false
                         ? Icon(Icons.favorite, color: Colors.red)
                         : Icon(
                             Icons.favorite_border,

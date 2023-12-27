@@ -45,8 +45,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     level = appUser.level ?? 'BEGINNER';
     _studyScheduleController.text = appUser.studySchedule ?? 'null';
 
-    chosenTopics = appUser.learnTopics ?? [];
-    chosenTestPreparations = appUser.testPreparations ?? [];
+    // chosenTopics = appUser.learnTopics ?? [];
+    // chosenTestPreparations = appUser.testPreparations ?? [];
 
     setState(() {
       user = appUser;
@@ -308,8 +308,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         onSelected: (bool selected) {
                           setState(() {
                             if (selected) {
-                              chosenTopics
-                                  .add(AppState.user.learnTopics![index]);
+                              // chosenTopics
+                              //     .add(AppState.user.learnTopics![index]);
                             } else {
                               chosenTopics.removeWhere(
                                 (element) =>
@@ -357,8 +357,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         onSelected: (bool selected) {
                           setState(() {
                             if (selected) {
-                              chosenTestPreparations
-                                  .add(AppState.user.testPreparations![index]);
+                              // chosenTestPreparations
+                              //     .add(AppState.user.testPreparations![index]);
                             } else {
                               chosenTestPreparations.removeWhere(
                                 (element) =>

@@ -32,7 +32,6 @@ import 'package:lettutor/src/feedback_page/feedback_page.dart';
 import 'package:lettutor/src/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_list_page.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 List<Course> courses = [
   Course(

@@ -16,6 +16,6 @@ void to(BuildContext context, Widget page) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
 }
 
-str2list(String str) {
+List<String> str2list(String str) {
   return str.split(',').map((e) => e.trim()).toList();
 }

@@ -1,5 +1,3 @@
-
-
 class User {
   String? id;
   String? email;
@@ -12,38 +10,40 @@ class User {
   String? birthday;
   bool? isActivated;
   WalletInfo? walletInfo;
-  List<String>? coursesId;
+  List<UserCourse>? courses;
   String? requireNote;
   String? level;
-  List<LearnTopic>? learnTopics;
-  List<TestPreparation>? testPreparations;
+  List<Topic>? learnTopics;
+  List<Topic>? testPreparations;
   bool? isPhoneActivated;
   int? timezone;
   String? studySchedule;
   bool? canSendMessage;
+  bool? isPublicRecord;
+  String? caredByStaffId;
+  String? studentGroupId;
 
-  User({
-    this.id,
-    this.email,
-    this.name,
-    this.avatar,
-    this.country,
-    this.phone,
-    this.roles,
-    this.language,
-    this.birthday,
-    this.isActivated,
-    this.walletInfo,
-    this.coursesId,
-    this.requireNote,
-    this.level,
-    this.learnTopics,
-    this.testPreparations,
-    this.isPhoneActivated,
-    this.timezone,
-    this.studySchedule,
-    this.canSendMessage,
-  });
+  User(
+      {id,
+      email,
+      name,
+      avatar,
+      country,
+      phone,
+      roles,
+      language,
+      birthday,
+      isActivated,
+      walletInfo,
+      courses,
+      requireNote,
+      level,
+      learnTopics,
+      testPreparations,
+      isPhoneActivated,
+      timezone,
+      studySchedule,
+      canSendMessage});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -56,36 +56,73 @@ class User {
     language = json['language'];
     birthday = json['birthday'];
     isActivated = json['isActivated'];
-    walletInfo =
-        json['walletInfo'] != null ? WalletInfo.fromJson(json['walletInfo']) : null;
+    walletInfo = json['walletInfo'] != null
+        ? WalletInfo.fromJson(json['walletInfo'])
+        : null;
     if (json['courses'] != null) {
-      coursesId = [];
-      json['courses'].forEach((course) {
-        coursesId!.add(course['id']);
+      courses = <UserCourse>[];
+      json['courses'].forEach((v) {
+        courses!.add(UserCourse.fromJson(v));
       });
     }
     requireNote = json['requireNote'];
     level = json['level'];
     if (json['learnTopics'] != null) {
-      learnTopics = [];
-      json['learnTopics'].forEach((topic) {
-        learnTopics!.add(LearnTopic.fromJson(topic));
+      learnTopics = <Topic>[];
+      json['learnTopics'].forEach((v) {
+        learnTopics!.add(Topic.fromJson(v));
       });
     }
     if (json['testPreparations'] != null) {
-      testPreparations = [];
-      json['testPreparations'].forEach((test) {
-        testPreparations!.add(TestPreparation.fromJson(test));
+      testPreparations = <Topic>[];
+      json['testPreparations'].forEach((v) {
+        testPreparations!.add(Topic.fromJson(v));
       });
     }
+
     isPhoneActivated = json['isPhoneActivated'];
     timezone = json['timezone'];
     studySchedule = json['studySchedule'];
     canSendMessage = json['canSendMessage'];
   }
 
+  User.fromJsonFromRegister(Map<String, dynamic> json) {
+    id = json['id'];
+    email = json['email'];
+    name = json['name'];
+    avatar = json['avatar'];
+    country = json['country'];
+    phone = json['phone'];
+    language = json['language'];
+    birthday = json['birthday'];
+    isActivated = json['isActivated'];
+    requireNote = json['requireNote'];
+    level = json['level'];
+    isPhoneActivated = json['isPhoneActivated'];
+    timezone = json['timezone'];
+    studySchedule = json['studySchedule'];
+    canSendMessage = json['canSendMessage'];
+  }
+  User.fromJsonFromGetTutorById(Map<String, dynamic> json) {
+    id = json['id'];
+    level = json['level'];
+    avatar = json['avatar'];
+    name = json['name'];
+    country = json['country'];
+    language = json['language'];
+    isPublicRecord = json['isPublicRecord'];
+    caredByStaffId = json['caredByStaffId'];
+    studentGroupId = json['studentGroupId'];
+    if (json['courses'] != null) {
+      courses = [];
+      json['courses'].forEach((v) {
+        courses!.add(UserCourse.fromJson(v));
+      });
+    }
+  }
+
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['email'] = email;
     data['name'] = name;
@@ -99,17 +136,11 @@ class User {
     if (walletInfo != null) {
       data['walletInfo'] = walletInfo!.toJson();
     }
-    if (coursesId != null) {
-      data['courses'] = coursesId;
-    }
+    data['courses'] = courses;
     data['requireNote'] = requireNote;
     data['level'] = level;
-    if (learnTopics != null) {
-      data['learnTopics'] = learnTopics!.map((v) => v.toJson()).toList();
-    }
-    if (testPreparations != null) {
-      data['testPreparations'] = testPreparations!.map((v) => v.toJson()).toList();
-    }
+    data['learnTopics'] = learnTopics;
+    data['testPreparations'] = testPreparations;
     data['isPhoneActivated'] = isPhoneActivated;
     data['timezone'] = timezone;
     data['studySchedule'] = studySchedule;
@@ -127,15 +158,7 @@ class WalletInfo {
   String? updatedAt;
   int? bonus;
 
-  WalletInfo({
-    this.id,
-    this.userId,
-    this.amount,
-    this.isBlocked,
-    this.createdAt,
-    this.updatedAt,
-    this.bonus,
-  });
+  WalletInfo({id, userId, amount, isBlocked, createdAt, updatedAt, bonus});
 
   WalletInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -147,41 +170,90 @@ class WalletInfo {
     bonus = json['bonus'];
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'userId': userId,
-        'amount': amount,
-        'isBlocked': isBlocked,
-        'createdAt': createdAt,
-        'updatedAt': updatedAt,
-        'bonus': bonus,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['userId'] = userId;
+    data['amount'] = amount;
+    data['isBlocked'] = isBlocked;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['bonus'] = bonus;
+    return data;
+  }
+}
 
-// final String id;
-// final String userId;
-// final String amount;
-// final bool isBlocked;
-// final String createdAt;
-// final String updatedAt;
-// final int bonus;
-//
-// WalletInfo(
-//     {required this.id,
-//     required this.userId,
-//     required this.amount,
-//     required this.isBlocked,
-//     required this.createdAt,
-//     required this.updatedAt,
-//     required this.bonus});
-//
-// static WalletInfo fromJson(Map<String, dynamic> json) => WalletInfo(
-//     id: json['id'] as String,
-//     userId: json['userId'] as String,
-//     amount: json['amount'] as String,
-//     isBlocked: json['isBlocked'] as bool,
-//     createdAt: json['createdAt'] as String,
-//     updatedAt: json['updatedAt'] as String,
-//     bonus: json['bonus'] as int);
+class Topic {
+  int? id;
+  String? key;
+  String? name;
+
+  Topic({id, key, name});
+
+  Topic.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    key = json['key'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['key'] = key;
+    data['name'] = name;
+    return data;
+  }
+}
+
+class UserCourse {
+  String? id;
+  String? name;
+  TutorCourse? tutorCourse;
+
+  UserCourse({id, name, tutorCourse});
+
+  UserCourse.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    tutorCourse = json['TutorCourse'] != null
+        ? TutorCourse.fromJson(json['TutorCourse'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    if (tutorCourse != null) {
+      data['TutorCourse'] = tutorCourse!.toJson();
+    }
+    return data;
+  }
+}
+
+class TutorCourse {
+  String? userId;
+  String? courseId;
+  String? createdAt;
+  String? updatedAt;
+
+  TutorCourse({userId, courseId, createdAt, updatedAt});
+
+  TutorCourse.fromJson(Map<String, dynamic> json) {
+    userId = json['UserId'];
+    courseId = json['CourseId'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['UserId'] = userId;
+    data['CourseId'] = courseId;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    return data;
+  }
 }
 
 class TestPreparation {

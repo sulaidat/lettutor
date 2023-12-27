@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:lettutor/src/api/constants.dart';
+import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/models/tutor/search_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
 
@@ -35,7 +39,7 @@ class TutorApi {
     if (res.statusCode != 200) {
       throw Exception(res.data['message']);
     }
-    return res.data['message'];
+    return res.data['result'] != 1;
   }
 
   static getTutorInfoById({
@@ -72,5 +76,41 @@ class TutorApi {
     return res.data['message'];
   }
 
+  static searchTutor(
+    int perPage,
+    int page,
+    SearchInfo? searchInfo,
+  ) async {
+    final data = searchInfo != null
+        ? {
+            "filters": {
+              "specialties": searchInfo.filters!.specialties,
+              // "nationality": {
+              //   "isVietNamese": searchInfo.filters!.nationality!.isVietNamese,
+              //   "isNative": searchInfo.filters!.nationality!.isNative
+              // }, // not working correctly
+            },
+            "search": searchInfo.search,
+            "page": page,
+            "perPage": perPage
+          }
+        : {
+            "page": page,
+            "perPage": perPage,
+          };
+    print("[searchTutor]: ${jsonEncode(data)}");
+    
+    final res = await Dio().post(
+      Constants.tutorSearch,
+      data: data,
+      options: Constants.authOption(AppState.token.access!.token!),
+    );
 
+    if (res.statusCode != 200) {
+      throw Exception("Exception from TutorApi.searchTutor");
+    }
+
+    List<Tutor> tutors = (res.data['rows'] as List).map((e) => Tutor.fromJson(e)).toList();
+    return tutors;
+  }
 }

@@ -1,25 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
-import 'package:lettutor/src/api/user_api.dart';
+import 'package:lettutor/src/custom_widgets/pro_chips_from_string.dart';
+import 'package:lettutor/src/custom_widgets/pro_filter_chip.dart';
+import 'package:lettutor/src/custom_widgets/rating_bar.dart';
 import 'package:lettutor/src/login_page/auth.dart';
-import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/search_filter.dart';
+import 'package:lettutor/src/models/tutor/search_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
-// import 'package:lettutor/src/models/tutor/tutor.dart';
-import 'package:lettutor/src/models/tutor_info.dart';
 import 'package:lettutor/src/models/tutor_list.dart';
+import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_card.dart';
 import 'package:provider/provider.dart';
 
-import '../custom_widgets/pro_chips_from_string.dart';
 import '../custom_widgets/pro_choice_chip.dart';
-import '../custom_widgets/pro_fav_toggle_icon.dart';
 import '../custom_widgets/pro_heading.dart';
 import '../custom_widgets/pro_neg_button.dart';
 import '../custom_widgets/pro_pos_button.dart';
 import '../helpers/padding.dart';
-import '../custom_widgets/pro_filter_chip.dart';
 import 'upcoming_banner.dart';
 
 class TutorListPage extends StatefulWidget {
@@ -33,54 +32,132 @@ class TutorListPage extends StatefulWidget {
 
 class _TutorListPageState extends State<TutorListPage> {
   var key = UniqueKey();
-  String name = "";
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool _isLoading = true;
-  bool _noMoreTutors = false;
-  int _page = 1;
+  List<String> _allSpecialties = [];
+  List<String> _nationality = [];
+  String _sort = "";
+  List<String> _specialties = [];
+
+  bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
   List<Tutor> _tutors = [];
+  final TextEditingController _nameController = TextEditingController();
+  SearchInfo? searchInfo;
+  int _perPage = 100;
+  int _page = 1;
+
+  bool _dontLoad = false;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_endOfList);
-  }
-
-  _endOfList() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      _fetchTutors();
-    }
-  }
-
-  _fetchTutors() async {
-    await TutorApi.getListTutorWithPage(
-      page: _page,
-      perPage: 100,
-      token: AppState.token.access!.token!,
-    ).then((value) {
-      setState(() {
-        if (value.length == 0) {
-          _noMoreTutors = true;
-          _scrollController.removeListener(_endOfList);
-          return;
-        }
-        _page++;
-        _tutors.addAll(value as List<Tutor>);
-        _isLoading = false;
-      });
-    }).catchError((e) {
-      print(e);
+    _getFirstPage();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _getNextPage();
+      }
     });
   }
 
+  _getFirstPage() async {
+    setState(() {
+      _page = 1;
+      _isLoading = true;
+    });
+
+    _tutors = await TutorApi.searchTutor(_perPage, 1, searchInfo);
+    if (_sort == "Favorite") {
+      _tutors.sort((a, b) {
+        if (a.isFavoriteTutor == b.isFavoriteTutor) {
+          return 0;
+        } else if (a.isFavoriteTutor == true) {
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+    } else if (_sort == "Rating") {
+      _tutors.sort((a, b) {
+        if (a.rating == b.rating) {
+          return 0;
+        } else if (a.rating == null) {
+          return 1;
+        } else if (b.rating == null) {
+          return -1;
+        } else {
+          return b.rating!.compareTo(a.rating!);
+        }
+      });
+    }
+
+    // wrong behavior, but i do this for better performance.
+    // it should not affect the result because _perPage=100
+    // (would load all tutors at once)
+    _allSpecialties = _tutors
+        .map((e) => str2list(e.specialties as String))
+        .expand((element) => element)
+        .toSet()
+        .toList();
+
+    setState(() {
+      _page++;
+      _isLoading = false;
+      _dontLoad = _tutors.length > 1 ? false : true;
+    });
+  }
+
+  _getNextPage() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    var nextPage = await TutorApi.searchTutor(_perPage, _page, searchInfo);
+    if (nextPage.isNotEmpty) {
+      _allSpecialties.addAll(nextPage
+          .map((e) => str2list(e.specialties as String))
+          .expand((element) => element)
+          .toSet()
+          .toList());
+    }
+
+    setState(() {
+      if (nextPage.isEmpty) {
+        _dontLoad = true;
+      } else {
+        _page++;
+        _tutors.addAll(nextPage);
+      }
+      _isLoading = false;
+    });
+  }
+
+  _search(List<String> specialties, bool isVietnamese, bool isNative,
+      String name) async {
+    SearchInfo info = SearchInfo();
+    info.search = name;
+    info.filters = Filters(
+      specialties: specialties,
+      nationality: Nationality(
+        isVietnamese: isVietnamese,
+        isNative: isNative,
+      ),
+    );
+    searchInfo = info;
+    _getFirstPage();
+    Navigator.pop(context);
+  }
+
+  _resetSearch() {
+    searchInfo = null;
+    _sort = "";
+    _nameController.clear();
+    _getFirstPage();
+    Navigator.pop(context);
+  }
+
   Widget _buildEndDrawer() {
-    if (!mounted) return Container();
-    // final tutorInfo = context.read<TutorInfo>();
-    final searchFilter = context.read<SearchFilter>();
-    final nameController = TextEditingController(text: searchFilter.name);
     return Drawer(
       key: key,
       width: MediaQuery.of(context).size.width * .85,
@@ -96,38 +173,37 @@ class _TutorListPageState extends State<TutorListPage> {
                   Divider(),
                   vpad(10),
                   Heading2(text: "Name"),
-                  // TODO: Implement auto complete
                   TextFormField(
-                    controller: nameController,
+                    controller: _nameController,
                     decoration: InputDecoration(
                       hintText: 'Enter tutor name',
                     ),
                   ),
                   vpad(10),
                   Heading2(text: "Nationality"),
-                  // ProFilterChip(
-                  //   all: tutorInfo.availNationalities.toList(),
-                  //   selected: searchFilter.nationalities.toList(),
-                  //   hook: (selected) {
-                  //     searchFilter.nationalities = selected;
-                  //   },
-                  // ),
+                  ProFilterChip(
+                    all: ["Vietnamese", "Native"],
+                    selected: _nationality,
+                    hook: (selected) {
+                      _nationality = selected.toList();
+                    },
+                  ),
                   vpad(10),
                   Heading2(text: "Specialties"),
-                  // ProFilterChip(
-                  //   all: tutorInfo.availSpecialities.toList(),
-                  //   selected: searchFilter.specialties.toList(),
-                  //   hook: (selected) {
-                  //     searchFilter.specialties = selected;
-                  //   },
-                  // ),
+                  ProFilterChip(
+                    all: _allSpecialties,
+                    selected: _specialties,
+                    hook: (selected) {
+                      _specialties = selected.toList();
+                    },
+                  ),
                   Heading2(text: "Sort"),
                   ProChoiceChip(
-                    all: {"Favorite", "Rating", "Price"},
-                    selected: searchFilter.sort,
+                    all: {"Favorite", "Rating"},
+                    selected: _sort,
                     hook: (selected) {
                       if (selected != null) {
-                        searchFilter.sort = selected;
+                        _sort = selected;
                       }
                     },
                   ),
@@ -135,41 +211,16 @@ class _TutorListPageState extends State<TutorListPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ProNegButton(
-                        label: "Reset",
-                        onPressed: () {
-                          searchFilter.nationalities.clear();
-                          searchFilter.specialties.clear();
-                          nameController.clear();
-                          setState(() {
-                            key = UniqueKey();
-                          });
-                        },
-                      ),
+                      ProNegButton(label: "Reset", onPressed: _resetSearch),
                       ProPosButton(
                         label: "Confirm",
                         icon: Icon(Icons.search),
                         onPressed: () {
-                          final tutorList = context.read<TutorList>();
-                          tutorList.displayedTutors = tutorList.tutors;
-                          searchFilter.name = nameController.text;
-                          print(searchFilter);
-                          if (searchFilter.name != "") {
-                            tutorList.filterByName(searchFilter.name);
-                          }
-                          if (searchFilter.nationalities.isNotEmpty) {
-                            tutorList.filtelByNationalities(
-                                searchFilter.nationalities.toList());
-                          }
-                          if (searchFilter.specialties.isNotEmpty) {
-                            tutorList.filterBySpecialty(
-                                searchFilter.specialties.toList());
-                          }
-                          if (searchFilter.sort != "") {
-                            tutorList.sortBy(searchFilter.sort);
-                          }
-                          setState(() {});
-                          scaffoldKey.currentState?.closeEndDrawer();
+                          _search(
+                              _specialties,
+                              _nationality.contains('Vietnamese'),
+                              _nationality.contains('Native'),
+                              _nameController.value.text);
                         },
                       ),
                     ],
@@ -183,13 +234,145 @@ class _TutorListPageState extends State<TutorListPage> {
     );
   }
 
+  _changeFavorite(String userId) async {
+    try {
+      return await TutorApi.changeFavorite(
+        token: AppState.token.access!.token!,
+        tutorId: userId,
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  _buildTutorCard(BuildContext context, Tutor tutor) {
+    final theme = Theme.of(context);
+
+    return GestureDetector(
+      onTap: () {
+        context.pushNamed(
+          routeName['/tutor/detail']!,
+          queryParameters: {'tutorId': tutor.userId},
+        ).then((value) {
+          _getFirstPage();
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.background,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 4,
+              color: Colors.grey,
+              offset: Offset(0, 2),
+            ),
+          ],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                    width: 70,
+                    height: 70,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(shape: BoxShape.circle),
+                    child: CachedNetworkImage(
+                      imageUrl: "${tutor.avatar}",
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.person, size: 32),
+                    )),
+                hpad(5),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${tutor.name}",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.colorScheme.onBackground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.flag),
+                          Text("${tutor.country}"),
+                        ],
+                      ),
+                      tutor.rating == null
+                          ? Text("No rating")
+                          : RatingBar(rating: tutor.rating!),
+                    ],
+                  ),
+                ),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        tutor.isFavoriteTutor = !(tutor.isFavoriteTutor!);
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            tutor.isFavoriteTutor!
+                                ? "Added to favorite"
+                                : "Removed from favorite",
+                          ),
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                      _changeFavorite(tutor.userId!).catchError((e) {
+                        setState(() {
+                          tutor.isFavoriteTutor = !(tutor.isFavoriteTutor!);
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              "Error: ${e.toString()}",
+                            ),
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                      });
+                    },
+                    icon: (tutor.isFavoriteTutor ?? false)
+                        ? Icon(Icons.favorite, color: Colors.red)
+                        : Icon(
+                            Icons.favorite_border,
+                            color: Colors.grey,
+                          )),
+                // ProFavToggleIcon(
+                //   tutorId: tutor.id!,
+                //   hook: (isToggled) async {},
+                // )
+              ],
+            ),
+            vpad(5),
+            ProChipsFromList(
+              list: str2list(tutor.specialties as String),
+            ),
+            vpad(5),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "${tutor.bio}",
+                maxLines: 4,
+                overflow: TextOverflow.fade,
+                style: theme.textTheme.bodyMedium,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    if (_isLoading) {
-      _fetchTutors();
-    }
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -236,22 +419,24 @@ class _TutorListPageState extends State<TutorListPage> {
                       ],
                     ),
                     vpad(10),
-                    _isLoading
-                        ? Center(child: CircularProgressIndicator())
+                    _tutors.isEmpty
+                        ? _isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : Text("There is no matched tutor")
                         : ListView.separated(
-                            itemCount: _noMoreTutors
-                                ? _tutors.length
-                                : _tutors.length + 1,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            separatorBuilder: (context, index) => vpad(10),
+                            itemCount:
+                                _dontLoad ? _tutors.length : _tutors.length + 1,
                             itemBuilder: (context, index) {
                               if (index == _tutors.length) {
                                 return Center(
                                     child: CircularProgressIndicator());
+                              } else {
+                                return _buildTutorCard(context, _tutors[index]);
                               }
-                              return TutorCard(tutor: _tutors[index]);
                             },
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            separatorBuilder: (context, index) => vpad(10),
                           ),
                   ],
                 ),
