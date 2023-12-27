@@ -253,6 +253,7 @@ class _TutorListPageState extends State<TutorListPage> {
         context.pushNamed(
           routeName['/tutor/detail']!,
           queryParameters: {'tutorId': tutor.userId},
+          extra: tutor,
         ).then((value) {
           _getFirstPage();
         });

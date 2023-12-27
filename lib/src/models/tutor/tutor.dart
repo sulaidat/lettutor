@@ -79,9 +79,9 @@ class Tutor {
     deletedAt = json['deletedAt'];
     studentGroupId = json['studentGroupId'];
     if (json['feedbacks'] != null) {
-      feedbacks = <Feedbacks>[];
+      feedbacks = <FeedbackInfo>[];
       json['feedbacks'].forEach((v) {
-        feedbacks!.add(Feedbacks.fromJson(v));
+        feedbacks!.add(FeedbackInfo.fromJson(v));
       });
     }
     id = json['id'];
@@ -102,7 +102,7 @@ class Tutor {
     price = json['price'];
     isOnline = json['isOnline'];
     // isFavoriteTutor = json['isfavoritetutor'] == "1";
-    isFavoriteTutor = json['isFavoriteTutor']??false;
+    isFavoriteTutor = json['isFavoriteTutor'] ?? false;
   }
 
   Tutor.fromJsonFromGetTutorById(Map<String, dynamic> json) {
@@ -139,7 +139,7 @@ class Tutor {
   String? email;
   String? experience;
   String? facebook;
-  List<Feedbacks>? feedbacks;
+  List<FeedbackInfo>? feedbacks;
   String? google;
   String? id;
   String? interests;
@@ -224,8 +224,8 @@ class Tutor {
   }
 }
 
-class Feedbacks {
-  Feedbacks(
+class FeedbackInfo {
+  FeedbackInfo(
       {id,
       bookingId,
       firstId,
@@ -236,7 +236,7 @@ class Feedbacks {
       updatedAt,
       firstInfo});
 
-  Feedbacks.fromJson(Map<String, dynamic> json) {
+  FeedbackInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     bookingId = json['bookingId'];
     firstId = json['firstId'];

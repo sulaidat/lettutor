@@ -5,18 +5,30 @@ import 'package:lettutor/src/api/constants.dart';
 import 'package:lettutor/src/models/schedule/schedule.dart';
 
 class ScheduleApi {
-  static getTutorSchedule(
-      {required String token, required String tutorId}) async {
-    final res = await Dio().post(
+  static getTutorSchedule({
+    required String token,
+    required String tutorId,
+    required DateTime start,
+    required DateTime end,
+  }) async {
+    print(start.millisecondsSinceEpoch);
+    print(end.millisecondsSinceEpoch);
+    final res = await Dio().get(
       Constants.schedule,
-      data: {'tutorId': tutorId},
       options: Constants.authOption(token),
+      queryParameters: {
+        'tutorId': tutorId,
+        'startTimestamp': start.millisecondsSinceEpoch,
+        'endTimestamp': end.millisecondsSinceEpoch,
+      },
     );
     if (res.statusCode != 200) {
       throw Exception(res.data['message']);
     }
-    final List<dynamic> schedules = res.data['data'];
-    return schedules.map((e) => Schedule.fromJson(e)).toList();
+    final List<Schedule> schedules = (res.data['scheduleOfTutor'] as List)
+        .map((e) => Schedule.fromJson(e))
+        .toList();
+    return schedules;
   }
 
   static bookClass(

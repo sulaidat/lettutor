@@ -41,6 +41,8 @@ class Constants {
   static String tutorSearch = "${baseUrl}tutor/search";
   static String addToFavorite = "${baseUrl}user/manageFavoriteTutor";
   static String report = "${baseUrl}report";
+  static String feedback(String userId, int page, int perPage) => "${baseUrl}feedback/v2/$userId?page=$page&perPage=$perPage";
+  static String allFeedback(String userId) => "${baseUrl}feedback/v2/$userId";
 
   // schedule api
   static String callTotal = "${baseUrl}call/total";

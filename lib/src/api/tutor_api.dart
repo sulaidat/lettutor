@@ -5,6 +5,7 @@ import 'package:lettutor/src/api/constants.dart';
 import 'package:lettutor/src/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/search_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
+import 'package:lettutor/src/models/tutor/tutor_feedback.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
 
 class TutorApi {
@@ -99,7 +100,7 @@ class TutorApi {
             "perPage": perPage,
           };
     print("[searchTutor]: ${jsonEncode(data)}");
-    
+
     final res = await Dio().post(
       Constants.tutorSearch,
       data: data,
@@ -110,7 +111,42 @@ class TutorApi {
       throw Exception("Exception from TutorApi.searchTutor");
     }
 
-    List<Tutor> tutors = (res.data['rows'] as List).map((e) => Tutor.fromJson(e)).toList();
+    List<Tutor> tutors =
+        (res.data['rows'] as List).map((e) => Tutor.fromJson(e)).toList();
     return tutors;
+  }
+
+  static getFeedback(String userId, int perPage, int page) async {
+    print("[getFeedback]: ${Constants.feedback(userId, page, perPage)}");
+    final res = await Dio().get(
+      Constants.feedback(userId, page, perPage),
+      options: Constants.authOption(AppState.token.access!.token!),
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception("Exception from TutorApi.getFeedback");
+    }
+
+    List<TutorFeedback> feedbacks = (res.data['data']['rows'] as List)
+        .map((e) => TutorFeedback.fromJson(e))
+        .toList();
+    return feedbacks;
+  }
+
+    static getAllFeedback(String userId) async {
+    print("[getAllFeedback]: ${Constants.allFeedback(userId)}");
+    final res = await Dio().get(
+      Constants.allFeedback(userId),
+      options: Constants.authOption(AppState.token.access!.token!),
+    );
+
+    if (res.statusCode != 200) {
+      throw Exception("Exception from TutorApi.getFeedback");
+    }
+
+    List<TutorFeedback> feedbacks = (res.data['data']['rows'] as List)
+        .map((e) => TutorFeedback.fromJson(e))
+        .toList();
+    return feedbacks;
   }
 }

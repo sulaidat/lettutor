@@ -19,9 +19,10 @@ class TutorBookingSheet extends StatefulWidget {
 }
 
 class _TutorBookingSheetState extends State<TutorBookingSheet> {
+  List<(int, int, String)> _timeStamps = [];
+
   bool _isLoading = true;
   List<Schedule> _schedules = [];
-  List<(int, int, String)> _timeStamps = [];
 
   bool _timecmp(int time1, int time2) {
     if (time1.compareTo(time2) > 0) return true;
@@ -29,9 +30,14 @@ class _TutorBookingSheetState extends State<TutorBookingSheet> {
   }
 
   _fetchTutorSchedules() async {
+    final start = DateTime.now();
+    final end = start.add(const Duration(days: 365));
     ScheduleApi.getTutorSchedule(
-            token: AppState.token.access!.token!, tutorId: widget.tutorId)
-        .then((value) {
+      token: AppState.token.access!.token!,
+      tutorId: widget.tutorId,
+      start: start,
+      end: end,
+    ).then((value) {
       final List<Schedule> data = value;
       final now = DateTime.now().millisecondsSinceEpoch;
       var res = data.where((element) {
@@ -61,6 +67,18 @@ class _TutorBookingSheetState extends State<TutorBookingSheet> {
     });
   }
 
+  _book(String scheduleId) async {
+    await ScheduleApi.bookClass(
+      token: AppState.token.access!.token!,
+      scheduleIds: [scheduleId],
+    ).then((value) {
+      print(value);
+      Navigator.pop(context);
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -81,7 +99,9 @@ class _TutorBookingSheetState extends State<TutorBookingSheet> {
                     Heading3(text: 'Choose date'),
                     vpad(5),
                     _timeStamps.isEmpty
-                        ? const Center(child: Text('No available schedule'))
+                        ? const Center(
+                            child: Text(
+                                'No available class for the next 365 days'))
                         : Expanded(
                             child: ListView.builder(
                               itemCount: _timeStamps.length,
@@ -98,16 +118,15 @@ class _TutorBookingSheetState extends State<TutorBookingSheet> {
                                           _timeStamps[index].$1))),
                                   subtitle: Text('Start: $start, End: $end'),
                                   trailing: FilledButton(
-                                    onPressed: () async {
-                                      await ScheduleApi.bookClass(
-                                        token: AppState.token.access!.token!,
-                                        scheduleIds: [_timeStamps[index].$3],
-                                      ).then((value) {
-                                        print(value);
-                                        Navigator.pop(context);
-                                      }).catchError((e) {
-                                        print(e.toString());
-                                      });
+                                    onPressed: () {
+                                      _book(_timeStamps[index].$3);
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Booking successful, please check your schedule')),
+                                      );
                                     },
                                     child: Text("Book"),
                                   ),

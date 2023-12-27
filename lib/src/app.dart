@@ -304,7 +304,7 @@ class _MyAppState extends State<MyApp> {
                 name: routeName['/tutor/feedback'],
                 path: '/tutor/feedback',
                 builder: (context, state) =>
-                    FeedbackPage(feedbacks: state.extra as List<TutorFeedback>),
+                    FeedbackPage(userId: state.extra as String),
               ),
               GoRoute(
                 name: routeName['/schedule'],
