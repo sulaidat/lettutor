@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lettutor/src/api/schedule_api.dart';
+import 'package:lettutor/src/custom_widgets/pro_avatar.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/lesson.dart';
+import 'package:lettutor/src/models/schedule/booking_info.dart';
 import 'package:lettutor/src/models/schedule_info.dart';
+import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:provider/provider.dart';
 
 import '../custom_widgets/pro_fav_toggle_icon.dart';
@@ -18,8 +22,103 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  Widget _buildLessonCard(BuildContext context, Lesson info) {
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoading = true;
+  bool _loadNoMore = false;
+  List<BookingInfo> _schedule = [];
+  int _page = 1;
+  int _perPage = 10;
+
+  @override
+  void initState() {
+    super.initState();
+    _getFirstPage();
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels ==
+    //       _scrollController.position.maxScrollExtent) {
+    //     _getNextPage();
+    //   }
+    // });
+  }
+
+  int _checkSchedule(List<BookingInfo> schedule) {
+    DateTime currentTime = DateTime.now();
+    for (int i = 0; i < schedule.length; i++) {
+      DateTime scheduleTime = DateTime.fromMillisecondsSinceEpoch(
+          schedule[i].scheduleDetailInfo!.startPeriodTimestamp!);
+      if (scheduleTime.isAfter(currentTime)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  void _getFirstPage() async {
+    setState(() {
+      _page = 1;
+      _isLoading = true;
+    });
+
+    try {
+      List<BookingInfo> schedule =
+          // await ScheduleApi.getBookedClass(page: _page, perPage: _perPage);
+          await ScheduleApi.getUpcomingLesson();
+      // check if schedule contains any value that beyond current time, if so, return its index, else get the next page
+      // int index = _checkSchedule(schedule);
+      // while (index == -1) {
+      //   _page++;
+      //   schedule = await ScheduleApi.getBookedClass(
+      //       page: _page, perPage: _perPage);
+      //   index = _checkSchedule(schedule);
+      // }
+      // schedule = schedule.sublist(index);
+
+      setState(() {
+        _page++;
+        _isLoading = false;
+        _schedule = schedule;
+        _loadNoMore = schedule.length < 4;
+      });
+    } catch (e) {
+      print("[SchedulePage::_getFirstPage] $e");
+    }
+  }
+
+  void _getNextPage() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      List<BookingInfo> nextPage =
+          await ScheduleApi.getBookedClass(page: _page, perPage: _perPage);
+      setState(() {
+        if (nextPage.isEmpty) {
+          _loadNoMore = true;
+        } else {
+          _page++;
+          _schedule.addAll(nextPage);
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("[SchedulePage::_getNextPage] $e");
+    }
+  }
+
+  Widget _buildClassCard(BuildContext context, BookingInfo info) {
     final theme = Theme.of(context);
+    final Tutor? tutor = info.scheduleDetailInfo?.scheduleInfo?.tutorInfo;
+    final String date = DateFormat('EEE, yyyy MMM dd').format(
+        DateTime.fromMillisecondsSinceEpoch(
+            info.scheduleDetailInfo!.startPeriodTimestamp!));
+    final String start = DateFormat.Hm().format(
+        DateTime.fromMillisecondsSinceEpoch(
+            info.scheduleDetailInfo!.startPeriodTimestamp!));
+    final String end = DateFormat.Hm().format(
+        DateTime.fromMillisecondsSinceEpoch(
+            info.scheduleDetailInfo!.endPeriodTimestamp!));
+
     return Container(
       decoration: BoxDecoration(
           color: theme.colorScheme.background,
@@ -36,34 +135,26 @@ class _SchedulePageState extends State<SchedulePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            DateFormat('yMd').format(info.date),
+            date,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
-            "${info.start} - ${info.end}",
+            "$start - $end",
             style: theme.textTheme.titleSmall,
           ),
           Divider(),
           Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(999),
-                child: Image.network(
-                  "${info.tutor!.imageUrl}",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
-              ),
+              ProAvatar(url: tutor?.avatar ?? ""),
               hpad(10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${info.tutor!.name}",
+                      tutor?.name ?? "N/A",
                       style: theme.textTheme.titleMedium,
                     ),
                     Row(
@@ -85,7 +176,6 @@ class _SchedulePageState extends State<SchedulePage> {
                   ],
                 ),
               ),
-              ProFavToggleIcon(tutorId: info.tutor!.id, hook: (isToggled) {}),
             ],
           ),
           vpad(5),
@@ -94,7 +184,7 @@ class _SchedulePageState extends State<SchedulePage> {
             children: [
               OutlinedButton(
                 onPressed: () {
-                  context.read<ScheduleInfo>().cancelLesson(info.id);
+                  _cancelClass(info.id);
                 },
                 style: OutlinedButton.styleFrom(),
                 child: Text(
@@ -104,7 +194,7 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
               FilledButton(
                 onPressed: () {
-                  context.push("/meeting");
+                  // context.push("/meeting");
                 },
                 child: Text("Go to meeting"),
               ),
@@ -115,6 +205,8 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
+  _cancelClass(String? scheduleId) async {}
+
   @override
   Widget build(BuildContext context) {
     final scheduleInfo = context.watch<ScheduleInfo>();
@@ -122,6 +214,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             children: [
               AppBar(
@@ -138,31 +231,25 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
               vpad(10),
               Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: () {
-                    var bookedLessons = scheduleInfo.bookedLessons;
-                    if (bookedLessons == null || bookedLessons.isEmpty) {
-                      return Center(child: Text('You have no booked lessons'));
-                    } else {
-                      bookedLessons.sort((a, b) {
-                        var comparison = a.date.compareTo(b.date);
-                        if (comparison != 0) return comparison;
-                        comparison = a.start.compareTo(b.start);
-                        if (comparison != 0) return comparison;
-                        return a.end.compareTo(b.end);
-                      });
-                      return ListView.separated(
-                        itemCount: bookedLessons.length,
-                        itemBuilder: ((context, index) {
-                          return _buildLessonCard(
-                              context, bookedLessons[index]);
-                        }),
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: _schedule.isEmpty
+                    ? _isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : Center(child: Text("You haven't booked any classes"))
+                    : ListView.separated(
+                        itemCount: _schedule.length,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) => Divider(),
-                      );
-                    }
-                  }()),
+                        itemBuilder: ((context, index) {
+                          if (index == _schedule.length) {
+                            return Center(child: CircularProgressIndicator());
+                          } else {
+                            return _buildClassCard(context, _schedule[index]);
+                          }
+                        }),
+                        separatorBuilder: (context, index) => vpad(10),
+                      ),
+              ),
             ],
           ),
         ),

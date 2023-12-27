@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lettutor/src/api/schedule_api.dart';
 import 'package:lettutor/src/api/user_api.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/login_page/auth.dart';
@@ -24,7 +25,7 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
 
   _fetUpcomingLesson(String token) async {
     try {
-      final upcoming = await UserApi.getUpcomingLesson(token: token);
+      final upcoming = (await ScheduleApi.getUpcomingLesson()).first;
 
       setState(() {
         _upcomingClass = upcoming;

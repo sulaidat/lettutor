@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:lettutor/src/api/constants.dart';
+import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/models/schedule/booking_info.dart';
 import 'package:lettutor/src/models/schedule/schedule.dart';
 
 class ScheduleApi {
@@ -50,5 +52,70 @@ class ScheduleApi {
       throw Exception(res.data['message']);
     }
     return res.data['message'];
+  }
+
+  static getBookedClass({
+    required int page,
+    required int perPage,
+  }) async {
+    final res = await Dio().get(
+      Constants.bookingListStudent,
+      queryParameters: {
+        'page': page,
+        'perPage': perPage,
+        "dateTimeLte": DateTime.now().millisecondsSinceEpoch,
+        "orderBy": "meeting",
+        "sortBy": "asc",
+        "startTimestamp": DateTime.now().millisecondsSinceEpoch,
+      },
+      options: Constants.authOption(AppState.token.access!.token!),
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    final List<BookingInfo> schedules = (res.data['data']["rows"] as List)
+        .map((e) => BookingInfo.fromJson(e))
+        .toList();
+    return schedules;
+  }
+
+  static getUpcomingLesson() async {
+    final res = await Dio().get(
+      Constants.upcommingLesson,
+      options: Constants.authOption(AppState.token.access!.token!),
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    List<BookingInfo> lessons =
+        (res.data["data"] as List).map((e) => BookingInfo.fromJson(e)).toList();
+    if (lessons.isEmpty) {
+      // throw Exception("You have not booked any lesson");
+      return null;
+    }
+    lessons.sort(
+      (a, b) {
+        if (a.scheduleDetailInfo == null || b.scheduleDetailInfo == null) {
+          return 0;
+        }
+        if (a.scheduleDetailInfo!.startPeriodTimestamp == null ||
+            b.scheduleDetailInfo!.startPeriodTimestamp == null) {
+          return 0;
+        }
+        return a.scheduleDetailInfo!.startPeriodTimestamp!
+            .compareTo(b.scheduleDetailInfo!.startPeriodTimestamp!);
+      },
+    );
+    lessons = lessons.where((element) {
+      if (element.scheduleDetailInfo == null) {
+        return false;
+      }
+      if (element.scheduleDetailInfo!.endPeriodTimestamp == null) {
+        return false;
+      }
+      return element.scheduleDetailInfo!.endPeriodTimestamp! >
+          DateTime.now().millisecondsSinceEpoch;
+    }).toList();
+    return lessons;
   }
 }

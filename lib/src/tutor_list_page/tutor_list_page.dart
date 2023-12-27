@@ -14,6 +14,7 @@ import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/tutor_list_page/tutor_card.dart';
 import 'package:provider/provider.dart';
 
+import '../custom_widgets/pro_avatar.dart';
 import '../custom_widgets/pro_choice_chip.dart';
 import '../custom_widgets/pro_heading.dart';
 import '../custom_widgets/pro_neg_button.dart';
@@ -39,7 +40,6 @@ class _TutorListPageState extends State<TutorListPage> {
   String _sort = "";
   List<String> _specialties = [];
 
-  bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
   List<Tutor> _tutors = [];
   final TextEditingController _nameController = TextEditingController();
@@ -47,7 +47,8 @@ class _TutorListPageState extends State<TutorListPage> {
   int _perPage = 100;
   int _page = 1;
 
-  bool _dontLoad = false;
+  bool _isLoading = false;
+  bool _dontLoadMore = false;
 
   @override
   void initState() {
@@ -104,7 +105,7 @@ class _TutorListPageState extends State<TutorListPage> {
     setState(() {
       _page++;
       _isLoading = false;
-      _dontLoad = _tutors.length > 1 ? false : true;
+      _dontLoadMore = _tutors.length > 1 ? false : true;
     });
   }
 
@@ -124,7 +125,7 @@ class _TutorListPageState extends State<TutorListPage> {
 
     setState(() {
       if (nextPage.isEmpty) {
-        _dontLoad = true;
+        _dontLoadMore = true;
       } else {
         _page++;
         _tutors.addAll(nextPage);
@@ -250,11 +251,13 @@ class _TutorListPageState extends State<TutorListPage> {
 
     return GestureDetector(
       onTap: () {
-        context.pushNamed(
+        context
+            .pushNamed(
           routeName['/tutor/detail']!,
           queryParameters: {'tutorId': tutor.userId},
           extra: tutor,
-        ).then((value) {
+        )
+            .then((value) {
           _getFirstPage();
         });
       },
@@ -275,17 +278,7 @@ class _TutorListPageState extends State<TutorListPage> {
           children: [
             Row(
               children: [
-                Container(
-                    width: 70,
-                    height: 70,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(shape: BoxShape.circle),
-                    child: CachedNetworkImage(
-                      imageUrl: "${tutor.avatar}",
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.person, size: 32),
-                    )),
+                ProAvatar(url: tutor.avatar ?? ""),
                 hpad(5),
                 Expanded(
                   child: Column(
@@ -428,8 +421,9 @@ class _TutorListPageState extends State<TutorListPage> {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             separatorBuilder: (context, index) => vpad(10),
-                            itemCount:
-                                _dontLoad ? _tutors.length : _tutors.length + 1,
+                            itemCount: _dontLoadMore
+                                ? _tutors.length
+                                : _tutors.length + 1,
                             itemBuilder: (context, index) {
                               if (index == _tutors.length) {
                                 return Center(

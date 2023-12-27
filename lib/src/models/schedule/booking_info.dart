@@ -2,28 +2,6 @@ import 'class_review.dart';
 import 'schedule_detail.dart';
 
 class BookingInfo {
-  int? createdAtTimeStamp;
-  int? updatedAtTimeStamp;
-  String? id;
-  String? userId;
-  String? scheduleDetailId;
-  String? tutorMeetingLink;
-  String? studentMeetingLink;
-  String? studentRequest;
-  String? tutorReview;
-  int? scoreByTutor;
-  String? createdAt;
-  String? updatedAt;
-  String? recordUrl;
-
-  // String? cancelReasonId;
-  // String? lessonPlanId;
-  // String? cancelNote;
-  // String? calendarId;
-  bool? isDeleted;
-  ScheduleDetail? scheduleDetailInfo;
-  ClassReview? classReview;
-
   BookingInfo({
     this.createdAtTimeStamp,
     this.updatedAtTimeStamp,
@@ -73,6 +51,28 @@ class BookingInfo {
         ? ClassReview.fromJson(json['classReview'])
         : null;
   }
+
+  ClassReview? classReview;
+  String? createdAt;
+  int? createdAtTimeStamp;
+  String? id;
+  // String? cancelReasonId;
+  // String? lessonPlanId;
+  // String? cancelNote;
+  // String? calendarId;
+  bool? isDeleted;
+
+  String? recordUrl;
+  String? scheduleDetailId;
+  ScheduleDetail? scheduleDetailInfo;
+  int? scoreByTutor;
+  String? studentMeetingLink;
+  String? studentRequest;
+  String? tutorMeetingLink;
+  String? tutorReview;
+  String? updatedAt;
+  int? updatedAtTimeStamp;
+  String? userId;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};

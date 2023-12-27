@@ -75,6 +75,7 @@ class Constants {
   // booking api
   static String schedule = "${baseUrl}schedule";
   static String booking = "${baseUrl}booking";
+  static String bookingListStudent = "${baseUrl}booking/list/student";
 }
 
 const countryList = {
