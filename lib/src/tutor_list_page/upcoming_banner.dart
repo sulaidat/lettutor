@@ -16,19 +16,23 @@ class UpcomingBanner extends StatefulWidget {
 }
 
 class _UpcomingBannerState extends State<UpcomingBanner> {
-  late Duration _totalLessonTime;
-  late BookingInfo? _upcomingClass;
+  bool _isError = false;
   bool _isLoading1 = true;
   bool _isLoading2 = true;
-  bool _isError = false;
   late String _msg;
+  late Duration _totalLessonTime;
+  late BookingInfo? _upcomingClass;
 
   _fetUpcomingLesson(String token) async {
     try {
-      final upcoming = (await ScheduleApi.getUpcomingLesson()).first;
+      final upcoming = (await ScheduleApi.getUpcomingLesson());
 
       setState(() {
-        _upcomingClass = upcoming;
+        if (upcoming == null) {
+          _upcomingClass = null;
+        } else {
+          _upcomingClass = upcoming.first;
+        }
         _isLoading1 = false;
         _isError = false;
       });
@@ -115,15 +119,17 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
                 vpad(5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _upcomingClass == null
-                        ? Text(
+                  children: _upcomingClass == null
+                      ? [
+                          Text(
                             "You have not booked any lesson",
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onPrimary,
                             ),
                           )
-                        : Column(
+                        ]
+                      : [
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
@@ -142,17 +148,25 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
                                               .startPeriodTimestamp!)),
                             ],
                           ),
-                    hpad(10),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                          // padding: ,
-                          backgroundColor: theme.colorScheme.onPrimary,
-                          foregroundColor: theme.colorScheme.primary,
-                          textStyle: theme.textTheme.titleMedium),
-                      onPressed: () {},
-                      child: Text("Join now"),
-                    ),
-                  ],
+                          hpad(10),
+                          FilledButton(
+                            style: FilledButton.styleFrom(
+                                // padding: ,
+                                backgroundColor: theme.colorScheme.onPrimary,
+                                foregroundColor: theme.colorScheme.primary,
+                                textStyle: theme.textTheme.titleMedium),
+                            onPressed: () {
+                              joinMeeting(
+                                _upcomingClass!.studentMeetingLink!
+                                    .split("token=")[1],
+                                _upcomingClass!.userId!,
+                                _upcomingClass!
+                                    .scheduleDetailInfo!.scheduleInfo!.tutorId!,
+                              );
+                            },
+                            child: Text("Join now"),
+                          ),
+                        ],
                 ),
                 vpad(5),
                 Text(

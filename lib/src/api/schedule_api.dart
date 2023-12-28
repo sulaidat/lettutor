@@ -118,4 +118,18 @@ class ScheduleApi {
     }).toList();
     return lessons;
   }
+
+  static cancelClass({required String id}) async {
+    final res = await Dio().delete(
+      Constants.booking,
+      data: json.encode({
+        "scheduleDetailIds": [id]
+      }),
+      options: Constants.authOption(AppState.token.access!.token!),
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    return res.data['message'];
+  }
 }

@@ -4,13 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:lettutor/src/api/schedule_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_avatar.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/schedule/booking_info.dart';
 import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:provider/provider.dart';
-
-import '../custom_widgets/pro_fav_toggle_icon.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({
@@ -22,12 +19,11 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
-  bool _loadNoMore = false;
-  List<BookingInfo> _schedule = [];
   int _page = 1;
   int _perPage = 10;
+  List<BookingInfo> _schedule = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -41,17 +37,17 @@ class _SchedulePageState extends State<SchedulePage> {
     // });
   }
 
-  int _checkSchedule(List<BookingInfo> schedule) {
-    DateTime currentTime = DateTime.now();
-    for (int i = 0; i < schedule.length; i++) {
-      DateTime scheduleTime = DateTime.fromMillisecondsSinceEpoch(
-          schedule[i].scheduleDetailInfo!.startPeriodTimestamp!);
-      if (scheduleTime.isAfter(currentTime)) {
-        return i;
-      }
-    }
-    return -1;
-  }
+  // int _checkSchedule(List<BookingInfo> schedule) {
+  //   DateTime currentTime = DateTime.now();
+  //   for (int i = 0; i < schedule.length; i++) {
+  //     DateTime scheduleTime = DateTime.fromMillisecondsSinceEpoch(
+  //         schedule[i].scheduleDetailInfo!.startPeriodTimestamp!);
+  //     if (scheduleTime.isAfter(currentTime)) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // }
 
   void _getFirstPage() async {
     setState(() {
@@ -60,7 +56,7 @@ class _SchedulePageState extends State<SchedulePage> {
     });
 
     try {
-      List<BookingInfo> schedule =
+      List<BookingInfo>? schedule =
           // await ScheduleApi.getBookedClass(page: _page, perPage: _perPage);
           await ScheduleApi.getUpcomingLesson();
       // check if schedule contains any value that beyond current time, if so, return its index, else get the next page
@@ -76,35 +72,39 @@ class _SchedulePageState extends State<SchedulePage> {
       setState(() {
         _page++;
         _isLoading = false;
-        _schedule = schedule;
-        _loadNoMore = schedule.length < 4;
+        if (schedule == null) {
+          _schedule = [];
+        } else {
+          _schedule = schedule;
+        }
+        // _loadNoMore = schedule.length < 4;
       });
     } catch (e) {
       print("[SchedulePage::_getFirstPage] $e");
     }
   }
 
-  void _getNextPage() async {
-    setState(() {
-      _isLoading = true;
-    });
+  // void _getNextPage() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
 
-    try {
-      List<BookingInfo> nextPage =
-          await ScheduleApi.getBookedClass(page: _page, perPage: _perPage);
-      setState(() {
-        if (nextPage.isEmpty) {
-          _loadNoMore = true;
-        } else {
-          _page++;
-          _schedule.addAll(nextPage);
-        }
-        _isLoading = false;
-      });
-    } catch (e) {
-      print("[SchedulePage::_getNextPage] $e");
-    }
-  }
+  //   try {
+  //     List<BookingInfo> nextPage =
+  //         await ScheduleApi.getBookedClass(page: _page, perPage: _perPage);
+  //     setState(() {
+  //       if (nextPage.isEmpty) {
+  //         _loadNoMore = true;
+  //       } else {
+  //         _page++;
+  //         _schedule.addAll(nextPage);
+  //       }
+  //       _isLoading = false;
+  //     });
+  //   } catch (e) {
+  //     print("[SchedulePage::_getNextPage] $e");
+  //   }
+  // }
 
   Widget _buildClassCard(BuildContext context, BookingInfo info) {
     final theme = Theme.of(context);
@@ -194,7 +194,12 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
               FilledButton(
                 onPressed: () {
-                  // context.push("/meeting");
+                  if (_canJoin(info.scheduleDetailInfo!.endPeriodTimestamp!)) {
+                    joinMeeting(
+                        info.studentMeetingLink!.split("token=")[1],
+                        info.userId!,
+                        info.scheduleDetailInfo!.scheduleInfo!.tutorId!);
+                  }
                 },
                 child: Text("Go to meeting"),
               ),
@@ -205,7 +210,25 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
-  _cancelClass(String? scheduleId) async {}
+  _cancelClass(String? scheduleId) async {
+    try {
+      final res = await ScheduleApi.cancelClass(id: scheduleId!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res),
+          duration: Duration(seconds: 1),
+        ),
+      );
+      _getFirstPage();
+    } catch (e) {
+      print("[SchedulePage::_cancelClass] $e");
+    }
+  }
+
+  bool _canJoin(int endTimestamp) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    return now < endTimestamp;
+  }
 
   @override
   Widget build(BuildContext context) {

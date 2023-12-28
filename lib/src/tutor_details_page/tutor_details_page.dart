@@ -1,22 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lettutor/src/api/schedule_api.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/custom_widgets/rating_bar.dart';
 import 'package:lettutor/src/login_page/auth.dart';
-import 'package:lettutor/src/mock_data.dart';
 import 'package:lettutor/src/models/schedule/schedule.dart';
-import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
 import 'package:lettutor/src/tutor_details_page/tutor_booking_sheet.dart';
+import 'package:video_player/video_player.dart';
 
 import '../custom_widgets/pro_chips_from_string.dart';
 import '../custom_widgets/pro_toggle_button.dart';
 import '../helpers/padding.dart';
-import 'tutor_card_minimal.dart';
 
 class TutorDetailsPage extends StatefulWidget {
   const TutorDetailsPage({
@@ -25,35 +24,46 @@ class TutorDetailsPage extends StatefulWidget {
     required this.tutor,
   });
 
-  final String tutorId;
   final Tutor tutor;
+  final String tutorId;
 
   @override
   State<TutorDetailsPage> createState() => _TutorDetailsPageState();
 }
 
 class _TutorDetailsPageState extends State<TutorDetailsPage> {
-  late TutorInfo _tutorInfo;
-  List<Schedule> _schedules = [];
   bool _isLoading = true;
+  late TutorInfo _tutorInfo;
 
-  _fetchTutorInfo() async {
-    try {
-      final res = await TutorApi.getTutorInfoById(
-          token: AppState.token.access!.token!, tutorId: widget.tutorId);
-      setState(() {
-        _tutorInfo = res;
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  VideoPlayerController? _videoPlayerController;
+  ChewieController? _chewieController;
+  late double videoWidth;
+  late double videoHeight;
+
+
+  // _fetchTutorInfo() async {
+  //   try {
+  //     final res = await TutorApi.getTutorInfoById(
+  //         token: AppState.token.access!.token!, tutorId: widget.tutorId);
+  //     setState(() {
+  //       _tutorInfo = res;
+  //     });
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
     _getTutorInfo(widget.tutorId);
-    // _getScheduleInfo(widget.tutorId);
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    _chewieController?.dispose();
+    super.dispose();
   }
 
   _getTutorInfo(String userId) async {
@@ -62,13 +72,27 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
           token: AppState.token.access!.token!, tutorId: userId);
       setState(() {
         _tutorInfo = tutorInfo;
+        _videoPlayerController = VideoPlayerController.networkUrl(
+          Uri.parse(_tutorInfo.video!),
+        );
+        print("aspectRatio: ${_videoPlayerController?.value.aspectRatio}");
+        _chewieController = ChewieController(
+          videoPlayerController: _videoPlayerController!,
+          // aspectRatio: 2 / 3,
+          aspectRatio: _videoPlayerController?.value.aspectRatio ?? (16 / 9),
+          autoPlay: false,
+        );
+        
+        double aspectRatio = _chewieController!.aspectRatio!;
+        videoWidth = MediaQuery.of(context).size.width;
+        videoHeight = videoWidth / aspectRatio;
+
         _isLoading = false;
       });
     } catch (e) {
       print(e.toString());
     }
   }
-
 
   _changeFavorite(String userId) async {
     try {
@@ -158,10 +182,6 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                         Icons.favorite_border,
                         color: Colors.grey,
                       )),
-            // ProFavToggleIcon(
-            //   tutorId: tutor.id!,
-            //   hook: (isToggled) async {},
-            // )
           ],
         ),
       ],
@@ -301,43 +321,34 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 vpad(5),
-                                Heading1(text: "Education"),
+                                Heading3(text: "Introduction Video"),
+                                FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: SizedBox(
+                                    height: videoHeight,
+                                    width: videoWidth,
+                                    child: _chewieController != null
+                                        ? Chewie(
+                                            controller: _chewieController!,
+                                          )
+                                        : Text('Error playing video'),
+                                  ),
+                                ),
+                                Heading3(text: "Education"),
                                 Text("${_tutorInfo.education}"),
-                                Heading1(text: "Languages"),
+                                Heading3(text: "Languages"),
                                 ProChipsFromList(
                                   list: str2list(_tutorInfo.languages!),
                                 ),
-                                Heading1(text: "Specialities"),
+                                Heading3(text: "Specialities"),
                                 ProChipsFromList(
                                   list: str2list(_tutorInfo.specialties!),
                                 ),
-                                Heading1(text: "Introduction Video"),
-                                // VideoApp(),
-                                Heading1(text: "Suggested Courses"),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Course 1",
-                                      style: theme.textTheme.titleSmall,
-                                    ),
-                                    ElevatedButton(
-                                        onPressed: () {}, child: Text("Go")),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Course 2",
-                                      style: theme.textTheme.titleSmall,
-                                    ),
-                                    ElevatedButton(
-                                        onPressed: () {}, child: Text("Go")),
-                                  ],
-                                ),
-                                Heading1(text: "Interests"),
+                                Heading3(text: "Interests"),
                                 Text("${_tutorInfo.interests}"),
-                                Heading1(text: "Teaching Experience"),
+                                Heading3(text: "Teaching Experience"),
                                 Text("${_tutorInfo.experience}"),
+                                Heading3(text: "Suggested Courses"),
                               ],
                             ),
                           )

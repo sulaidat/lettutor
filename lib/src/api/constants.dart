@@ -56,6 +56,7 @@ class Constants {
     return '${baseUrl}booking/list/student?page=$page&perPage=$perPage&dateTimeGte=$now&orderBy=meeting&sortBy=asc';
   }
 
+  static String bookingScheduleDetail = "${baseUrl}booking/schedule-detail";
   static String learnTopic = "${baseUrl}learn-topic";
   static String testPreparation = "${baseUrl}test-preparation";
 
