@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_chips_from_string.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
 import 'package:lettutor/src/routes.dart';
 
-import '../custom_widgets/rating_bar.dart';
+import '../../custom_widgets/rating_bar.dart';
 
 class TutorCard extends StatefulWidget {
   const TutorCard({super.key, required this.tutor});

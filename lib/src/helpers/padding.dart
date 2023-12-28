@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 
 Widget vpad(double height) {
   return SizedBox(

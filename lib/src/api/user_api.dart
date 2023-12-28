@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:lettutor/src/api/constants.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/schedule/booking_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 

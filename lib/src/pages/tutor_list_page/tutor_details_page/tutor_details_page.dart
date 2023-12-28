@@ -6,16 +6,15 @@ import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/custom_widgets/rating_bar.dart';
-import 'package:lettutor/src/login_page/auth.dart';
-import 'package:lettutor/src/models/schedule/schedule.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
-import 'package:lettutor/src/tutor_details_page/tutor_booking_sheet.dart';
+import 'package:lettutor/src/pages/tutor_list_page/tutor_details_page/tutor_booking_sheet.dart';
 import 'package:video_player/video_player.dart';
 
-import '../custom_widgets/pro_chips_from_string.dart';
-import '../custom_widgets/pro_toggle_button.dart';
-import '../helpers/padding.dart';
+import '../../../custom_widgets/pro_chips_from_string.dart';
+import '../../../custom_widgets/pro_toggle_button.dart';
+import '../../../helpers/padding.dart';
 
 class TutorDetailsPage extends StatefulWidget {
   const TutorDetailsPage({
@@ -39,7 +38,6 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
   ChewieController? _chewieController;
   late double videoWidth;
   late double videoHeight;
-
 
   // _fetchTutorInfo() async {
   //   try {

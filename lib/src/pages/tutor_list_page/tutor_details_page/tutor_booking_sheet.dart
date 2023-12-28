@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lettutor/src/api/schedule_api.dart';
-import 'package:lettutor/src/api/tutor_api.dart';
-import 'package:lettutor/src/custom_widgets/pro_chips_from_string.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/schedule/schedule.dart';
-import 'package:lettutor/src/tutor_details_page/booking_hour_page.dart';
 
 class TutorBookingSheet extends StatefulWidget {
   const TutorBookingSheet({super.key, required this.tutorId});
@@ -22,7 +19,6 @@ class _TutorBookingSheetState extends State<TutorBookingSheet> {
   List<(int, int, String)> _timeStamps = [];
 
   bool _isLoading = true;
-  List<Schedule> _schedules = [];
 
   bool _timecmp(int time1, int time2) {
     if (time1.compareTo(time2) > 0) return true;
@@ -48,7 +44,6 @@ class _TutorBookingSheetState extends State<TutorBookingSheet> {
       res.sort((a, b) => a.startTimestamp!.compareTo(b.startTimestamp!));
 
       setState(() {
-        _schedules = res;
         _timeStamps = res
             .map((e) => (
                   e.startTimestamp!,

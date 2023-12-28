@@ -1,6 +1,6 @@
 import 'package:jitsi_meet_flutter_sdk/jitsi_meet_flutter_sdk.dart';
 import 'package:lettutor/src/models/user/user.dart';
-import '../models/user/token.dart';
+import '../../models/user/token.dart';
 
 class AppState {
   static bool isLoggedIn = false;

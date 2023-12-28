@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
-import 'package:lettutor/src/feedback_page/feedback_card.dart';
+import 'package:lettutor/src/pages/tutor_list_page/tutor_details_page/feedback_page/feedback_card.dart';
 import 'package:lettutor/src/models/tutor/tutor_feedback.dart';
 
 class FeedbackPage extends StatefulWidget {

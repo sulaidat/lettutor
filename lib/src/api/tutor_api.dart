@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:lettutor/src/api/constants.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/search_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:lettutor/src/models/tutor/tutor_feedback.dart';

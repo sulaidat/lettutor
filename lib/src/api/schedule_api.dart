@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:lettutor/src/api/constants.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/schedule/booking_info.dart';
 import 'package:lettutor/src/models/schedule/schedule.dart';
 
@@ -65,7 +65,7 @@ class ScheduleApi {
         'perPage': perPage,
         "dateTimeLte": DateTime.now().millisecondsSinceEpoch,
         "orderBy": "meeting",
-        "sortBy": "asc",
+        "sortBy": "desc",
         "startTimestamp": DateTime.now().millisecondsSinceEpoch,
       },
       options: Constants.authOption(AppState.token.access!.token!),
@@ -131,5 +131,36 @@ class ScheduleApi {
       throw Exception(res.data['message']);
     }
     return res.data['message'];
+  }
+
+  static getHistory({
+    required int page,
+    required int perPage,
+  }) async {
+    print("[getHistory] page: $page, perPage: $perPage");
+    print(DateTime.now()
+        .subtract(const Duration(minutes: 35))
+        .millisecondsSinceEpoch
+        .toString());
+    final res = await Dio().get(
+      Constants.bookingListStudent,
+      queryParameters: {
+        'page': page,
+        'perPage': perPage,
+        "dateTimeLte": DateTime.now()
+            .subtract(const Duration(minutes: 35))
+            .millisecondsSinceEpoch,
+        "orderBy": "meeting",
+        "sortBy": "desc",
+      },
+      options: Constants.authOption(AppState.token.access!.token!),
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    final List<BookingInfo> schedules = (res.data['data']["rows"] as List)
+        .map((e) => BookingInfo.fromJson(e))
+        .toList();
+    return schedules;
   }
 }

@@ -4,7 +4,7 @@ import 'package:lettutor/src/api/constants.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
 import 'package:lettutor/src/custom_widgets/rating_bar.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
 
 class TutorCardMinimal extends StatefulWidget {

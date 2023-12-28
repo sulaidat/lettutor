@@ -1,31 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/login_page/username_field_model.dart';
+import 'package:lettutor/src/pages/login_page/password_field_model.dart';
 
-class ProTextFormField extends StatelessWidget {
-  const ProTextFormField({
+class ProConfirmPasswordFormField extends StatefulWidget {
+  const ProConfirmPasswordFormField({
     super.key,
     required this.label,
     required this.icon,
     required this.model,
-    this.readOnly = false,
   });
 
   final Icon icon;
   final String label;
-  final UsernameFieldModel model;
-  final bool readOnly;
+  final ConfirmPasswordFieldModel model;
+
+  @override
+  State<ProConfirmPasswordFormField> createState() => _ProConfirmPasswordFormFieldState();
+}
+
+class _ProConfirmPasswordFormFieldState extends State<ProConfirmPasswordFormField> {
+  bool visibility = false;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: TextFormField(
-        readOnly: readOnly,
+        obscureText: !visibility,
         decoration: InputDecoration(
-          prefixIcon: icon,
-          labelText: label,
+          prefixIcon: widget.icon,
+          labelText: widget.label,
           labelStyle: TextStyle(
             color: Colors.grey.shade700,
+          ),
+          suffixIcon: InkWell(
+            onTap: () => setState(() {
+              visibility = !visibility;
+            }),
+            child: Icon(
+              visibility
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,
+              // color: Colors.grey.shade700,
+            ),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -50,8 +66,8 @@ class ProTextFormField extends StatelessWidget {
           ),
           contentPadding: EdgeInsets.all(0),
         ),
-        controller: model.controller,
-        validator: model.validator,
+        controller: widget.model.controller,
+        validator: widget.model.validator,
       ),
     );
   }

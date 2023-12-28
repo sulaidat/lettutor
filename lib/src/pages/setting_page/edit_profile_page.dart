@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lettutor/src/api/constants.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/topic.dart';
 import 'package:lettutor/src/models/user/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';

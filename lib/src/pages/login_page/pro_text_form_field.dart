@@ -1,47 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/login_page/password_field_model.dart';
+import 'package:lettutor/src/pages/login_page/username_field_model.dart';
 
-class ProPasswordFormField extends StatefulWidget {
-  const ProPasswordFormField({
+class ProTextFormField extends StatelessWidget {
+  const ProTextFormField({
     super.key,
     required this.label,
     required this.icon,
     required this.model,
+    this.readOnly = false,
   });
 
   final Icon icon;
   final String label;
-  final PasswordFieldModel model;
-
-  @override
-  State<ProPasswordFormField> createState() => _ProPasswordFormFieldState();
-}
-
-class _ProPasswordFormFieldState extends State<ProPasswordFormField> {
-  bool visibility = false;
+  final UsernameFieldModel model;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: TextFormField(
-        obscureText: !visibility,
+        readOnly: readOnly,
         decoration: InputDecoration(
-          prefixIcon: widget.icon,
-          labelText: widget.label,
+          prefixIcon: icon,
+          labelText: label,
           labelStyle: TextStyle(
             color: Colors.grey.shade700,
-          ),
-          suffixIcon: InkWell(
-            onTap: () => setState(() {
-              visibility = !visibility;
-            }),
-            child: Icon(
-              visibility
-                  ? Icons.visibility_outlined
-                  : Icons.visibility_off_outlined,
-              // color: Colors.grey.shade700,
-            ),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -66,8 +50,8 @@ class _ProPasswordFormFieldState extends State<ProPasswordFormField> {
           ),
           contentPadding: EdgeInsets.all(0),
         ),
-        controller: widget.model.controller,
-        validator: widget.model.validator,
+        controller: model.controller,
+        validator: model.validator,
       ),
     );
   }

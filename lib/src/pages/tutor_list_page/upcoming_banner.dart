@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:lettutor/src/api/schedule_api.dart';
 import 'package:lettutor/src/api/user_api.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/schedule/booking_info.dart';
-import 'package:lettutor/src/tutor_list_page/countdown.dart';
+import 'package:lettutor/src/pages/tutor_list_page/countdown.dart';
 
 class UpcomingBanner extends StatefulWidget {
   const UpcomingBanner({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/login_page/password_field_model.dart';
+import 'package:lettutor/src/pages/login_page/password_field_model.dart';
 
-class ProConfirmPasswordFormField extends StatefulWidget {
-  const ProConfirmPasswordFormField({
+class ProPasswordFormField extends StatefulWidget {
+  const ProPasswordFormField({
     super.key,
     required this.label,
     required this.icon,
@@ -11,13 +11,13 @@ class ProConfirmPasswordFormField extends StatefulWidget {
 
   final Icon icon;
   final String label;
-  final ConfirmPasswordFieldModel model;
+  final PasswordFieldModel model;
 
   @override
-  State<ProConfirmPasswordFormField> createState() => _ProConfirmPasswordFormFieldState();
+  State<ProPasswordFormField> createState() => _ProPasswordFormFieldState();
 }
 
-class _ProConfirmPasswordFormFieldState extends State<ProConfirmPasswordFormField> {
+class _ProPasswordFormFieldState extends State<ProPasswordFormField> {
   bool visibility = false;
 
   @override

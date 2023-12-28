@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/login_page/auth.dart';
+import 'package:lettutor/src/pages/login_page/auth.dart';
 
 class PasswordFieldModel {
   TextEditingController? controller;
