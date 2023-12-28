@@ -1,60 +1,73 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:lettutor/src/models/topic.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-import '../../../custom_widgets/pro_heading1.dart';
+class TopicDetailPage extends StatefulWidget {
+  const TopicDetailPage({
+    Key? key,
+    required this.title,
+    required this.url,
+  }) : super(key: key);
 
-class TopicDetailsPage extends StatelessWidget {
-  const TopicDetailsPage({super.key, required this.topic});
-
-  final Topic topic;
+  final String title;
+  final String url;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              AppBar(
-                title: Text("Topic Details"),
-                centerTitle: true,
-                actions: [
-                  ProSingleIconButton(icon: Icons.menu, onPressed: () {})
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Column(
-                  children: [
-                    ProHeading1(text: "Slides"),
-                    // TODO PDFView
-                    Placeholder(),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  State<TopicDetailPage> createState() => _TopicDetailPageState();
 }
 
-class ProSingleIconButton extends StatelessWidget {
-  const ProSingleIconButton(
-      {super.key, required this.icon, required this.onPressed});
+class _TopicDetailPageState extends State<TopicDetailPage> {
+  int? pages;
+  final Completer<PDFViewController> _controller =
+      Completer<PDFViewController>();
 
-  final IconData icon;
-  final VoidCallback onPressed;
+  int? currentPage = 0;
+  bool isReady = false;
+  String errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        elevation: 0,
+    print(widget.url);
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body:
+            // PDFView(
+            //   filePath: widget.url,
+            //   enableSwipe: true,
+            //   swipeHorizontal: true,
+            //   autoSpacing: false,
+            //   pageFling: false,
+            //   onRender: (_pages) {
+            //     setState(() {
+            //       pages = _pages;
+            //       isReady = true;
+            //     });
+            //   },
+            //   onError: (error) {
+            //     print(error.toString());
+            //   },
+            //   onPageError: (page, error) {
+            //     print('$page: ${error.toString()}');
+            //   },
+            //   onViewCreated: (PDFViewController pdfViewController) {
+            //     _controller.complete(pdfViewController);
+            //   },
+            //   onPageChanged: (int? page, int? total) {
+            //     print('page change: $page/$total');
+            //   },
+            // ),
+            SfPdfViewer.network(
+          widget.url,
+          onDocumentLoadFailed: (details) {
+            print("[TopicDetailPage] $details");
+          },
+        ),
       ),
-      child: Icon(icon),
     );
   }
 }

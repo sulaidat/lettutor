@@ -41,7 +41,8 @@ class Constants {
   static String tutorSearch = "${baseUrl}tutor/search";
   static String addToFavorite = "${baseUrl}user/manageFavoriteTutor";
   static String report = "${baseUrl}report";
-  static String feedback(String userId, int page, int perPage) => "${baseUrl}feedback/v2/$userId?page=$page&perPage=$perPage";
+  static String feedback(String userId, int page, int perPage) =>
+      "${baseUrl}feedback/v2/$userId?page=$page&perPage=$perPage";
   static String allFeedback(String userId) => "${baseUrl}feedback/v2/$userId";
 
   // schedule api
@@ -61,13 +62,8 @@ class Constants {
   static String testPreparation = "${baseUrl}test-preparation";
 
   // course api
-  static String courseListWithPage({
-    required int page,
-    required int size,
-    required String search,
-  }) {
-    return '${baseUrl}course?page=$page&size=$size${search.isNotEmpty ? '&q=$search' : ''}';
-  }
+  static String coursePage(int page, int size) =>
+      '${baseUrl}course?page=$page&size=$size';
 
   static String courseById(String id) {
     return '${baseUrl}course/$id';
@@ -339,4 +335,15 @@ const userLevels = {
   "UPPER_INTERMEDIATE": "B2 (Upper-Intermediate)",
   "ADVANCED": "C1 (Advanced)",
   "PROFICIENCY": "C2 (Proficiency)",
+};
+
+final courseLevels = {
+  '0': 'Any level',
+  '1': 'Beginner',
+  '2': 'High Beginner',
+  '3': 'Pre-Intermediate',
+  '4': 'Intermediate',
+  '5': 'Upper-Intermediate',
+  '6': 'Advanced',
+  '7': 'Proficiency'
 };

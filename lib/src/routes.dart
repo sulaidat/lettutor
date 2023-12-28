@@ -13,9 +13,13 @@ final routeName = {
   '/schedule': 'schedule',
   '/schedule/detail': 'schedule_detail',
   '/schedule/history': 'schedule_history',
+  
   '/waitingroom': 'waitingroom',
   '/meeting': 'meeting',
+
   '/courses': 'courses',
+  '/course/detail': 'course_detail',
+  '/course/detail/topic': 'course_detail_topic',
   '/ebook': 'ebook',
   '/settings': 'settings',
 };

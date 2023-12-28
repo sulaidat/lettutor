@@ -5,6 +5,7 @@ import 'package:lettutor/src/courses_page/course_details/topic_details/topic_det
 import 'package:lettutor/src/courses_page/course_shell.dart';
 import 'package:lettutor/src/courses_page/courses_page.dart';
 import 'package:lettutor/src/courses_page/ebook_page/ebook_page.dart';
+import 'package:lettutor/src/models/course/course.dart';
 import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/pages/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/pages/login_page/register_page.dart';
@@ -23,8 +24,6 @@ import 'package:lettutor/src/shell.dart';
 import 'package:lettutor/src/pages/login_page/login_page.dart';
 import 'package:lettutor/src/pages/login_page/meeting_room/meeting_room.dart';
 import 'package:lettutor/src/pages/login_page/meeting_room/waiting_room.dart';
-import 'package:lettutor/src/models/course.dart';
-import 'package:lettutor/src/models/topic.dart';
 import 'package:lettutor/src/pages/schedule_page/history_page/history_page.dart';
 import 'package:lettutor/src/pages/schedule_page/schedule_page.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
@@ -32,123 +31,6 @@ import 'package:lettutor/src/pages/tutor_list_page/tutor_details_page/feedback_p
 import 'package:lettutor/src/pages/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/pages/tutor_list_page/tutor_list_page.dart';
 import 'package:provider/provider.dart';
-
-List<Course> courses = [
-  Course(
-      name: "Legacy Metrics Orchestrator",
-      brief:
-          "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
-      bannerUrl:
-          "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
-      level: "Intermediate",
-      topics: [
-        Topic(name: "Food You Love"),
-        Topic(name: "Your Job"),
-        Topic(name: "Playing and Watching Sports"),
-        Topic(name: "The Best Pet"),
-        Topic(name: "Having Fun in your Free Time"),
-        Topic(name: "Your Daily Routine"),
-        Topic(name: "Childhood Memories"),
-        Topic(name: "Your Family Members"),
-        Topic(name: "Your Hometowns"),
-        Topic(name: "Shopping Habits"),
-      ]),
-  Course(
-      name: "Legacy Metrics Orchestrator",
-      brief:
-          "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
-      bannerUrl:
-          "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
-      level: "Intermediate",
-      topics: [
-        Topic(name: "Food You Love"),
-        Topic(name: "Your Job"),
-        Topic(name: "Playing and Watching Sports"),
-        Topic(name: "The Best Pet"),
-        Topic(name: "Having Fun in your Free Time"),
-        Topic(name: "Your Daily Routine"),
-        Topic(name: "Childhood Memories"),
-        Topic(name: "Your Family Members"),
-        Topic(name: "Your Hometowns"),
-        Topic(name: "Shopping Habits"),
-      ]),
-  Course(
-      name: "Legacy Metrics Orchestrator",
-      brief:
-          "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
-      bannerUrl:
-          "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
-      level: "Intermediate",
-      topics: [
-        Topic(name: "Food You Love"),
-        Topic(name: "Your Job"),
-        Topic(name: "Playing and Watching Sports"),
-        Topic(name: "The Best Pet"),
-        Topic(name: "Having Fun in your Free Time"),
-        Topic(name: "Your Daily Routine"),
-        Topic(name: "Childhood Memories"),
-        Topic(name: "Your Family Members"),
-        Topic(name: "Your Hometowns"),
-        Topic(name: "Shopping Habits"),
-      ]),
-  Course(
-      name: "Legacy Metrics Orchestrator",
-      brief:
-          "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
-      bannerUrl:
-          "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
-      level: "Intermediate",
-      topics: [
-        Topic(name: "Food You Love"),
-        Topic(name: "Your Job"),
-        Topic(name: "Playing and Watching Sports"),
-        Topic(name: "The Best Pet"),
-        Topic(name: "Having Fun in your Free Time"),
-        Topic(name: "Your Daily Routine"),
-        Topic(name: "Childhood Memories"),
-        Topic(name: "Your Family Members"),
-        Topic(name: "Your Hometowns"),
-        Topic(name: "Shopping Habits"),
-      ]),
-  Course(
-      name: "Legacy Metrics Orchestrator",
-      brief:
-          "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
-      bannerUrl:
-          "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
-      level: "Intermediate",
-      topics: [
-        Topic(name: "Food You Love"),
-        Topic(name: "Your Job"),
-        Topic(name: "Playing and Watching Sports"),
-        Topic(name: "The Best Pet"),
-        Topic(name: "Having Fun in your Free Time"),
-        Topic(name: "Your Daily Routine"),
-        Topic(name: "Childhood Memories"),
-        Topic(name: "Your Family Members"),
-        Topic(name: "Your Hometowns"),
-        Topic(name: "Shopping Habits"),
-      ]),
-  Course(
-      name: "Legacy Metrics Orchestrator",
-      brief:
-          "Nihil omnis delectus ad earum. Sit tenetur voluptas dolor quis sunt. Alias voluptate qui maiores aut sit ex non rerum ea. Et praesentium dolorum non totam quas.",
-      bannerUrl:
-          "https://fastly.picsum.photos/id/985/400/400.jpg?hmac=5SmuXWu91XF50ow5mHq-9UzJZBX_AjOPhO91xFeRnPQ",
-      level: "Intermediate",
-      topics: [
-        Topic(name: "Food You Love"),
-        Topic(name: "Your Job"),
-        Topic(name: "Playing and Watching Sports"),
-        Topic(name: "The Best Pet"),
-        Topic(name: "Having Fun in your Free Time"),
-        Topic(name: "Your Daily Routine"),
-        Topic(name: "Childhood Memories"),
-        Topic(name: "Your Family Members"),
-        Topic(name: "Your Hometowns"),
-        Topic(name: "Shopping Habits"),
-      ]),
-];
 
 class AppRoutes {
   static const tutorList = '/list';
@@ -268,7 +150,7 @@ class _MyAppState extends State<MyApp> {
                   selectedIndex: switch (state.uri.path) {
                     var p when p.startsWith('/list') => 0,
                     var p when p.startsWith('/schedule') => 1,
-                    var p when p.startsWith('/courses') => 2,
+                    var p when p.startsWith('/course') => 2,
                     var p when p.startsWith('/settings') => 3,
                     _ => 0,
                   },
@@ -322,10 +204,7 @@ class _MyAppState extends State<MyApp> {
                   GoRoute(
                     name: routeName['/courses'],
                     path: '/courses',
-                    builder: (context, state) => CoursesPage(
-                      courses: courses,
-                      onDiscover: () {},
-                    ),
+                    builder: (context, state) => CoursesPage(),
                   ),
                   GoRoute(
                     name: routeName['/ebook'],
@@ -336,32 +215,36 @@ class _MyAppState extends State<MyApp> {
                 ],
               ),
               GoRoute(
-                name: 'course detail',
-                path: '/courses/:id',
+                name: routeName['/course/detail'],
+                path: '/course/detail',
                 builder: (context, state) {
-                  int idx = int.parse(state.pathParameters['id'] ?? '0');
-                  return CourseDetailsPage(
-                    course: courses[idx],
-                    onTopicSelect: () {
-                      // TODO
-                      GoRouter.of(context).push('/courses/$idx/0');
-                    },
-                  );
+                  final course = state.extra as Course;
+                  return CourseDetailsPage(course: course);
                 },
               ),
               GoRoute(
-                path: '/courses/:courseId/:topicId',
+                name: routeName['/course/detail/topic'],
+                path: '/course/detail/topic',
                 builder: (context, state) {
-                  // TODO
-                  int courseId =
-                      int.parse(state.pathParameters['courseId'] ?? '0');
-                  int topicId =
-                      int.parse(state.pathParameters['topicId'] ?? '0');
-                  return TopicDetailsPage(
-                    topic: courses[courseId].topics[topicId],
+                  return TopicDetailPage(
+                    title: state.uri.queryParameters['title']!,
+                    url: state.uri.queryParameters['url']!,
                   );
                 },
-              )
+              ),
+              // GoRoute(
+              //   path: '/courses/:courseId/:topicId',
+              //   builder: (context, state) {
+              //     // TODO
+              //     int courseId =
+              //         int.parse(state.pathParameters['courseId'] ?? '0');
+              //     int topicId =
+              //         int.parse(state.pathParameters['topicId'] ?? '0');
+              //     return TopicDetailsPage(
+              //       topic: courses[courseId].topics[topicId],
+              //     );
+              //   },
+              // )
             ],
           ),
           GoRoute(
