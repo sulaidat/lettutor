@@ -25,6 +25,8 @@ class Constants {
   // user api
   static String userInfo = "${baseUrl}user/info";
   static String total = "${baseUrl}call/total";
+  static String learnTopics = "${baseUrl}learn-topic";
+  static String testPreparations = "${baseUrl}test-preparation";
 
   // tutor api
   static tutorListWithPage({
@@ -58,8 +60,6 @@ class Constants {
   }
 
   static String bookingScheduleDetail = "${baseUrl}booking/schedule-detail";
-  static String learnTopic = "${baseUrl}learn-topic";
-  static String testPreparation = "${baseUrl}test-preparation";
 
   // course api
   static String coursePage(int page, int size) =>
@@ -327,7 +327,7 @@ const countryList = {
   "AX": "Åland Islands"
 };
 
-const userLevels = {
+const levelIdToLevel = {
   "BEGINNER": "Pre A1 (Beginner)",
   "HIGHER_BEGINNER": "A1 (Higher Beginner)",
   "PRE_INTERMEDIATE": "A2 (Pre-Intermediate)",
@@ -335,6 +335,16 @@ const userLevels = {
   "UPPER_INTERMEDIATE": "B2 (Upper-Intermediate)",
   "ADVANCED": "C1 (Advanced)",
   "PROFICIENCY": "C2 (Proficiency)",
+};
+
+const levelToLevelId = {
+  'Pre A1 (Beginner)': 'BEGINNER',
+  'A1 (Higher Beginner)': 'HIGHER_BEGINNER',
+  'A2 (Pre-Intermediate)': 'PRE_INTERMEDIATE',
+  'B1 (Intermediate)': 'INTERMEDIATE',
+  'B2 (Upper-Intermediate)': 'UPPER_INTERMEDIATE',
+  'C1 (Advanced)': 'ADVANCED',
+  'C2 (Proficiency)': 'PROFICIENCY',
 };
 
 final courseLevels = {
@@ -347,3 +357,20 @@ final courseLevels = {
   '6': 'Advanced',
   '7': 'Proficiency'
 };
+
+final learnTopicsToId = {
+    'English for Kids': '3',
+    'Business English': '4',
+    'Conversational English': '5'
+  };
+
+  final testPreparationsToId = {
+    'STARTERS': '1',
+    'MOVERS': '2',
+    'FLYERS': '3',
+    'KET': '4',
+    'PET': '5',
+    'IELTS': '6',
+    'TOEFL': '7',
+    'TOEIC': '8',
+  };

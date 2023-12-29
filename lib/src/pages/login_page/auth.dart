@@ -9,4 +9,6 @@ class AppState {
   static User user = User();
   static Token token = Token();
   static final jitsiMeet = JitsiMeet();
+  static List<LearnTopic> topics = [];
+  static List<TestPreparation> testPreparations = [];
 }

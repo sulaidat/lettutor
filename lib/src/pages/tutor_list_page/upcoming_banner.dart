@@ -4,7 +4,6 @@ import 'package:lettutor/src/api/schedule_api.dart';
 import 'package:lettutor/src/api/user_api.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/pages/login_page/auth.dart';
-import 'package:lettutor/src/models/lesson.dart';
 import 'package:lettutor/src/models/schedule/booking_info.dart';
 import 'package:lettutor/src/pages/tutor_list_page/countdown.dart';
 
@@ -179,20 +178,4 @@ class _UpcomingBannerState extends State<UpcomingBanner> {
             ),
     );
   }
-}
-
-int calculateTotalLessonTime(List<Lesson> completedLessons) {
-  int totalDuration = 0;
-
-  for (var lesson in completedLessons) {
-    totalDuration += lesson.duration!;
-  }
-
-  return totalDuration;
-}
-
-String formatDuration(int totalMinutes) {
-  int hours = totalMinutes ~/ 60;
-  int minutes = totalMinutes % 60;
-  return '$hours hours $minutes minutes';
 }

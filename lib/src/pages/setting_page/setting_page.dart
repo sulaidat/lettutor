@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/custom_widgets/pro_avatar.dart';
+import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/pages/login_page/auth.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -11,6 +13,30 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  _showLogOutConfirmDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Log Out'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: const Text('NO')),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                child: const Text('YES')),
+          ],
+        );
+      },
+    ).then((value) => value ?? false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,24 +50,56 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text("Settings"),
                   centerTitle: true,
                 ),
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage("${AppState.user.avatar}"),
+                ProAvatar(
+                  url: AppState.user.avatar!,
+                  height: 90,
+                  width: 90,
                 ),
+                Heading2(text: AppState.user.name!),
                 vpad(5),
-                TextButton(onPressed: () {}, child: Text("Edit profile")),
-                vpad(5),
-                SettingButton(
-                  icon: Icons.person,
-                  label: "Account",
-                  onPressed: () {},
+                ListTile(
+                  title: Text('Update Information'),
+                  leading: Icon(Icons.person),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    context.push('/setting/profile');
+                  },
                 ),
-                vpad(5),
-                SettingButton(
-                  icon: Icons.play_lesson,
-                  label: "Become a tutor",
-                  onPressed: () {},
+                ListTile(
+                  title: Text('Become a Tutor'),
+                  leading: Icon(Icons.school),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {},
                 ),
+                Divider(),
+                SwitchListTile(
+                  title: Text('Dark mode'),
+                  // value: Get.rootController.themeMode == ThemeMode.dark,
+                  value: Get.isDarkMode,
+                  onChanged: (bool value) {
+                    print(Get.isDarkMode);
+                    // Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+                    Get.changeThemeMode(
+                        Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
+                    setState(() {
+                      value = !value;
+                    });
+                  },
+                  secondary: Icon(Icons.dark_mode),
+                ),
+                ListTile(
+                  title: Text('Language'),
+                  leading: Icon(Icons.language),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
+                Divider(),
+                // ListTile(
+                //   title: Text('Change Password'),
+                //   leading: Icon(Icons.lock),
+                //   trailing: Icon(Icons.chevron_right),
+                //   onTap: () {},
+                // ),
                 vpad(20),
                 FilledButton(
                   onPressed: () async {
@@ -68,70 +126,4 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-}
-
-class SettingButton extends StatelessWidget {
-  const SettingButton(
-      {super.key,
-      required this.icon,
-      required this.label,
-      required this.onPressed});
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.background,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 4,
-              color: Colors.grey,
-              offset: Offset(0, 2),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [Icon(icon), hpad(5), Text(label)],
-        ),
-      ),
-    );
-  }
-}
-
-_handleLogOut(bool confirmed) async {
-  if (confirmed) {}
-  return false;
-}
-
-_showLogOutConfirmDialog(BuildContext context) async {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Log Out'),
-        content: const Text('Are you sure you want to log out?'),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-              child: const Text('NO')),
-          TextButton(
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              child: const Text('YES')),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
 }

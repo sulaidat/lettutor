@@ -21,5 +21,8 @@ final routeName = {
   '/course/detail': 'course_detail',
   '/course/detail/topic': 'course_detail_topic',
   '/ebook': 'ebook',
+
   '/settings': 'settings',
+  '/setting/profile': 'setting_profile',
+  '/setting/become_tutor': 'setting_become_tutor',
 };

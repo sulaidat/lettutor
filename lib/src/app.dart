@@ -11,26 +11,20 @@ import 'package:lettutor/src/pages/login_page/forgot_password_page.dart';
 import 'package:lettutor/src/pages/login_page/register_page.dart';
 import 'package:lettutor/src/pages/login_page/reset_password_page.dart';
 import 'package:lettutor/src/pages/login_page/verify_page.dart';
-import 'package:lettutor/src/mock_data.dart';
-import 'package:lettutor/src/models/schedule_info.dart';
-import 'package:lettutor/src/models/search_filter.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
-import 'package:lettutor/src/models/tutor/tutor_feedback.dart';
 import 'package:lettutor/src/models/tutor/tutor_info.dart';
-import 'package:lettutor/src/models/tutor_list.dart';
+import 'package:lettutor/src/pages/setting_page/become_tutor_page/become_tutor_page.dart';
+import 'package:lettutor/src/pages/setting_page/update_profile_page/update_profile_page.dart';
 import 'package:lettutor/src/routes.dart';
 import 'package:lettutor/src/pages/setting_page/setting_page.dart';
 import 'package:lettutor/src/shell.dart';
 import 'package:lettutor/src/pages/login_page/login_page.dart';
-import 'package:lettutor/src/pages/login_page/meeting_room/meeting_room.dart';
-import 'package:lettutor/src/pages/login_page/meeting_room/waiting_room.dart';
 import 'package:lettutor/src/pages/schedule_page/history_page/history_page.dart';
 import 'package:lettutor/src/pages/schedule_page/schedule_page.dart';
 import 'package:lettutor/src/theme/color_schemes.g.dart';
 import 'package:lettutor/src/pages/tutor_list_page/tutor_details_page/feedback_page/feedback_page.dart';
 import 'package:lettutor/src/pages/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 import 'package:lettutor/src/pages/tutor_list_page/tutor_list_page.dart';
-import 'package:provider/provider.dart';
 
 class AppRoutes {
   static const tutorList = '/list';
@@ -54,41 +48,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  TutorList tutorList = TutorList();
   TutorInfo tutorInfo = TutorInfo();
-  ScheduleInfo scheduleInfo = ScheduleInfo();
 
-  void initData() {
-    // asign 2 available lessons to each tutor
-    for (var i = 0; i < lessons.length; i++) {
-      lessons[i].tutor = tutors[i % tutors.length];
-    }
-
-    scheduleInfo.availableLessons = lessons;
-    scheduleInfo.bookedLessons = [];
-    scheduleInfo.completedLessons = [];
-
-    // book some lessons for testing
-    scheduleInfo.bookLesson('1');
-    scheduleInfo.bookLesson('3');
-    scheduleInfo.bookLesson('5');
-    scheduleInfo.bookLesson('7');
-    scheduleInfo.bookLesson('9');
-
-    // complete some lessons for testing
-    scheduleInfo.completeLesson('7');
-    scheduleInfo.completeLesson('9');
-
-    tutorList.tutors = tutors;
-    tutorList.displayedTutors = tutors;
-
-    // tutorInfo.availNationalities = tutorList.getNationalities();
-    // tutorInfo.availSpecialities = tutorList.getSpecialties();
-  }
 
   @override
   Widget build(BuildContext context) {
-    initData();
 
     return MaterialApp.router(
       theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
@@ -141,39 +105,22 @@ class _MyAppState extends State<MyApp> {
           ),
           ShellRoute(
             builder: (context, state, child) {
-              return MultiProvider(
-                providers: [
-                  ChangeNotifierProvider.value(value: tutorList),
-                  ChangeNotifierProvider.value(value: scheduleInfo)
-                ],
-                child: AppShell(
-                  selectedIndex: switch (state.uri.path) {
-                    var p when p.startsWith('/list') => 0,
-                    var p when p.startsWith('/schedule') => 1,
-                    var p when p.startsWith('/course') => 2,
-                    var p when p.startsWith('/settings') => 3,
-                    _ => 0,
-                  },
-                  child: child,
-                ),
+              return AppShell(
+                selectedIndex: switch (state.uri.path) {
+                  var p when p.startsWith('/list') => 0,
+                  var p when p.startsWith('/schedule') => 1,
+                  var p when p.startsWith('/course') => 2,
+                  var p when p.startsWith('/setting') => 3,
+                  _ => 0,
+                },
+                child: child,
               );
             },
             routes: [
               GoRoute(
-                name: routeName['/settings'],
-                path: '/settings',
-                builder: (context, state) => SettingsPage(),
-              ),
-              GoRoute(
                 name: routeName['/tutor/all'],
                 path: '/tutor/all',
-                builder: (context, state) => MultiProvider(
-                  providers: [
-                    // ChangeNotifierProvider.value(value: tutorInfo),
-                    ChangeNotifierProvider(create: (_) => SearchFilter())
-                  ],
-                  child: const TutorListPage(),
-                ),
+                builder: (context, state) => const TutorListPage(),
               ),
               GoRoute(
                   name: routeName['/tutor/detail'],
@@ -232,6 +179,21 @@ class _MyAppState extends State<MyApp> {
                   );
                 },
               ),
+              GoRoute(
+                name: routeName['/settings'],
+                path: '/settings',
+                builder: (context, state) => SettingsPage(),
+              ),
+              GoRoute(
+                name: routeName['/setting/profile'],
+                path: '/setting/profile',
+                builder: (context, state) => UpdateProfilePage(),
+              ),
+              GoRoute(
+                name: routeName['/setting/become_tutor'],
+                path: '/setting/become_tutor',
+                builder: (context, state) => BecomeTutorPage(),
+              ),
               // GoRoute(
               //   path: '/courses/:courseId/:topicId',
               //   builder: (context, state) {
@@ -247,28 +209,28 @@ class _MyAppState extends State<MyApp> {
               // )
             ],
           ),
-          GoRoute(
-            name: 'wating room',
-            path: '/meet/wait',
-            builder: (context, state) {
-              return WaitingRoom(onJoin: () {
-                GoRouter.of(context).push('/meet');
-              });
-            },
-          ),
-          GoRoute(
-            name: 'meeting room',
-            path: '/meet',
-            builder: (context, state) {
-              return MeetingRoom(
-                onLeave: () {
-                  GoRouter.of(context)
-                    ..pop()
-                    ..pop();
-                },
-              );
-            },
-          )
+          // GoRoute(
+          //   name: 'wating room',
+          //   path: '/meet/wait',
+          //   builder: (context, state) {
+          //     return WaitingRoom(onJoin: () {
+          //       GoRouter.of(context).push('/meet');
+          //     });
+          //   },
+          // ),
+          // GoRoute(
+          //   name: 'meeting room',
+          //   path: '/meet',
+          //   builder: (context, state) {
+          //     return MeetingRoom(
+          //       onLeave: () {
+          //         GoRouter.of(context)
+          //           ..pop()
+          //           ..pop();
+          //       },
+          //     );
+          //   },
+          // )
         ],
       ),
     );

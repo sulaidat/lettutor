@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
@@ -6,13 +5,9 @@ import 'package:lettutor/src/custom_widgets/pro_chips_from_string.dart';
 import 'package:lettutor/src/custom_widgets/pro_filter_chip.dart';
 import 'package:lettutor/src/custom_widgets/rating_bar.dart';
 import 'package:lettutor/src/pages/login_page/auth.dart';
-import 'package:lettutor/src/models/search_filter.dart';
 import 'package:lettutor/src/models/tutor/search_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
-import 'package:lettutor/src/models/tutor_list.dart';
 import 'package:lettutor/src/routes.dart';
-import 'package:lettutor/src/pages/tutor_list_page/tutor_card.dart';
-import 'package:provider/provider.dart';
 
 import '../../custom_widgets/pro_avatar.dart';
 import '../../custom_widgets/pro_choice_chip.dart';

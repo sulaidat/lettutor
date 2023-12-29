@@ -5,15 +5,19 @@ class ProAvatar extends StatelessWidget {
   const ProAvatar({
     super.key,
     required this.url,
+    this.height = 70,
+    this.width = 70,
   });
 
   final String url;
+  final double height;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 70,
-        height: 70,
+        width: width,
+        height: height,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(shape: BoxShape.circle),
         child: CachedNetworkImage(

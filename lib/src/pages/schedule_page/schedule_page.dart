@@ -5,7 +5,6 @@ import 'package:lettutor/src/api/schedule_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_avatar.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/schedule/booking_info.dart';
-import 'package:lettutor/src/models/schedule_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
 import 'package:provider/provider.dart';
 
@@ -232,8 +231,6 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final scheduleInfo = context.watch<ScheduleInfo>();
-    scheduleInfo.sortBookedLessons();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
