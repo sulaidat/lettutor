@@ -65,12 +65,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     context.push('/setting/profile');
                   },
                 ),
-                ListTile(
-                  title: Text('Become a Tutor'),
-                  leading: Icon(Icons.school),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {},
-                ),
+                AppState.user.tutorInfo == null
+                    ? ListTile(
+                        title: Text('Become a Tutor'),
+                        leading: Icon(Icons.school),
+                        trailing: Icon(Icons.chevron_right),
+                        onTap: () {
+                          context.push('/setting/become_tutor');
+                        },
+                      )
+                    : ListTile(
+                        title: Text('You are already a Tutor'),
+                        leading: Icon(Icons.school),
+                      ),
                 Divider(),
                 SwitchListTile(
                   title: Text('Dark mode'),

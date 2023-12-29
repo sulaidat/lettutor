@@ -1,3 +1,5 @@
+import 'package:lettutor/src/models/tutor/tutor_info.dart';
+
 class User {
   String? id;
   String? email;
@@ -22,6 +24,7 @@ class User {
   bool? isPublicRecord;
   String? caredByStaffId;
   String? studentGroupId;
+  TutorInfo? tutorInfo;
 
   User(
       {id,
@@ -84,6 +87,9 @@ class User {
     timezone = json['timezone'];
     studySchedule = json['studySchedule'];
     canSendMessage = json['canSendMessage'];
+    tutorInfo = json['tutorInfo'] != null
+        ? TutorInfo.fromJson(json['tutorInfo'])
+        : null;
   }
 
   User.fromJsonFromRegister(Map<String, dynamic> json) {

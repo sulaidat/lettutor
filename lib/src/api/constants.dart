@@ -27,6 +27,7 @@ class Constants {
   static String total = "${baseUrl}call/total";
   static String learnTopics = "${baseUrl}learn-topic";
   static String testPreparations = "${baseUrl}test-preparation";
+  static String becomeTutor = "${baseUrl}tutor/register";
 
   // tutor api
   static tutorListWithPage({

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/tutor_api.dart';
+import 'package:lettutor/src/api/user_api.dart';
 import 'package:lettutor/src/custom_widgets/pro_chips_from_string.dart';
 import 'package:lettutor/src/custom_widgets/pro_filter_chip.dart';
 import 'package:lettutor/src/custom_widgets/rating_bar.dart';
@@ -39,15 +40,17 @@ class _TutorListPageState extends State<TutorListPage> {
   List<Tutor> _tutors = [];
   final TextEditingController _nameController = TextEditingController();
   SearchInfo? searchInfo;
-  int _perPage = 100;
+  int _perPage = 20;
   int _page = 1;
 
   bool _isLoading = false;
+  bool _isSearching = false;
   bool _dontLoadMore = false;
 
   @override
   void initState() {
     super.initState();
+    _getUserInfo();
     _getFirstPage();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -55,6 +58,15 @@ class _TutorListPageState extends State<TutorListPage> {
         _getNextPage();
       }
     });
+  }
+
+  _getUserInfo() async {
+    try {
+      var user = await UserApi.getUserInfo();
+      AppState.user = user;
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   _getFirstPage() async {
@@ -88,14 +100,14 @@ class _TutorListPageState extends State<TutorListPage> {
       });
     }
 
-    // wrong behavior, but i do this for better performance.
-    // it should not affect the result because _perPage=100
-    // (would load all tutors at once)
-    _allSpecialties = _tutors
-        .map((e) => str2list(e.specialties as String))
-        .expand((element) => element)
-        .toSet()
-        .toList();
+    // wrong behavior, but i do this for now
+    if (!_isSearching) {
+      _allSpecialties = _tutors
+          .map((e) => str2list(e.specialties as String))
+          .expand((element) => element)
+          .toSet()
+          .toList();
+    }
 
     setState(() {
       _page++;
@@ -109,28 +121,36 @@ class _TutorListPageState extends State<TutorListPage> {
       _isLoading = true;
     });
 
-    var nextPage = await TutorApi.searchTutor(_perPage, _page, searchInfo);
-    if (nextPage.isNotEmpty) {
-      _allSpecialties.addAll(nextPage
-          .map((e) => str2list(e.specialties as String))
-          .expand((element) => element)
-          .toSet()
-          .toList());
-    }
-
-    setState(() {
-      if (nextPage.isEmpty) {
-        _dontLoadMore = true;
-      } else {
-        _page++;
-        _tutors.addAll(nextPage);
+    try {
+      List<Tutor> nextPage =
+          await TutorApi.searchTutor(_perPage, _page, searchInfo);
+      if (nextPage.isNotEmpty) {
+        if (_isSearching) {
+          _allSpecialties.addAll(nextPage
+              .map((e) => str2list(e.specialties as String))
+              .expand((element) => element)
+              .toSet()
+              .toList());
+        }
       }
-      _isLoading = false;
-    });
+
+      setState(() {
+        if (nextPage.isEmpty) {
+          _dontLoadMore = true;
+        } else {
+          _page++;
+          _tutors.addAll(nextPage);
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("[TutorListPage::_getNextPage] $e");
+    }
   }
 
   _search(List<String> specialties, bool isVietnamese, bool isNative,
       String name) async {
+    _isSearching = true;
     SearchInfo info = SearchInfo();
     info.search = name;
     info.filters = Filters(
@@ -146,6 +166,7 @@ class _TutorListPageState extends State<TutorListPage> {
   }
 
   _resetSearch() {
+    _isSearching = false;
     searchInfo = null;
     _sort = "";
     _nameController.clear();

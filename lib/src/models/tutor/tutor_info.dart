@@ -48,7 +48,7 @@ class TutorInfo {
     interests = json['interests'];
     languages = json['languages'];
     specialties = json['specialties'];
-    rating = json['rating'];
+    rating = json['rating']!.toDouble();
     isNative = json['isNative'];
     user = json['User'] != null ? User.fromJson(json['User']) : null;
     isFavorite = json['isFavorite'];
