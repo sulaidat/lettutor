@@ -10,7 +10,6 @@ import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/custom_widgets/pro_pos_button.dart';
 import 'package:lettutor/src/models/user/user.dart';
 import 'package:lettutor/src/pages/login_page/auth.dart';
-import 'package:lettutor/src/pages/tutor_list_page/tutor_details_page/tutor_details_page.dart';
 
 class UpdateProfilePage extends StatefulWidget {
   const UpdateProfilePage({super.key});
@@ -20,12 +19,15 @@ class UpdateProfilePage extends StatefulWidget {
 }
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
-  bool _isLoading1 = true;
-  bool _isLoading2 = true;
+  final List<String> topics = AppState.topics.map((e) => e.name ?? '').toList()
+    ..addAll(AppState.testPreparations.map((e) => e.name ?? '').toList());
+
   final _birthdayController =
       TextEditingController(text: AppState.user.birthday);
 
   final _countryController = TextEditingController(text: AppState.user.country);
+  bool _isLoading1 = true;
+  bool _isLoading2 = true;
   final _nameController = TextEditingController(text: AppState.user.name);
   final _phoneController = TextEditingController(text: AppState.user.phone);
   List<String> _wantToLearn = AppState.user.learnTopics
@@ -35,8 +37,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     ..addAll(
         AppState.user.testPreparations?.map((e) => e.name ?? '').toList() ?? [])
     ..map((e) => e.toLowerCase()).toList();
-  final List<String> topics = AppState.topics.map((e) => e.name ?? '').toList()
-    ..addAll(AppState.testPreparations.map((e) => e.name ?? '').toList());
 
   @override
   void initState() {
@@ -543,6 +543,7 @@ class ChangeAvatarDialog extends StatefulWidget {
 
 class _ChangeAvatarDialogState extends State<ChangeAvatarDialog> {
   String _url = "";
+
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(

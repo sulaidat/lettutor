@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/constants.dart';
-import 'package:lettutor/src/courses_page/course_details/topic_details/topic_details_page.dart';
 import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/course/course.dart';

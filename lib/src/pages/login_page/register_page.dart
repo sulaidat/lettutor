@@ -4,8 +4,6 @@ import 'package:lettutor/src/api/auth_api.dart';
 import 'package:lettutor/src/pages/login_page/password_field_model.dart';
 import 'package:lettutor/src/pages/login_page/pro_confirm_password_form_field.dart';
 import 'package:lettutor/src/pages/login_page/username_field_model.dart';
-import 'package:lettutor/src/models/user/token.dart';
-import 'package:lettutor/src/models/user/user.dart';
 
 import 'pro_password_form_field.dart';
 import 'pro_text_form_field.dart';

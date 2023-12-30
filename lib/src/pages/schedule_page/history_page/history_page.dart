@@ -5,7 +5,6 @@ import 'package:lettutor/src/custom_widgets/pro_avatar.dart';
 import 'package:lettutor/src/helpers/padding.dart';
 import 'package:lettutor/src/models/schedule/booking_info.dart';
 import 'package:lettutor/src/models/tutor/tutor.dart';
-import 'package:provider/provider.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
