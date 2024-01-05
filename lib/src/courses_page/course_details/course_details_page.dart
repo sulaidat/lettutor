@@ -1,19 +1,35 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lettutor/src/api/constants.dart';
+import 'package:lettutor/src/custom_widgets/pro_heading.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/models/course.dart';
+import 'package:lettutor/src/models/course/course.dart';
+import 'package:lettutor/src/routes.dart';
 
-import '../../custom_widgets/pro_heading1.dart';
 import '../../custom_widgets/pro_label.dart';
 
-class CourseDetailsPage extends StatelessWidget {
+class CourseDetailsPage extends StatefulWidget {
   const CourseDetailsPage({
     super.key,
     required this.course,
-    required this.onTopicSelect,
   });
 
   final Course course;
-  final VoidCallback onTopicSelect;
+
+  @override
+  State<CourseDetailsPage> createState() => _CourseDetailsPageState();
+}
+
+class _CourseDetailsPageState extends State<CourseDetailsPage> {
+  List<Topics> _topics = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _topics = widget.course.topics!;
+    _topics.sort((a, b) => a.orderCourse!.compareTo(b.orderCourse!));
+  }
 
   Widget _buildTopicButton(
       BuildContext context, String title, VoidCallback onPressed) {
@@ -44,6 +60,11 @@ class CourseDetailsPage extends StatelessWidget {
               AppBar(
                 title: Text("Course Details"),
                 centerTitle: true,
+                leading: BackButton(
+                  onPressed: () {
+                    context.go('/courses');
+                  },
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(10),
@@ -68,12 +89,20 @@ class CourseDetailsPage extends StatelessWidget {
                               top: Radius.circular(10),
                               bottom: Radius.circular(30),
                             ),
-                            child: Image.network(
-                              "${course.bannerUrl}",
-                              height: 265,
-                              width: 1000,
-                              fit: BoxFit.cover,
-                            ),
+                            child: CachedNetworkImage(
+                                imageUrl: widget.course.imageUrl!,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => const Icon(
+                                      Icons.image,
+                                      size: 48,
+                                      color: Colors.grey,
+                                    ),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                      Icons.image_not_supported,
+                                      size: 48,
+                                      color: Colors.grey,
+                                    )),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -81,11 +110,11 @@ class CourseDetailsPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${course.name}",
+                                  "${widget.course.name}",
                                   style: theme.textTheme.titleLarge?.copyWith(),
                                 ),
                                 vpad(5),
-                                Text("${course.brief}"),
+                                Text("${widget.course.description}"),
                                 vpad(5),
                                 Row(
                                   mainAxisAlignment:
@@ -94,7 +123,8 @@ class CourseDetailsPage extends StatelessWidget {
                                     Expanded(
                                       child: ProLabel(
                                           icon: Icons.signal_cellular_alt,
-                                          label: "${course.level}"),
+                                          label:
+                                              "${courseLevels[widget.course.level]}"),
                                     ),
                                     SizedBox(
                                       height: 40,
@@ -104,7 +134,7 @@ class CourseDetailsPage extends StatelessWidget {
                                       child: ProLabel(
                                           icon: Icons.timer,
                                           label:
-                                              "${course.topics.length} lessons"),
+                                              "${widget.course.topics!.length} Lessons"),
                                     ),
                                   ],
                                 ),
@@ -122,59 +152,111 @@ class CourseDetailsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ProHeading1(text: "Overview"),
+                    Heading2(text: "Overview"),
                     Row(
                       children: [
                         Icon(
                           Icons.help_outline,
                           color: Colors.redAccent,
                         ),
-                        Text(
-                          "Why take this course?",
-                          style: theme.textTheme.titleMedium,
-                        ),
+                        Heading3(text: "Why take this course?"),
                       ],
                     ),
-                    Text("Aliquid quam consequatur blanditiis dignissimos."),
+                    Text(widget.course.reason ?? ""),
                     Row(
                       children: [
                         Icon(
                           Icons.help_outline,
                           color: Colors.redAccent,
                         ),
-                        Text(
-                          "What will you be able to do?",
-                          style: theme.textTheme.titleMedium,
-                        ),
+                        Heading3(text: "What will you be able to do")
                       ],
                     ),
-                    Text("Aliquid quam consequatur blanditiis dignissimos."),
-                    ProHeading1(text: "List Lessons"),
-                    GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: (2 / 1),
-                        crossAxisSpacing: 7,
-                        mainAxisSpacing: 5,
+                    Text(widget.course.purpose ?? ""),
+                    Heading2(text: "Experience Level"),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.people_outline,
+                          color: Colors.blue,
+                        ),
+                        Heading3(text: "${courseLevels[widget.course.level]}")
+                      ],
+                    ),
+                    Heading2(text: "Course Length"),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.book_outlined,
+                          color: Colors.blue,
+                        ),
+                        Heading3(
+                            text: "${widget.course.topics!.length} Lessons")
+                      ],
+                    ),
+                    Heading2(text: "List Topics"),
+
+                    ...List<Widget>.generate(
+                      widget.course.topics?.length ?? 0,
+                      (index) => TopicCard(
+                        index: index,
+                        topic: widget.course.topics![index],
                       ),
-                      itemBuilder: (context, index) {
-                        return _buildTopicButton(
-                          context,
-                          "${index + 1}. ${course.topics[index].name}",
-                          onTopicSelect,
-                        );
-                      },
-                      itemCount: course.topics.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    )
+                    ),
+                    // GridView.builder(
+                    //   gridDelegate:
+                    //       const SliverGridDelegateWithFixedCrossAxisCount(
+                    //     crossAxisCount: 2,
+                    //     childAspectRatio: (2 / 1),
+                    //     crossAxisSpacing: 7,
+                    //     mainAxisSpacing: 5,
+                    //   ),
+                    //   itemBuilder: (context, index) {
+                    //     return _buildTopicButton(
+                    //       context,
+                    //       "${index + 1}. ${widget.course.topics[index].name}",
+                    //       onTopicSelect,
+                    //     );
+                    //   },
+                    //   itemCount: widget.course.topics.length,
+                    //   shrinkWrap: true,
+                    //   physics: NeverScrollableScrollPhysics(),
+                    // )
                   ],
                 ),
               )
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class TopicCard extends StatelessWidget {
+  const TopicCard({
+    Key? key,
+    required this.index,
+    required this.topic,
+  }) : super(key: key);
+
+  final int index;
+  final Topics topic;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      // elevation: 1.5,
+      // surfaceTintColor: Colors.white,
+      child: ListTile(
+        title: Text('${index + 1}. ${topic.name}'),
+        onTap: () {
+          context
+              .pushNamed(routeName['/course/detail/topic']!, queryParameters: {
+            'title': topic.name ?? 'null name',
+            'url': topic.nameFile ?? 'null file',
+          });
+        },
       ),
     );
   }

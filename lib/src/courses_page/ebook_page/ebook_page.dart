@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lettutor/src/helpers/padding.dart';
-import 'package:lettutor/src/models/ebook.dart';
+import 'package:lettutor/src/models/course/ebook.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EbookPage extends StatefulWidget {

@@ -20,17 +20,16 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final router = GoRouter.of(context);
-
     return MaterialApp(
       title: "Home page",
       theme: Theme.of(context),
       home: Scaffold(
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (idx) {
-            if (idx == 0) router.go('/tutor/all');
-            if (idx == 1) router.go('/schedule');
-            if (idx == 2) router.go('/courses');
+            if (idx == 0) context.go('/tutor/all');
+            if (idx == 1) context.go('/schedule');
+            if (idx == 2) context.go('/courses');
+            if (idx == 3) context.go('/settings');
           },
           selectedIndex: widget.selectedIndex,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
@@ -49,6 +48,11 @@ class _AppShellState extends State<AppShell> {
               icon: Icon(Icons.book_outlined),
               label: "Courses",
               selectedIcon: Icon(Icons.book),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.settings_outlined),
+              label: "Settings",
+              selectedIcon: Icon(Icons.settings),
             ),
           ],
         ),
