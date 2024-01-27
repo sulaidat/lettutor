@@ -80,7 +80,7 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
           aspectRatio: _videoPlayerController?.value.aspectRatio ?? (16 / 9),
           autoPlay: false,
         );
-        
+
         double aspectRatio = _chewieController!.aspectRatio!;
         videoWidth = MediaQuery.of(context).size.width;
         videoHeight = videoWidth / aspectRatio;
@@ -89,6 +89,7 @@ class _TutorDetailsPageState extends State<TutorDetailsPage> {
       });
     } catch (e) {
       print(e.toString());
+      // context.pop();
     }
   }
 

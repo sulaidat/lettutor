@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lettutor/src/api/constants.dart';
 import 'package:lettutor/src/api/course_api.dart';
@@ -16,11 +17,59 @@ class CoursesPage extends StatefulWidget {
 class _CoursesPageState extends State<CoursesPage> {
   List<Course> _courses = [];
   bool _isLoading = true;
+  bool _dontLoadMore = false;
+  int _perPage = 5;
+  int _page = 1;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _getData();
+    // _getData();
+    _getFirstPage();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _getNextPage();
+      }
+    });
+  }
+
+  _getFirstPage() async {
+    setState(() {
+      _isLoading = true;
+      _page = 1;
+    });
+    try {
+      _courses = await CourseApi.getCourses(_perPage, 1);
+    } catch (e) {
+      print("[_getFirstPage] $e");
+    }
+    setState(() {
+      _isLoading = false;
+      _page++;
+      _dontLoadMore = _courses.length > 1 ? false : true;
+    });
+  }
+
+  _getNextPage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      List<Course> nextPage = await CourseApi.getCourses(_perPage, _page);
+      setState(() {
+        if (nextPage.isEmpty) {
+          _dontLoadMore = true;
+        } else {
+          _page++;
+          _courses.addAll(nextPage);
+        }
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("[_getNextPaeg] $e");
+    }
   }
 
   _getData() async {
@@ -116,28 +165,38 @@ class _CoursesPageState extends State<CoursesPage> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             children: [
               AppBar(
                 title: Text('Courses'),
                 centerTitle: true,
               ),
-              _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
+              _courses.isEmpty
+                  ? _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : const Center(child: Text("No courses found"))
                   : Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: ListView.separated(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            separatorBuilder: (context, index) => vpad(10),
-                            itemCount: _courses.length,
-                            itemBuilder: (context, index) =>
-                                _buildCourseCard(context, _courses[index]),
-                          ),
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              separatorBuilder: (context, index) => vpad(10),
+                              itemCount: _dontLoadMore
+                                  ? _courses.length
+                                  : _courses.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == _courses.length) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else {
+                                  return _buildCourseCard(
+                                      context, _courses[index]);
+                                }
+                              }),
                         )
                       ],
                     )

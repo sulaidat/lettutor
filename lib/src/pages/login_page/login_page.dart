@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lettutor/src/api/auth_api.dart';
 import 'package:lettutor/src/pages/login_page/auth.dart';
 import 'package:lettutor/src/pages/login_page/password_field_model.dart';
@@ -43,6 +45,53 @@ class _LoginPageState extends State<LoginPage> {
         _isAuthenticating = false;
         _isAuthenticated = false;
       });
+    }
+  }
+
+  _loginWIthGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
+      final (user, token) = await AuthApi.loginByGoogle(
+        accessToken: googleAuth.accessToken!,
+      );
+      AppState.isLoggedIn = true;
+      AppState.user = user;
+      AppState.token = token;
+      var pref = await SharedPreferences.getInstance();
+      pref.setString("refresh_token", token.refresh!.token!);
+      context.go('/tutor/all');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    }
+  }
+
+  _loginWithFacebook() async {
+    try {
+      final loginResult = await FacebookAuth.instance.login();
+      if (loginResult.status != LoginStatus.success) {
+        throw Exception(loginResult.message);
+      }
+      final (user, token) = await AuthApi.loginByFacebook(
+        accessToken: loginResult.accessToken!.token,
+      );
+      AppState.isLoggedIn = true;
+      AppState.user = user;
+      AppState.token = token;
+      var pref = await SharedPreferences.getInstance();
+      pref.setString("refresh_token", token.refresh!.token!);
+      context.go('/tutor/all');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
     }
   }
 
@@ -175,7 +224,9 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              _loginWithFacebook();
+                            },
                             child: Icon(
                               Icons.facebook,
                               size: 25,
@@ -185,9 +236,11 @@ class _LoginPageState extends State<LoginPage> {
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(30, 0, 30, 0),
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                _loginWIthGoogle();
+                              },
                               child: Icon(
-                                Icons.g_translate,
+                                Icons.g_mobiledata,
                                 size: 25,
                               ),
                             ),

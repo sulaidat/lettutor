@@ -2,9 +2,9 @@
 xmlns:tools="http://schemas.android.com/tools">
     <application
     tools:replace="android:label"
-        android:label="lettutor"
+        android:label="Lettutor"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -32,6 +32,7 @@ xmlns:tools="http://schemas.android.com/tools">
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- Provide required visibility configuration for API level 30 and above -->
 <queries>
   <!-- If your app checks for SMS support -->

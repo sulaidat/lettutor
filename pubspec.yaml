@@ -37,13 +37,16 @@ dependencies:
   dio: ^5.4.0
   flutter:
     sdk: flutter
-  flutter_datetime_picker: 
-    git: 
+  flutter_datetime_picker:
+    git:
       url: https://github.com/HasanAlqaisi/flutter_datetime_picker.git
+  flutter_facebook_auth: ^6.0.4
+  flutter_launcher_icons: ^0.13.1
   get: ^4.6.6
-  go_router: ^12.0.1
+  go_router: ^13.0.1
   google_fonts: ^6.1.0
-  intl: ^0.18.1
+  google_sign_in: ^6.2.1
+  intl: ^0.19.0
   jitsi_meet_flutter_sdk: ^0.1.9
   provider: ^6.1.1
   shared_preferences: ^2.2.2
@@ -52,7 +55,7 @@ dependencies:
   video_player: ^2.7.2
 
 dev_dependencies:
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
 
@@ -93,3 +96,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21

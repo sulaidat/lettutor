@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lettutor/src/api/constants.dart';
 import 'package:lettutor/src/models/user/token.dart';
 import 'package:lettutor/src/models/user/user.dart';
@@ -25,9 +26,34 @@ class AuthApi {
     return (user, token);
   }
 
-  // TODO
-  // static loginByGoogle() {}
-  // static loginByFacebook() {}
+  static loginByGoogle({required String accessToken}) async {
+    final res = await Dio().post(
+      "${Constants.baseUrl}${Constants.loginByGoogle}",
+      data: {
+        "access_token": accessToken,
+      },
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    final user = User.fromJson(res.data['user']);
+    final token = Token.fromJson(res.data['tokens']);
+    return (user, token);
+  }
+  static loginByFacebook({required String accessToken}) async {
+    final res = await Dio().post(
+      "${Constants.baseUrl}${Constants.loginByFacebook}",
+      data: {
+        "access_token": accessToken,
+      },
+    );
+    if (res.statusCode != 200) {
+      throw Exception(res.data['message']);
+    }
+    final user = User.fromJson(res.data['user']);
+    final token = Token.fromJson(res.data['tokens']);
+    return (user, token);
+  }
 
   static refreshToken({required String refreshToken}) async {
     final res = await Dio().post(

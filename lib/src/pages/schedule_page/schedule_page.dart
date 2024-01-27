@@ -49,6 +49,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   void _getFirstPage() async {
     setState(() {
+      _schedule = [];
       _page = 1;
       _isLoading = true;
     });
@@ -182,7 +183,41 @@ class _SchedulePageState extends State<SchedulePage> {
             children: [
               OutlinedButton(
                 onPressed: () {
-                  _cancelClass(info.id);
+                  if (_canCancel(
+                      info.scheduleDetailInfo!.startPeriodTimestamp!)) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text("Cancel class"),
+                        content:
+                            Text("Are you sure you want to cancel this class?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("No"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _cancelClass(info.id);
+                            },
+                            child: Text("Yes"),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            "You can only cancel class 2 hours before it starts"),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                  }
+                  // _cancelClass(info.id);
                 },
                 style: OutlinedButton.styleFrom(),
                 child: Text(
@@ -206,6 +241,12 @@ class _SchedulePageState extends State<SchedulePage> {
         ],
       ),
     );
+  }
+
+  bool _canCancel(int startTimestamp) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final twoHoursBeforeStart = startTimestamp - (2 * 60 * 60 * 1000);
+    return now < twoHoursBeforeStart;
   }
 
   _cancelClass(String? scheduleId) async {
